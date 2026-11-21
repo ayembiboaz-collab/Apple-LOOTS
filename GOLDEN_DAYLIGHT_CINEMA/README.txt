@@ -1,128 +1,77 @@
-GOLDEN DAYLIGHT CINEMA
-=====================
-A standalone cinematic LUT for iPhone 17 Pro / iPhone 17 Pro Max footage
-recorded in Apple Log 2 with the Blackmagic Camera app.
+================================================================================
+GOLDEN DAYLIGHT CINEMA — STANDALONE 3D LUT (33x33x33 .cube)
+================================================================================
 
-    Apple Log 2 · Apple Wide Gamut  ->  Rec.709 SDR · gamma 2.4
-    Format: single 33 x 33 x 33 3D LUT (.cube) — standalone
-    Look:   warm Mediterranean travel-film grade. Honey sunlight, rich
-            midtones, deep-but-detailed shadows, azure skies, warm greens,
-            believable skin, warm stone and concrete.
+Target Camera & App : iPhone 17 Pro / 17 Pro Max — Blackmagic Camera for iOS
+Input Color Space   : Apple Log 2 (Apple Log curve + Apple Wide Gamut primaries)
+Output Color Space  : Rec.709 SDR, Display Gamma 2.4
+LUT Format          : 33 x 33 x 33 3D .cube (DOMAIN_MIN 0..0, DOMAIN_MAX 1..1)
+Delivered File      : LUT/GOLDEN_DAYLIGHT_CINEMA.cube
 
+--------------------------------------------------------------------------------
+1. WHAT THIS LUT DOES
+--------------------------------------------------------------------------------
+GOLDEN DAYLIGHT CINEMA is a single, standalone conversion + creative look LUT.
+Do NOT stack a separate Apple Log 2 -> Rec.709 conversion LUT before or after it.
 
-CONTENTS
---------
-GOLDEN_DAYLIGHT_CINEMA/
-  LUT/GOLDEN_DAYLIGHT_CINEMA.cube    The LUT (only file you need)
-  PREVIEWS/                          8 BEFORE + 8 AFTER PNGs (2048px class)
-  GALLERY/index.html                 Interactive before/after gallery
-  CONTACT_SHEET/                     Contact sheet PNG (all 8 AFTER renders)
-  README.txt                         This file
-  VALIDATION_REPORT.txt              Sources, tests, results, limitations
-  SOURCES.md                         Image credits for the preview plates
+It is engineered to transform harsh midday Mediterranean/daylight footage into a
+warm, dimensional, film-like grade while remaining natural on skin tones, skies,
+foliage, white highlights, and genuine golden-hour scenes:
+  - Decodes Apple Log 2 transfer curve & Apple Wide Gamut (D65) primaries.
+  - Controls bright midday exposure without inflating already-bright highlights.
+  - Separates cool skylight shadows from honey-amber sunlit midtones.
+  - Preserves neutral cloud whites, white fabrics, and natural skin texture.
+  - Compresses high-saturation orange/amber cleanly so golden-hour footage does
+    not turn overly orange.
 
-The repository also contains tools/ (Python build & validation scripts and
-source images). Image credits live in SOURCES.md in this folder.
+--------------------------------------------------------------------------------
+2. HOW TO INSTALL IN BLACKMAGIC CAMERA FOR iOS (iPhone 17 Pro)
+--------------------------------------------------------------------------------
+Note: These steps follow Blackmagic Camera for iOS (v3.1+) documentation.
+Physical iPhone hardware testing was not performed in the build environment.
 
+Step 1 — Get the .cube file onto your iPhone:
+  - Download `GOLDEN_DAYLIGHT_CINEMA.cube` directly on your iPhone (or extract
+    `GOLDEN_DAYLIGHT_CINEMA.zip` in the iOS Files app by tapping the ZIP once).
+  - Make sure you are importing the `.cube` file itself (970 KB), not the `.zip`.
+  - If stored in iCloud Drive, tap to ensure it is downloaded locally onto
+    "On My iPhone" before importing.
 
-QUICK START — BLACKMAGIC CAMERA ON iPHONE
-------------------------------------------
-1. Get GOLDEN_DAYLIGHT_CINEMA.cube onto your iPhone:
-   a. Tap the LUT file in Safari/Files and "Save to Files" (or AirDrop it,
-      or download it from the GitHub links in the release/PR, or unzip the
-      project ZIP on the phone and copy the .cube out).
-   b. Place it in:  On My iPhone  ->  Blackmagic Camera  ->  LUTs
-      (Files app -> Browse -> On My iPhone -> Blackmagic Camera -> LUTs,
-       then move/copy the .cube there).
-   Alternative: inside the Blackmagic Camera app, use the app's
-   LUT import option (Settings -> LUTs) and browse to the .cube file —
-   iCloud Drive works too.
+Step 2 — Set Blackmagic Camera to record Apple Log 2:
+  1. Open Blackmagic Camera on your iPhone 17 Pro.
+  2. Tap Settings (gear icon) -> Record -> Color Space.
+  3. Select "Apple Log 2" (Apple ProRes or HEVC).
+     (Do NOT use an Apple Log 1 clip with this LUT without a color space match,
+      as Apple Log 1 uses BT.2020 rather than Apple Wide Gamut.)
 
-2. In the Blackmagic Camera app:
-   - Record:  codec ProRes (422 LT or higher) or HEVC, 4K recommended,
-     colour space = Apple Log 2 (HDR), Full Range / Video as applicable.
-     Keep ISO at/below native 400 where possible for highlight headroom.
-   - Monitoring: Settings -> LUTs -> select GOLDEN_DAYLIGHT_CINEMA.
-     Toggle the Display/Monitoring LUT ON to preview the grade while
-     shooting. The recording itself stays untouched Apple Log 2.
-   - Colour space tag for the monitoring path: Rec.709.
+Step 3 — Import & enable the Display LUT:
+  1. In Blackmagic Camera, go to Settings -> LUTs.
+  2. Open LUT Selection / LUT Actions and tap "Import LUT".
+  3. Browse in the iOS Files picker and select `GOLDEN_DAYLIGHT_CINEMA.cube`.
+  4. Select `GOLDEN_DAYLIGHT_CINEMA` from your loaded LUTs list.
+  5. Enable "Display LUT" to preview the graded Rec.709 look live on screen
+     while recording clean Apple Log 2 footage.
+  6. Recommended: Leave "Record LUT to Clip" OFF if you want flexibility to trim
+     exposure or white balance in DaVinci Resolve / Final Cut Pro later. Turn
+     "Record LUT to Clip" ON only if you intentionally want the look baked in.
 
-3. Shooting habits that flatter this LUT:
-   - Expose for the highlights. This LUT preserves texture where the sensor
-     captured it; it cannot invent it where the sensor clipped.
-   - Keep white balance near neutral daylight (e.g. 5600K) to let the grade
-     provide the warmth; avoid already-warm WB stacked on the LUT.
-   - Midday: do not add exposure compensation "for safety"; the LUT is built
-     to hold bright scenes without lifting them.
+--------------------------------------------------------------------------------
+3. USING IN DESKTOP EDITORS (OPTIONAL)
+--------------------------------------------------------------------------------
+  - DaVinci Resolve (Project / Node Timeline):
+    Set clip input color space bypass (do not double-apply RCM/CST Apple Log 2
+    conversion before the LUT), apply `GOLDEN_DAYLIGHT_CINEMA.cube` directly on
+    a node, and place any exposure/WB trim nodes BEFORE the LUT node.
+  - Final Cut Pro / Premiere Pro:
+    Disable automatic Apple Log -> Rec.709 camera LUT override on the clip if
+    enabled, then apply `GOLDEN_DAYLIGHT_CINEMA.cube` as a custom 3D LUT.
 
-4. IMPORTANT:
-   - The LUT affects the preview/monitor path. Leave "bake in" OFF unless
-     you explicitly want the grade printed into the file
-     (e.g. "Apply LUT to Output/Recording"). Best practice: record clean
-     Apple Log 2, keep full latitude, grade in post.
-   - Do NOT stack this with another Apple Log -> Rec.709 conversion before
-     it. This LUT already contains the complete conversion. A neutral or
-     conversion LUT in front of it will double-transform the image.
-
-
-GRADING IN POST (DaVinci Resolve, Final Cut Pro, Premiere)
------------------------------------------------------------
-1. Import GOLDEN_DAYLIGHT_CINEMA.cube into your LUT folder:
-   - Resolve: place the .cube in Resolve's LUT directory or point the app
-     at it (Project Settings -> Color Management -> 3D LUT path), then
-     "Refresh LUTs". Apply on the FIRST node from Apple Log 2 footage.
-   - Final Cut Pro: copy the .cube into
-     ~/Library/Application Support/ProApps/MIOCustomLUT/
-     then use Effects -> LUT Utility -> Custom LUT.
-   - Premiere: copy into the .cube LUT folder for CUBE files, refresh,
-     apply as an Input LUT (preferred) or a creative LUT on an adjustment
-     layer.
-2. Keep the timeline / colour management neutral (DaVinci Wide Gamut or
-   project Rec.709 with the Input LUT doing the work — not both).
-3. Optional: node tree for fine-tuning (exposure -> WB -> this LUT ->
-   trim), but the LUT is designed to stand alone.
-
-
-EXPECTED CHARACTER
--------------------
-- Harsh midday: richer azure sky, warm stone, dimensional shade, no
-  yellow-everything wash, bright scenes NOT brightened further.
-- Golden hour: still golden — the LUT adds shape, not extra heat.
-- Skin: natural on most complexions; if you want more/less warmth on your
-  specific subject, trim with WB after the LUT (not before).
-- Seas/pools can lean a touch teal by nature; if you want less, reduce
-  blue saturation slightly after the LUT — the LUT itself aims to keep
-  cyans natural, not turquoise.
-
-
-WHAT THIS LUT IS NOT / HONEST LIMITS
--------------------------------------
-- It cannot recover clipped highlights (sensor-level problem; nothing can).
-- It is NOT a camera match LUT and was NOT shot on a physical iPhone for
-  this release. Previews are documented simulated Apple Log 2 derived from
-  credited sources; the gamut math is verified against OpenColorIO 2.6
-  builtins (see VALIDATION_REPORT.txt).
-- Output is Rec.709 SDR gamma 2.4. Not for HDR, P3, HLG, PQ or print.
-- Apple Log 2 decoding constants are from Apple's white papers (via
-  OpenColorIO's AppleCameras.cpp, which cites the Apple Log 2 white paper).
-  Genuine iPhone 17 Pro camera-side rendering into Apple Log 2/AWG may
-  differ slightly at the margins; verify on your own footage.
-- 33^3 trilinear interpolation is excellent over most of the cube; the far
-  out-of-gamut neon corner (Y<0, impossible on Rec.709 displays) is
-  intentionally steep — see VALIDATION_REPORT.txt section F.
-
-
-FILE VERIFICATION
------------------
-GOLDEN_DAYLIGHT_CINEMA.cube
-  Size:    ~0.97 MB
-  Nodes:   35,937 (33^3), DOMAIN_MIN 0 0 0, DOMAIN_MAX 1 1 1
-  SHA-256: see VALIDATION_REPORT.txt (appended at release time)
-
-
-LICENCE
--------
-The LUT itself (.cube), the GALLERY page, contact sheet and text files are
-provided for use and modification for any purpose, commercial or not,
-no warranty. Preview photographs remain the property of their respective
-authors/license-holders — see SOURCES.md.
+--------------------------------------------------------------------------------
+4. EXPOSURE & SHOOTING TIPS
+--------------------------------------------------------------------------------
+  - A LUT cannot recover highlights that clipped on the iPhone sensor. Protect
+    bright clouds, white linen, and midday sand with zebra warnings (~80-85%
+    IRE or slightly below Apple Log 2 white clipping).
+  - Lock White Balance manually before recording outdoors (e.g., ~5500K-5600K
+    daylight) so auto white balance does not shift color temperature mid-shot.
+================================================================================

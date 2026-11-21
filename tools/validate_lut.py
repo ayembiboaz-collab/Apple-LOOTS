@@ -28,7 +28,7 @@ from render_previews import load_cube, apply_cube_trilinear, simulate_apple_log2
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 CUBE = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'LUT', 'GOLDEN_DAYLIGHT_CINEMA.cube')
-PREVIEWS = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'PREVIEWS')
+PREVIEWS = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'ALT_PREVIEWS')
 
 def section(t):
     print("\n" + "=" * 78 + f"\n{t}\n" + "=" * 78)

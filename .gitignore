@@ -1,9 +1,16 @@
+# Union of both lines of work (see merge commit): main's hygiene + this branch's
 __pycache__/
 *.pyc
 .venv/
+.DS_Store
+.pytest_cache/
+*.tmp
+Unselected files/
 image-search/
 tools/validate_output.txt
 tools/validate_err.txt
 
 # Local convenience artifact (53 MB; build with: zip -r GOLDEN_DAYLIGHT_CINEMA.zip GOLDEN_DAYLIGHT_CINEMA)
-GOLDEN_DAYLIGHT_CINEMA.zip
+# Note: GOLDEN_DAYLIGHT_CINEMA.zip is tracked in this repo (synced with releases);
+# ignore rule only affects future accidental adds of OTHER zip outputs.
+/GOLDEN_DAYLIGHT_CINEMA.zip

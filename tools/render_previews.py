@@ -2,6 +2,9 @@
 Render BEFORE (neutral Apple Log 2 -> Rec.709 conversion) and AFTER
 (the delivered .cube applied) for the eight preview scenes.
 
+Output goes to GOLDEN_DAYLIGHT_CINEMA/ALT_PREVIEWS/ (not the canonical
+PREVIEWS/ directory, which belongs to the main-line suite after the merge).
+
 The source images are ordinary display-referred sRGB photographs. Apple Log 2
 frames are SIMULATED as documented in VALIDATION_REPORT / README:
 
@@ -28,7 +31,9 @@ from lut_core import (apple_log2_encode, apple_log2_decode, srgb_to_linear,
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, '..'))
 SRC = os.path.join(HERE, 'source_images')
-OUT = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'PREVIEWS')
+# NOTE (merge): writes to ALT_PREVIEWS so it cannot overwrite the canonical
+# main-line deliverable renders in GOLDEN_DAYLIGHT_CINEMA/PREVIEWS/.
+OUT = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'ALT_PREVIEWS')
 CUBE = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'LUT', 'GOLDEN_DAYLIGHT_CINEMA.cube')
 MAX_SIDE = 2048
 

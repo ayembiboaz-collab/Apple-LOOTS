@@ -7,8 +7,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, '..'))
-PREVIEWS = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'PREVIEWS')
-OUT = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'CONTACT_SHEET', 'GOLDEN_DAYLIGHT_CINEMA_contact_sheet.png')
+PREVIEWS = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'ALT_PREVIEWS')
+OUT = os.path.join(ROOT, 'GOLDEN_DAYLIGHT_CINEMA', 'CONTACT_SHEET', 'GOLDEN_DAYLIGHT_CINEMA_ALT_contact_sheet.png')
 
 BG = (14, 13, 12)
 GOLD = (201, 162, 75)
