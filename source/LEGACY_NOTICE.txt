@@ -1,1 +1,0 @@
-This source directory belongs to a previous version of the project preserved from main. Its build and package scripts do not build the current deliverable and can overwrite it. For the current one use ../scripts/build.py and ../scripts/package.py, with ../source_images/ as the inputs; see ../BUILDING.md.
