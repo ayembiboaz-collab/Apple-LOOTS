@@ -1,5 +1,7 @@
 .venv/
-image-search/
 __pycache__/
 *.pyc
 .DS_Store
+.pytest_cache/
+*.tmp
+Unselected files/
