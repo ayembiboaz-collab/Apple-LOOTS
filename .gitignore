@@ -4,3 +4,6 @@ __pycache__/
 image-search/
 tools/validate_output.txt
 tools/validate_err.txt
+
+# Local convenience artifact (53 MB; build with: zip -r GOLDEN_DAYLIGHT_CINEMA.zip GOLDEN_DAYLIGHT_CINEMA)
+GOLDEN_DAYLIGHT_CINEMA.zip
