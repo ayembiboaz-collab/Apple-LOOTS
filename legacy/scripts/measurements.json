@@ -1,0 +1,256 @@
+{
+  "cube_sha256": "0941c6e60adc0b38e27662253ffb352d059b3329cc492de647480f8f1e9f238d",
+  "matrix_awg_to_709": [
+    [
+      1.7072803771735963,
+      -0.5190199199320129,
+      -0.18826045724158347
+    ],
+    [
+      -0.12501074610835616,
+      1.3146623654822056,
+      -0.18965161937384953
+    ],
+    [
+      -0.043624333387933825,
+      -0.1912143717325024,
+      1.2348387051204361
+    ]
+  ],
+  "cube_min": 0.0,
+  "cube_max": 1.0,
+  "ocio_ap0_matrix_max_error": 2.6645352591003757e-15,
+  "neutral_decreasing_channel_steps": 387,
+  "neutral_min_step": -0.00010925262369454458,
+  "neutral_max_step": 0.00046379445435526523,
+  "neutral_max_channel_spread": 0.022477360000000002,
+  "analytic_vs_cube_random_mean_abs": 0.005171459764844019,
+  "analytic_vs_cube_random_max_abs": 0.4819719824859928,
+  "percent_cube_entries_zero": 22.55892255892256,
+  "percent_cube_entries_one": 20.207585496841695,
+  "scenes": [
+    {
+      "scene": "Harsh midday city",
+      "before_mean": 0.48809,
+      "after_mean": 0.46866,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.01544,
+        -0.01972,
+        -0.02312
+      ]
+    },
+    {
+      "scene": "Midday portrait",
+      "before_mean": 0.46701,
+      "after_mean": 0.45057,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.01756,
+        -0.02105,
+        -0.01069
+      ]
+    },
+    {
+      "scene": "Mediterranean street",
+      "before_mean": 0.48747,
+      "after_mean": 0.46781,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.01335,
+        -0.02055,
+        -0.02508
+      ]
+    },
+    {
+      "scene": "Bright beach daylight",
+      "before_mean": 0.59707,
+      "after_mean": 0.58142,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        0.00067,
+        -0.01812,
+        -0.0295
+      ]
+    },
+    {
+      "scene": "Greenery & mountains",
+      "before_mean": 0.45417,
+      "after_mean": 0.4366,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.01337,
+        -0.01952,
+        -0.01982
+      ]
+    },
+    {
+      "scene": "Golden-hour landscape",
+      "before_mean": 0.47436,
+      "after_mean": 0.45108,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.02459,
+        -0.02472,
+        -0.02055
+      ]
+    },
+    {
+      "scene": "Modern architecture",
+      "before_mean": 0.49371,
+      "after_mean": 0.4758,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.00559,
+        -0.02171,
+        -0.02642
+      ]
+    },
+    {
+      "scene": "Outdoor travel",
+      "before_mean": 0.57846,
+      "after_mean": 0.56096,
+      "after_black_channel_pct": 0.0,
+      "after_white_channel_pct": 0.0,
+      "mean_rgb_shift": [
+        -0.0145,
+        -0.01697,
+        -0.02104
+      ]
+    }
+  ],
+  "exposure_samples": [
+    {
+      "ev": -2,
+      "output_gamma24": [
+        [
+          0.25414,
+          0.25395,
+          0.25374
+        ],
+        [
+          0.35801,
+          0.28937,
+          0.24384
+        ],
+        [
+          0.18478,
+          0.2926,
+          0.38041
+        ],
+        [
+          0.20039,
+          0.29542,
+          0.19376
+        ]
+      ]
+    },
+    {
+      "ev": -1,
+      "output_gamma24": [
+        [
+          0.3466,
+          0.3453,
+          0.34412
+        ],
+        [
+          0.48732,
+          0.39316,
+          0.33112
+        ],
+        [
+          0.25428,
+          0.39772,
+          0.51549
+        ],
+        [
+          0.27424,
+          0.40114,
+          0.26257
+        ]
+      ]
+    },
+    {
+      "ev": 0,
+      "output_gamma24": [
+        [
+          0.47173,
+          0.46908,
+          0.46589
+        ],
+        [
+          0.66211,
+          0.53426,
+          0.44914
+        ],
+        [
+          0.34443,
+          0.54101,
+          0.6964
+        ],
+        [
+          0.37192,
+          0.5455,
+          0.35551
+        ]
+      ]
+    },
+    {
+      "ev": 1,
+      "output_gamma24": [
+        [
+          0.64419,
+          0.63755,
+          0.63017
+        ],
+        [
+          0.9003,
+          0.7253,
+          0.60863
+        ],
+        [
+          0.47381,
+          0.73437,
+          0.94214
+        ],
+        [
+          0.50872,
+          0.74103,
+          0.48118
+        ]
+      ]
+    },
+    {
+      "ev": 2,
+      "output_gamma24": [
+        [
+          0.86211,
+          0.8533,
+          0.84136
+        ],
+        [
+          0.99921,
+          0.92745,
+          0.87524
+        ],
+        [
+          0.84506,
+          0.91778,
+          1.0
+        ],
+        [
+          0.66194,
+          0.9658,
+          0.62957
+        ]
+      ]
+    }
+  ]
+}
