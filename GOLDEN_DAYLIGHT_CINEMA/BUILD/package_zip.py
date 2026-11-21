@@ -25,7 +25,8 @@ PARENT = os.path.dirname(ROOT)
 NAME = os.path.basename(ROOT)
 ZIP = os.path.join(PARENT, NAME + ".zip")
 
-EXCLUDE_DIRS = {"__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
+EXCLUDE_DIRS = {"__pycache__", ".pytest_cache", ".ipynb_checkpoints",
+                "node_modules"}
 
 # The archive contains the COMPLETE folder, including the simulated log inputs,
 # so it is exactly what the folder is. Size is kept under GitHub's 100 MB
