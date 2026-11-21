@@ -27,11 +27,10 @@ ZIP = os.path.join(PARENT, NAME + ".zip")
 
 EXCLUDE_DIRS = {"__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
 
-# The simulated LOG2 plates are inputs to the process rather than deliverables,
-# and at ~14 MB they are the only thing that would push the archive over
-# GitHub's 100 MB per-file limit. They stay in the repository (PREVIEWS/) so the
-# input is still inspectable online; everything the brief asks for is in the ZIP.
-ZIP_EXCLUDE_SUFFIXES = ("_LOG2_SIMULATED.png",)
+# The archive contains the COMPLETE folder, including the simulated log inputs,
+# so it is exactly what the folder is. Size is kept under GitHub's 100 MB
+# per-file limit by compressing with LZMA, which PNG data tolerates well.
+ZIP_EXCLUDE_SUFFIXES = ()
 
 
 def sha(path):
@@ -126,8 +125,8 @@ def main():
         return 1
     print(f"\nZIP verified: {len(names)} entries, all CRCs valid, all bytes match "
           f"disk, .cube present and re-parsable, 8 BEFORE + 8 AFTER present.")
-    print("Not included (by design): PREVIEWS/*_LOG2_SIMULATED.png - the "
-          "simulated log inputs, which remain in the repository.")
+    print("Archive contains the complete folder, including the simulated "
+          "LOG2 input plates.")
     return 0
 
 
