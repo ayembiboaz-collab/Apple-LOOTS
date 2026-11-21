@@ -229,13 +229,13 @@ def _soft_black_floor(R: np.ndarray) -> np.ndarray:
     """
     Smooth C1 black-floor conditioning for decoded Apple Log 2 linear values.
     In Apple Log 2, R=0 is encoded at P=0.150477. Below P=0.150477, R is negative
-    down to R_0=-0.056411. We map R <= -0.015 to 0.0 and smoothly transition
-    R in (-0.015, 0.004) into positive linear light so deep shadows have zero
-    hard clipping steps while true camera black sits cleanly at ~0.0.
+    down to R_0=-0.056411. Using r_min = -2 * r_join (-0.008) and r_join = 0.004,
+    the cubic transition f(t) = r_join * t^3 has f(0)=0, f'(0)=0, f(1)=r_join,
+    f'(1)=1.0, and strictly non-negative derivative f'(t) >= 0 everywhere.
     """
-    r_min = -0.015
     r_join = 0.004
-    span = r_join - r_min
+    r_min = -2.0 * r_join
+    span = 3.0 * r_join
 
     out = np.zeros_like(R, dtype=np.float64)
     mask_hi = R >= r_join
@@ -243,24 +243,25 @@ def _soft_black_floor(R: np.ndarray) -> np.ndarray:
 
     out[mask_hi] = R[mask_hi]
     t = (R[mask_mid] - r_min) / span
-    a = 3.0 * r_join - span
-    b = span - 2.0 * r_join
-    out[mask_mid] = a * t * t + b * t * t * t
+    out[mask_mid] = r_join * (t * t * t)
     return np.maximum(out, 0.0)
 
 
 def _soft_gamut_compress_rec709(rgb_lin: np.ndarray) -> np.ndarray:
     """
-    Luminance-preserving soft gamut compression from Apple Wide Gamut into Rec.709.
-    Smoothly compresses negative channel excursions (out-of-gamut saturated blues/reds)
-    toward the achromatic luminance axis without hard clipping or hue skews.
-    Leaves all colors well inside Rec.709 (d <= 0.78) 100% untouched.
+    Luminance-preserving C-infinity soft gamut compression from Apple Wide Gamut
+    into Rec.709. Because the Apple Wide Gamut Blue primary has negative CIE y
+    (y_B = -0.076), extreme blue lattice corners can have negative raw Rec.709
+    luminance. Using a smooth positive-channel luminance reference ensures smooth,
+    artifact-free gamut compression across all 33^3 lattice nodes while leaving
+    in-gamut colors (d <= 0.76) 100% untouched.
     """
-    Y = np.tensordot(rgb_lin, LUMA_REC709, axes=([-1], [0]))[..., np.newaxis]
-    Y_pos = np.maximum(Y, 1e-8)
+    rgb_pos = 0.5 * (rgb_lin + np.sqrt(rgb_lin * rgb_lin + 1e-9))
+    Y_ref = np.tensordot(rgb_pos, LUMA_REC709, axes=([-1], [0]))[..., np.newaxis]
+    Y_pos = np.maximum(Y_ref, 1e-7)
 
     d = (Y_pos - rgb_lin) / Y_pos
-    t0 = 0.78
+    t0 = 0.76
     limit = 0.998
 
     span = limit - t0
@@ -270,7 +271,7 @@ def _soft_gamut_compress_rec709(rgb_lin: np.ndarray) -> np.ndarray:
         t0 + span * np.tanh(np.maximum(d - t0, 0.0) / span),
     )
 
-    rgb_safe = np.where(Y > 1e-8, Y_pos * (1.0 - d_comp), np.maximum(rgb_lin, 0.0))
+    rgb_safe = Y_pos * (1.0 - d_comp)
     return np.maximum(rgb_safe, 0.0)
 
 
@@ -354,10 +355,10 @@ def golden_daylight_cinema_transform(P_log2: np.ndarray) -> np.ndarray:
     L_lum_rgb = R_709 * scale_y[:, np.newaxis]
 
     # Blend 62% luminance-mapped + 38% per-channel mapped in midtones, transitioning
-    # smoothly toward per-channel roll-off in high highlights so bright speculars
-    # naturally desaturate toward creamy white without channel clipping.
-    w_ch = 0.38 + 0.54 * np.power(V_y, 1.80)
-    w_ch = np.clip(w_ch, 0.0, 0.92)[:, np.newaxis]
+    # smoothly to 100% per-channel roll-off at peak white (V_y -> 1.0) so no channel
+    # ever exceeds 1.0 or suffers asymmetric hard-clipping in cell [31, 32]^3.
+    w_ch = 0.38 + 0.62 * np.power(V_y, 1.55)
+    w_ch = np.clip(w_ch, 0.0, 1.0)[:, np.newaxis]
     L_disp = (1.0 - w_ch) * L_lum_rgb + w_ch * L_ch
     L_disp = np.clip(L_disp, 0.0, 1.0)
 
