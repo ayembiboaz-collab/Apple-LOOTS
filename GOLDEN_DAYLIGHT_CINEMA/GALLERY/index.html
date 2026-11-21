@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0a09">
+<meta name="description" content="GOLDEN DAYLIGHT CINEMA - a standalone cinematic LUT for Apple Log 2 footage from iPhone 17 Pro, shot with Blackmagic Camera for iOS.">
+<title>GOLDEN DAYLIGHT CINEMA &middot; Apple Log 2 LUT</title>
+<style>
+  *,*::before,*::after { box-sizing: border-box; }
+  :root {
+    --bg: #0b0a09;
+    --bg-2: #121010;
+    --panel: #171413;
+    --line: rgba(255,236,214,.12);
+    --ink: #f2ece4;
+    --ink-dim: #a69e94;
+    --ink-faint: #7d766d;
+    --honey: #e2a657;
+    --honey-soft: #c98f44;
+    --radius: 14px;
+    --pad: clamp(18px, 5vw, 56px);
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body.locked { overflow: hidden; }
+  a { color: var(--honey); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--pad); }
+  h1,h2,h3 {
+    font-family: ui-serif, "New York", Georgia, "Times New Roman", serif;
+    font-weight: 500; letter-spacing: -.01em; margin: 0;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; padding: clamp(56px,13vw,130px) 0 clamp(36px,7vw,64px);
+    border-bottom: 1px solid var(--line); overflow: hidden;
+  }
+  .hero::before {
+    content:""; position:absolute; inset:-40% -20% auto -20%; height: 150%;
+    background:
+      radial-gradient(60% 55% at 22% 12%, rgba(226,166,87,.20), transparent 62%),
+      radial-gradient(52% 50% at 88% 6%, rgba(130,92,46,.16), transparent 60%),
+      radial-gradient(70% 60% at 50% 100%, rgba(32,54,82,.18), transparent 65%);
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .26em; text-transform: uppercase;
+    color: var(--honey); margin: 0 0 20px;
+  }
+  h1 { font-size: clamp(38px, 10vw, 86px); line-height: 1.02; }
+  h1 .l2 { display: block; color: var(--honey-soft); }
+  .lede {
+    margin: 22px 0 0; max-width: 56ch; color: var(--ink-dim);
+    font-size: clamp(16px, 2.3vw, 19px);
+  }
+  .specs {
+    list-style: none; margin: 34px 0 0; padding: 0; display: flex;
+    flex-wrap: wrap; gap: 10px;
+  }
+  .specs li {
+    border: 1px solid var(--line); border-radius: 100px; padding: 7px 15px;
+    font-size: 12.5px; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--ink-dim); background: rgba(255,255,255,.015);
+  }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px;
+    border-radius: 100px; font-size: 15px; font-weight: 500;
+    border: 1px solid var(--honey); color: #1b1309; background: var(--honey);
+    min-height: 48px; transition: transform .15s ease, filter .15s ease;
+  }
+  .btn:hover { filter: brightness(1.07); text-decoration: none; }
+  .btn:active { transform: scale(.98); }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn small { opacity: .62; font-weight: 400; }
+
+  /* ---------- sections ---------- */
+  section { padding: clamp(48px, 9vw, 104px) 0; }
+  section + section { border-top: 1px solid var(--line); }
+  .sec-head { margin-bottom: clamp(28px, 5vw, 52px); }
+  .sec-head h2 { font-size: clamp(26px, 5.2vw, 40px); }
+  .sec-head p { color: var(--ink-dim); max-width: 62ch; margin: 14px 0 0; }
+  .num {
+    font-size: 12px; letter-spacing: .24em; color: var(--honey);
+    text-transform: uppercase; display: block; margin-bottom: 12px;
+  }
+
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px;
+  }
+  .card h3 { font-size: 19px; margin-bottom: 9px; }
+  .card p { margin: 0; color: var(--ink-dim); font-size: 15.5px; }
+
+  /* ---------- comparison ---------- */
+  .scenes { display: flex; flex-direction: column; gap: clamp(40px, 7vw, 76px); }
+  .scene-head { display: flex; gap: 16px; align-items: baseline; margin-bottom: 16px; }
+  .scene-num {
+    font-family: ui-serif, Georgia, serif; font-size: 13px; color: var(--honey);
+    border: 1px solid var(--line); border-radius: 100px; padding: 3px 11px; flex: none;
+  }
+  .scene-text h3 { font-size: clamp(20px, 3.4vw, 26px); }
+  .scene-text p { margin: 5px 0 0; color: var(--ink-faint); font-size: 15px; }
+
+  .compare {
+    position: relative; width: 100%; aspect-ratio: 1280 / 714;
+    border-radius: var(--radius); overflow: hidden; background: #000;
+    border: 1px solid var(--line); touch-action: pan-y; user-select: none;
+    -webkit-user-select: none; cursor: ew-resize;
+  }
+  .compare .layer {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block; pointer-events: none;
+    -webkit-user-drag: none;
+  }
+  .compare .top { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+  .divider {
+    position: absolute; top: 0; bottom: 0; left: var(--pos);
+    width: 2px; margin-left: -1px; background: rgba(255,255,255,.9);
+    box-shadow: 0 0 14px rgba(0,0,0,.65); pointer-events: none;
+  }
+  .knob {
+    position: absolute; top: 50%; left: 50%; width: 42px; height: 42px;
+    transform: translate(-50%,-50%); border-radius: 50%;
+    background: rgba(18,16,15,.78); border: 2px solid rgba(255,255,255,.92);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .knob::before, .knob::after {
+    content: ""; position: absolute; top: 50%; width: 0; height: 0;
+    border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+  }
+  .knob::before { left: 9px; transform: translateY(-50%); border-right: 7px solid #fff; }
+  .knob::after { right: 9px; transform: translateY(-50%); border-left: 7px solid #fff; }
+  .range {
+    position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+    opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none;
+    background: transparent; touch-action: pan-y;
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 54px; height: 100%; cursor: ew-resize;
+  }
+  .range::-moz-range-thumb { width: 54px; height: 999px; border: 0; opacity: 0; }
+  .range:focus-visible { outline: none; }
+  .range:focus-visible ~ .divider { background: var(--honey); box-shadow: 0 0 0 2px rgba(226,166,87,.5); }
+  .tag {
+    position: absolute; top: 12px; padding: 5px 11px; border-radius: 100px;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    background: rgba(8,7,6,.62); border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    pointer-events: none; color: #fff;
+  }
+  .tag-before { left: 12px; }
+  .tag-after { right: 12px; color: var(--honey); border-color: rgba(226,166,87,.4); }
+  .expand {
+    position: absolute; right: 12px; bottom: 12px; width: 44px; height: 44px;
+    display: grid; place-items: center; border-radius: 12px; color: #fff;
+    background: rgba(8,7,6,.62); border: 1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    cursor: pointer; padding: 0;
+  }
+  .expand:active { transform: scale(.94); }
+  .scene-foot {
+    display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 13px;
+    font-size: 13.5px;
+  }
+  .scene-foot a { color: var(--ink-faint); }
+  .scene-foot a:hover { color: var(--honey); }
+
+  /* ---------- contact sheet ---------- */
+  .sheet {
+    display: block; width: 100%; height: auto; border-radius: var(--radius);
+    border: 1px solid var(--line);
+  }
+
+  /* ---------- tables / notes ---------- */
+  .kv { width: 100%; border-collapse: collapse; font-size: 15.5px; }
+  .kv th, .kv td {
+    text-align: left; padding: 13px 0; border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .kv th { color: var(--ink-faint); font-weight: 400; width: 40%; padding-right: 18px; }
+  .kv tr:last-child th, .kv tr:last-child td { border-bottom: 0; }
+  ol.steps { margin: 0; padding-left: 1.25em; color: var(--ink-dim); }
+  ol.steps li { margin-bottom: 11px; }
+  ol.steps strong { color: var(--ink); font-weight: 500; }
+  .note {
+    border-left: 2px solid var(--honey-soft); padding: 4px 0 4px 20px;
+    color: var(--ink-dim); font-size: 15.5px;
+  }
+  .note + .note { margin-top: 20px; }
+  footer {
+    border-top: 1px solid var(--line); padding: 42px 0 64px;
+    color: var(--ink-faint); font-size: 13.5px;
+  }
+
+  /* ---------- lightbox ---------- */
+  .lb {
+    position: fixed; inset: 0; z-index: 90; display: none;
+    background: rgba(5,4,4,.97); padding: env(safe-area-inset-top) 0 0;
+    flex-direction: column;
+  }
+  .lb.open { display: flex; }
+  .lb-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; padding: 14px 18px; flex: none;
+  }
+  .lb-title { font-size: 14px; color: var(--ink-dim); }
+  .lb-close {
+    width: 44px; height: 44px; border-radius: 50%; flex: none;
+    background: rgba(255,255,255,.08); border: 1px solid var(--line);
+    color: #fff; font-size: 21px; line-height: 1; cursor: pointer;
+  }
+  .lb-stage {
+    flex: 1; display: grid; place-items: center; padding: 0 10px 14px;
+    min-height: 0;
+  }
+  .lb .compare { max-height: 100%; border-radius: 10px; }
+  .lb-hint {
+    flex: none; text-align: center; padding: 0 18px 22px;
+    color: var(--ink-faint); font-size: 12.5px;
+  }
+
+  @media (max-width: 640px) {
+    .scene-head { gap: 12px; }
+    .knob { width: 38px; height: 38px; }
+    .btn { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Apple Log 2 &middot; Standalone Cinematic LUT</p>
+    <h1>Golden Daylight<span class="l2">Cinema</span></h1>
+    <p class="lede">
+      One 33-point 3D LUT that turns harsh midday iPhone&nbsp;17&nbsp;Pro footage into a
+      warm, dimensional, Mediterranean travel film. It decodes Apple Log&nbsp;2,
+      handles Apple Wide Gamut and delivers Rec.709 gamma&nbsp;2.4 in a single step &mdash;
+      no conversion LUT in front of it.
+    </p>
+    <ul class="specs">
+      <li>Apple Log 2 &rarr; Rec.709 g2.4</li>
+      <li>33 &times; 33 &times; 33</li>
+      <li>Apple Wide Gamut</li>
+      <li>Blackmagic Camera for iOS</li>
+      <li>949 KB</li>
+    </ul>
+    <div class="cta">
+      <a class="btn" href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube" download>
+        Download the LUT <small>.cube</small>
+      </a>
+      <a class="btn ghost" href="#comparisons">See the eight comparisons</a>
+    </div>
+  </div>
+</header>
+
+<section id="look">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">01 &mdash; The look</span>
+      <h2>Honey light, honest whites</h2>
+      <p>
+        Midday sun is flat, blue-ish and unforgiving. This grade rebuilds the
+        warmth the hour never had, without turning the frame yellow. The tint is
+        steered by chroma and hue, not by brightness alone: surfaces that are
+        already warm get richer, while concrete, white linen and cloud stay neutral.
+      </p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Warmth where it belongs</h3>
+        <p>Sunlit stone, skin and foliage take an amber bias. A measured 18&nbsp;% grey
+           card leaves the LUT at an R/B ratio of 1.09 and a 90&nbsp;% white at 1.03,
+           so neutrals stay neutral.</p>
+      </div>
+      <div class="card">
+        <h3>Deep, not crushed</h3>
+        <p>Shadows sit at about 0.82&times; the source luminance for density, with a
+           cool bias that keeps them separated from the sun. Measured deep-shadow
+           area across the eight scenes: 0.67&nbsp;%.</p>
+      </div>
+      <div class="card">
+        <h3>Skies that stay blue</h3>
+        <p>A hue-selective stage rejects the honey tint in blues and cyans. Sky
+           hue moves +4.5&deg; towards blue, never towards turquoise, at 0.97&times;
+           the source saturation and 0.99&times; its luminance.</p>
+      </div>
+      <div class="card">
+        <h3>Skin before style</h3>
+        <p>Skin hue is held to within 1.3&deg; of the source across all eight scenes
+           and every exposure from &minus;2 to +2&nbsp;EV. No orange cast, no beauty
+           smoothing, no plastic.</p>
+      </div>
+      <div class="card">
+        <h3>It will not brighten you</h3>
+        <p>Bright footage stays bright, not brighter: the upper quartile lands at
+           0.95&times; and the 95th percentile at 0.90&times; the source, so highlight
+           texture survives.</p>
+      </div>
+      <div class="card">
+        <h3>Golden hour safe</h3>
+        <p>Because warmth follows chroma rather than luma alone, already-warm light
+           is enriched rather than doubled. Scene 06 is the control case.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="comparisons">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">02 &mdash; Before and after</span>
+      <h2>Eight scenes, one LUT</h2>
+      <p>
+        Drag each slider. Left is the ungraded Apple&nbsp;Log&nbsp;2 signal sent
+        straight to the display; right is the same frame through the delivered
+        <code>.cube</code> &mdash; same source, same framing, same exposure. Tap the
+        expand icon for full screen.
+      </p>
+    </div>
+    <div class="scenes">
+      <article class="scene" id="scene-01">
+        <header class="scene-head">
+          <span class="scene-num">01</span>
+          <div class="scene-text">
+            <h3>Harsh midday city</h3>
+            <p>Bright limestone facades, deep blue sky, hard architectural shadows.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="0" data-title="Harsh midday city"
+             data-before="media/01_midday_city_BEFORE.jpg"
+             data-after="media/01_midday_city_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/01_midday_city_AFTER.jpg"
+               alt="Harsh midday city, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/01_midday_city_BEFORE.jpg"
+               alt="Harsh midday city, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Harsh midday city: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Harsh midday city full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/01_midday_city_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/01_midday_city_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-02">
+        <header class="scene-head">
+          <span class="scene-num">02</span>
+          <div class="scene-text">
+            <h3>Midday portrait, direct sun</h3>
+            <p>Olive skin under hard overhead sun, white linen, sunlit stone behind.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="1" data-title="Midday portrait, direct sun"
+             data-before="media/02_midday_portrait_BEFORE.jpg"
+             data-after="media/02_midday_portrait_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/02_midday_portrait_AFTER.jpg"
+               alt="Midday portrait, direct sun, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/02_midday_portrait_BEFORE.jpg"
+               alt="Midday portrait, direct sun, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Midday portrait, direct sun: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Midday portrait, direct sun full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/02_midday_portrait_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/02_midday_portrait_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-03">
+        <header class="scene-head">
+          <span class="scene-num">03</span>
+          <div class="scene-text">
+            <h3>Mediterranean street</h3>
+            <p>Sunlit plaster and open shade in the same frame, terracotta and foliage.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="2" data-title="Mediterranean street"
+             data-before="media/03_mediterranean_street_BEFORE.jpg"
+             data-after="media/03_mediterranean_street_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/03_mediterranean_street_AFTER.jpg"
+               alt="Mediterranean street, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/03_mediterranean_street_BEFORE.jpg"
+               alt="Mediterranean street, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Mediterranean street: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Mediterranean street full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/03_mediterranean_street_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/03_mediterranean_street_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-04">
+        <header class="scene-head">
+          <span class="scene-num">04</span>
+          <div class="scene-text">
+            <h3>Bright beach daylight</h3>
+            <p>Pale sand, specular glare on water, white foam near clipping.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="3" data-title="Bright beach daylight"
+             data-before="media/04_bright_beach_BEFORE.jpg"
+             data-after="media/04_bright_beach_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/04_bright_beach_AFTER.jpg"
+               alt="Bright beach daylight, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/04_bright_beach_BEFORE.jpg"
+               alt="Bright beach daylight, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Bright beach daylight: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Bright beach daylight full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/04_bright_beach_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/04_bright_beach_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-05">
+        <header class="scene-head">
+          <span class="scene-num">05</span>
+          <div class="scene-text">
+            <h3>Landscape, greenery and mountains</h3>
+            <p>Broad foliage field, distant haze, large clean sky area.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="4" data-title="Landscape, greenery and mountains"
+             data-before="media/05_landscape_greenery_BEFORE.jpg"
+             data-after="media/05_landscape_greenery_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/05_landscape_greenery_AFTER.jpg"
+               alt="Landscape, greenery and mountains, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/05_landscape_greenery_BEFORE.jpg"
+               alt="Landscape, greenery and mountains, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Landscape, greenery and mountains: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Landscape, greenery and mountains full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/05_landscape_greenery_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/05_landscape_greenery_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-06">
+        <header class="scene-head">
+          <span class="scene-num">06</span>
+          <div class="scene-text">
+            <h3>Golden-hour landscape</h3>
+            <p>Already-warm light: the test for over-warming.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="5" data-title="Golden-hour landscape"
+             data-before="media/06_golden_hour_landscape_BEFORE.jpg"
+             data-after="media/06_golden_hour_landscape_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/06_golden_hour_landscape_AFTER.jpg"
+               alt="Golden-hour landscape, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/06_golden_hour_landscape_BEFORE.jpg"
+               alt="Golden-hour landscape, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Golden-hour landscape: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Golden-hour landscape full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/06_golden_hour_landscape_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/06_golden_hour_landscape_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-07">
+        <header class="scene-head">
+          <span class="scene-num">07</span>
+          <div class="scene-text">
+            <h3>Modern architecture</h3>
+            <p>Neutral concrete and glass: the test for an overall colour cast.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="6" data-title="Modern architecture"
+             data-before="media/07_modern_architecture_BEFORE.jpg"
+             data-after="media/07_modern_architecture_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/07_modern_architecture_AFTER.jpg"
+               alt="Modern architecture, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/07_modern_architecture_BEFORE.jpg"
+               alt="Modern architecture, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Modern architecture: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Modern architecture full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/07_modern_architecture_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/07_modern_architecture_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+      <article class="scene" id="scene-08">
+        <header class="scene-head">
+          <span class="scene-num">08</span>
+          <div class="scene-text">
+            <h3>Outdoor travel scene with people</h3>
+            <p>Mixed skin tones, half sun half shade, warm stone.</p>
+          </div>
+        </header>
+        <div class="compare" data-index="7" data-title="Outdoor travel scene with people"
+             data-before="media/08_travel_people_buildings_BEFORE.jpg"
+             data-after="media/08_travel_people_buildings_AFTER.jpg"
+             style="--pos:50%">
+          <img class="layer base" src="media/08_travel_people_buildings_AFTER.jpg"
+               alt="Outdoor travel scene with people, graded with GOLDEN DAYLIGHT CINEMA" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <img class="layer top" src="media/08_travel_people_buildings_BEFORE.jpg"
+               alt="Outdoor travel scene with people, ungraded Apple Log 2" loading="lazy"
+               width="1280" height="714" decoding="async">
+          <span class="tag tag-before">BEFORE &middot; Log 2</span>
+          <span class="tag tag-after">AFTER</span>
+          <div class="divider" aria-hidden="true"><span class="knob"></span></div>
+          <input class="range" type="range" min="0" max="100" value="50" step="0.1"
+                 aria-label="Outdoor travel scene with people: reveal the graded image">
+          <button class="expand" type="button" aria-label="View Outdoor travel scene with people full screen">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="scene-foot">
+          <a href="../PREVIEWS/08_travel_people_buildings_BEFORE.png">Full-resolution BEFORE (PNG)</a>
+          <a href="../PREVIEWS/08_travel_people_buildings_AFTER.png">Full-resolution AFTER (PNG)</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="sheet">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">03 &mdash; Contact sheet</span>
+      <h2>The whole set at a glance</h2>
+      <p>All eight scenes, before above and after below.</p>
+    </div>
+    <a href="../CONTACT_SHEET/GOLDEN_DAYLIGHT_CINEMA_CONTACT_SHEET.png">
+      <img class="sheet" src="media/contact_sheet.jpg" loading="lazy"
+           alt="Contact sheet of all eight before and after comparisons">
+    </a>
+    <p class="scene-foot"><a href="../CONTACT_SHEET/GOLDEN_DAYLIGHT_CINEMA_CONTACT_SHEET.png">Full-resolution contact sheet (PNG)</a></p>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">04 &mdash; Compatibility and install</span>
+      <h2>Built for Blackmagic Camera on iPhone</h2>
+      <p>
+        Blackmagic Camera for iOS accepts 17- and 33-point 3D <code>.cube</code> LUTs.
+        This one is 33-point for that reason.
+      </p>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(290px,1fr))">
+      <div class="card">
+        <h3>Specification</h3>
+        <table class="kv">
+          <tr><th>Input</th><td>Apple Log 2, Apple Wide Gamut, normalised full range</td></tr>
+          <tr><th>Output</th><td>Rec.709, gamma 2.4 (BT.1886)</td></tr>
+          <tr><th>Type</th><td>3D <code>.cube</code>, 33&sup3; = 35,937 entries</td></tr>
+          <tr><th>Camera</th><td>iPhone 17 Pro / 17 Pro Max (Apple Log 2)</td></tr>
+          <tr><th>App</th><td>Blackmagic Camera for iOS</td></tr>
+          <tr><th>Standalone</th><td>Yes &mdash; no conversion LUT needed in front</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>On the iPhone</h3>
+        <ol class="steps">
+          <li>Save <strong>GOLDEN_DAYLIGHT_CINEMA.cube</strong> into the Files app.
+              A <code>.cube</code> needs no unzipping; a ZIP must be extracted first.</li>
+          <li>Blackmagic Camera &rarr; <strong>Settings &rarr; LUTs &rarr; Import LUT</strong>,
+              then pick the file.</li>
+          <li>Set the recording colour space to <strong>Apple Log 2</strong>.</li>
+          <li>Enable the LUT for <strong>monitoring</strong>.</li>
+          <li>Leave <strong>Record LUT to Clip</strong> off to keep a clean log master.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>In post</h3>
+        <p>Apply as a creative look on Apple Log 2 clips with no input transform in
+           front. In DaVinci Resolve set the clip to Apple Log 2 / Apple Wide Gamut,
+           bypass any colour-management input transform for that node, and set the
+           timeline to Rec.709 gamma 2.4.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="honesty">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">05 &mdash; What is real, what is simulated</span>
+      <h2>Stated plainly</h2>
+    </div>
+    <p class="note">
+      <strong>The LUT is real and fully tested as a file.</strong> It passes 34 of 34
+      automated checks: valid 33&sup3; syntax, no NaN or infinity, Apple Log 2 decode
+      matching the white paper&rsquo;s own anchor table to within one 10-bit code,
+      and a re-derived Apple Wide Gamut matrix agreeing with the published
+      OpenColorIO reference to 2.4&times;10&#8315;&sup1;&#8309;.
+    </p>
+    <p class="note">
+      <strong>The preview frames are simulated, not iPhone captures.</strong> No real
+      Apple Log&nbsp;2 footage was available, so the stills are AI-generated images
+      converted into Apple Log&nbsp;2 by a documented chain &mdash; inverse BT.709 OETF,
+      highlight expansion, Rec.709 to Apple Wide Gamut, then the Apple Log encode.
+      They do not reproduce iPhone sensor noise, demosaic or Apple&rsquo;s ISP colour science.
+    </p>
+    <p class="note">
+      <strong>Every AFTER image came from the delivered file.</strong> Each one is
+      regenerated during validation by parsing the shipped <code>.cube</code> and
+      interpolating it; all eight are bit-identical to the images on this page.
+      Nothing here is an approximation of the look.
+    </p>
+    <p class="note">
+      <strong>No iPhone was used.</strong> No iPhone 17 Pro, no iPhone of any kind and
+      no installation of Blackmagic Camera took part in this project. The install
+      steps above are transcribed from current vendor documentation, not from a test.
+      On-device appearance and import behaviour are unverified.
+    </p>
+    <p class="note">
+      <strong>A LUT cannot recover clipped highlights.</strong> Where the sensor has
+      already clipped there is nothing to grade. Expose for the highlights. The full
+      measurements and caveats are in <code>VALIDATION_REPORT.txt</code>.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>
+      GOLDEN DAYLIGHT CINEMA &middot; one LUT, 33&sup3;, Apple Log 2 to Rec.709 gamma 2.4.
+      Built and validated with the scripts in this repository.
+    </p>
+    <p><a href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube" download>GOLDEN_DAYLIGHT_CINEMA.cube</a>
+       &middot; <a href="../VALIDATION_REPORT.txt">Validation report</a>
+       &middot; <a href="../README.txt">Read me</a></p>
+  </div>
+</footer>
+
+<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Full screen comparison">
+  <div class="lb-bar">
+    <span class="lb-title" id="lb-title"></span>
+    <button class="lb-close" id="lb-close" type="button" aria-label="Close full screen">&times;</button>
+  </div>
+  <div class="lb-stage" id="lb-stage"></div>
+  <p class="lb-hint">Drag to compare &middot; arrow keys to nudge &middot; Esc or &times; to close</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function wire(box) {
+    var range = box.querySelector(".range");
+    if (!range || box.dataset.wired === "1") return;
+    box.dataset.wired = "1";
+
+    function paint(v) { box.style.setProperty("--pos", v + "%"); }
+    range.addEventListener("input", function () { paint(range.value); });
+    paint(range.value);
+
+    // Dragging anywhere on the image, with the page still scrollable
+    // vertically until the gesture is clearly horizontal.
+    var active = false, decided = false, x0 = 0, y0 = 0;
+
+    function pos(ev) {
+      var r = box.getBoundingClientRect();
+      var p = ((ev.clientX - r.left) / r.width) * 100;
+      p = p < 0 ? 0 : (p > 100 ? 100 : p);
+      range.value = p;
+      paint(p);
+    }
+
+    box.addEventListener("pointerdown", function (ev) {
+      if (ev.target.closest(".expand")) return;
+      active = true; decided = ev.pointerType === "mouse";
+      x0 = ev.clientX; y0 = ev.clientY;
+      if (decided) { pos(ev); box.setPointerCapture(ev.pointerId); }
+    });
+
+    box.addEventListener("pointermove", function (ev) {
+      if (!active) return;
+      if (!decided) {
+        var dx = Math.abs(ev.clientX - x0), dy = Math.abs(ev.clientY - y0);
+        if (dx < 6 && dy < 6) return;
+        if (dy > dx) { active = false; return; }   // vertical: let the page scroll
+        decided = true;
+        box.setPointerCapture(ev.pointerId);
+      }
+      ev.preventDefault();
+      pos(ev);
+    });
+
+    function release(ev) {
+      if (!active) return;
+      if (decided && !ev.movedOnce) pos(ev);
+      active = false; decided = false;
+      try { box.releasePointerCapture(ev.pointerId); } catch (e) {}
+    }
+    box.addEventListener("pointerup", release);
+    box.addEventListener("pointercancel", function () { active = false; decided = false; });
+  }
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".compare"));
+  boxes.forEach(wire);
+
+  // ---------- full screen ----------
+  var lb = document.getElementById("lightbox");
+  var stage = document.getElementById("lb-stage");
+  var title = document.getElementById("lb-title");
+  var scrollY = 0;
+
+  function open(src) {
+    var clone = src.cloneNode(true);
+    clone.dataset.wired = "";
+    clone.style.setProperty("--pos", src.style.getPropertyValue("--pos") || "50%");
+    var btn = clone.querySelector(".expand");
+    if (btn) btn.remove();
+    stage.innerHTML = "";
+    stage.appendChild(clone);
+    wire(clone);
+    var r = clone.querySelector(".range");
+    if (r) r.value = parseFloat((src.style.getPropertyValue("--pos") || "50").replace("%", ""));
+    title.textContent = src.dataset.title || "";
+    scrollY = window.scrollY;
+    document.body.classList.add("locked");
+    lb.classList.add("open");
+    document.getElementById("lb-close").focus();
+  }
+
+  function close() {
+    lb.classList.remove("open");
+    stage.innerHTML = "";
+    document.body.classList.remove("locked");
+    window.scrollTo(0, scrollY);
+  }
+
+  document.querySelectorAll(".expand").forEach(function (btn) {
+    btn.addEventListener("click", function (ev) {
+      ev.preventDefault(); ev.stopPropagation();
+      open(btn.closest(".compare"));
+    });
+  });
+  document.getElementById("lb-close").addEventListener("click", close);
+  lb.addEventListener("click", function (ev) { if (ev.target === lb || ev.target === stage) close(); });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && lb.classList.contains("open")) close();
+  });
+})();
+</script>
+</body>
+</html>
