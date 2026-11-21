@@ -66,10 +66,23 @@ SCENES = [
 ]
 
 
-def load_source(fn):
-    """Load a source still as an (H, W, 3) float array of Rec.709 display code."""
+def load_source(fn, width=1600):
+    """Load a source still as an (H, W, 3) float array of Rec.709 display code.
+
+    The stills keep their own aspect ratio (16:9 for scenes 01-07, 2.38:1 for
+    scene 08) and are only resampled to `width`; nothing is cropped, so the
+    composition of every BEFORE/AFTER pair is the source composition.
+    """
     im = Image.open(os.path.join(SRC, fn)).convert('RGB')
+    if im.width != width:
+        im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
     return np.asarray(im, dtype=np.float64) / 255.0
+
+
+def plate_for(slug, width=1600):
+    """Deterministic simulated Apple Log 2 plate for a scene slug."""
+    fn = dict((s[0], s[1]) for s in SCENES)[slug]
+    return simulate_apple_log2(load_source(fn, width))
 
 
 def simulate_apple_log2(code, exposure_stops=0.0):

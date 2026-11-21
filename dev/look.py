@@ -254,7 +254,10 @@ def apply_lightness(L, params=None):
     # the contrast build is compensated with a small, purely multiplicative drop
     # (multiplicative, not a pedestal, so deep shadows are not lifted or
     # flattened by it).
-    out = out * p['level']
+    # The level trim is faded out as the signal approaches white, so a real
+    # specular still renders as 1.0 instead of being capped at 0.974 (which
+    # would make sun-in-frame shots look grey rather than blown).
+    out = out * p['level'] + (1.0 - p['level']) * smoothstep(0.75, 1.0, L) * L
     return np.clip(out, 0.0, 1.0)
 
 
@@ -271,7 +274,7 @@ def _warm_gate(b, params):
     return 1.0 - smoothstep(0.0, params['warm_b_sat'], np.asarray(b, dtype=np.float64))
 
 
-def gamut_fit_oklab(lab, iters=22, floor=0.0):
+def gamut_fit_oklab(lab, iters=30, floor=0.0):
     """Bring an OkLab colour inside Rec.709 at CONSTANT lightness and hue.
 
     Chroma is scaled down by bisection until every linear Rec.709 channel is
