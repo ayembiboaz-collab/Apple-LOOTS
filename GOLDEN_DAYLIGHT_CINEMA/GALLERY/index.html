@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0c">
+<title>Golden Daylight Cinema — Apple Log 2 LUT for iPhone 17 Pro</title>
+<meta name="description" content="A premium cinematic LUT for Apple Log 2 / Apple Wide Gamut on iPhone 17 Pro, converting to Rec.709 SDR gamma 2.4 with warm, dimensional midday colour.">
+<style>
+  :root{
+    --ink:#0b0b0c; --ink-2:#121214; --ink-3:#191a1d; --line:rgba(255,255,255,.09);
+    --txt:#f2efe9; --dim:#a09c95; --dimmer:#6f6b65;
+    --accent:#e2b96e; --accent-2:#c98f4e;
+    --pad:clamp(16px,4.5vw,52px);
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--ink); color:var(--txt);
+    font:400 16px/1.6 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  img{max-width:100%;display:block}
+  a{color:var(--accent)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+
+  /* ---------- hero ---------- */
+  header.hero{
+    position:relative; min-height:78svh; display:flex; align-items:flex-end;
+    padding:calc(var(--pad) * 2.2) 0 var(--pad); overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  header.hero::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(120% 80% at 78% 8%, rgba(226,185,110,.20), transparent 60%),
+      radial-gradient(90% 70% at 10% 90%, rgba(60,92,140,.18), transparent 65%),
+      linear-gradient(180deg,#0b0b0c 0%,#101012 55%,#0b0b0c 100%);
+  }
+  header.hero .wrap{position:relative;width:100%}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 1.1rem; font-weight:600;
+  }
+  h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400; font-size:clamp(2.4rem,9vw,5.4rem); line-height:.98;
+    letter-spacing:-.02em; margin:0 0 1.1rem;
+  }
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{max-width:52ch;color:var(--dim);font-size:clamp(1rem,2.6vw,1.16rem);margin:0 0 2rem}
+  .specs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem}
+  .chip{
+    font-size:.72rem; letter-spacing:.06em; padding:.42rem .8rem; border-radius:999px;
+    border:1px solid var(--line); color:var(--dim); background:rgba(255,255,255,.02);
+    white-space:nowrap;
+  }
+  .cta{display:flex;flex-wrap:wrap;gap:.8rem}
+  .btn{
+    display:inline-flex;align-items:center;gap:.6rem;min-height:52px;padding:0 1.5rem;
+    border-radius:999px;font-weight:650;font-size:.95rem;text-decoration:none;
+    transition:transform .18s ease, background .18s ease, border-color .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:linear-gradient(180deg,#f0cd8c,#d9a961);color:#221a0d;border:1px solid #f0cd8c}
+  .btn-ghost{border:1px solid var(--line);color:var(--txt);background:rgba(255,255,255,.03)}
+  @media(hover:hover){.btn:hover{transform:translateY(-1px)}}
+
+  /* ---------- sections ---------- */
+  section{padding:calc(var(--pad) * 1.6) 0}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem}
+  h2{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400;font-size:clamp(1.5rem,4.6vw,2.2rem);margin:0;letter-spacing:-.01em;
+  }
+  .sec-head p{margin:0;color:var(--dimmer);font-size:.86rem}
+
+  /* ---------- look description ---------- */
+  .look{display:grid;gap:1.4rem;grid-template-columns:1fr}
+  @media(min-width:860px){.look{grid-template-columns:1.15fr 1fr;gap:2.6rem}}
+  .look p{color:var(--dim);margin:0 0 1rem;max-width:60ch}
+  .look strong{color:var(--txt);font-weight:600}
+  .rules{list-style:none;margin:0;padding:0;display:grid;gap:.85rem}
+  .rules li{
+    display:grid;grid-template-columns:auto 1fr;gap:.85rem;align-items:start;
+    padding:.9rem 1rem;border:1px solid var(--line);border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.008));
+    font-size:.9rem;color:var(--dim);
+  }
+  .rules b{display:block;color:var(--txt);font-size:.82rem;letter-spacing:.06em;
+    text-transform:uppercase;margin-bottom:.15rem;font-weight:650}
+  .dot{width:9px;height:9px;border-radius:50%;margin-top:.42rem;background:var(--accent);flex:none}
+  .dot.b{background:#6d97d6}.dot.g{background:#7fae6a}.dot.w{background:#e8e2d6}
+
+  /* ---------- comparison cards ---------- */
+  .grid{display:grid;gap:clamp(1.2rem,3vw,2rem);grid-template-columns:1fr}
+  @media(min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+  .card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--ink-2)}
+  .cmp{position:relative;aspect-ratio:1408/768;overflow:hidden;touch-action:pan-y;
+       cursor:ew-resize;user-select:none;-webkit-user-select:none;background:#000}
+  .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+           -webkit-user-drag:none;user-select:none;pointer-events:none}
+  .cmp .after{clip-path:inset(0 0 0 50%)}
+  .cmp .divider{
+    position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;
+    background:rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none;
+  }
+  .cmp .handle{
+    position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;
+    border-radius:50%;background:rgba(20,20,22,.86);border:1.5px solid rgba(255,255,255,.9);
+    display:grid;place-items:center;pointer-events:none;backdrop-filter:blur(6px);
+  }
+  .cmp .handle svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;
+                   stroke-linecap:round;stroke-linejoin:round}
+  .tag{
+    position:absolute;top:10px;font-size:.62rem;letter-spacing:.16em;font-weight:700;
+    padding:.3rem .58rem;border-radius:6px;background:rgba(10,10,11,.72);
+    color:#f4f1ea;backdrop-filter:blur(5px);pointer-events:none;
+  }
+  .tag.l{left:10px}.tag.r{right:10px;color:var(--accent)}
+  .card .meta{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+              padding:.9rem 1rem;border-top:1px solid var(--line)}
+  .card .meta h3{margin:0;font-size:.92rem;font-weight:600;letter-spacing:.01em}
+  .card .meta span{font-size:.7rem;color:var(--dimmer);letter-spacing:.08em;white-space:nowrap}
+  .expand{
+    border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--dim);
+    border-radius:9px;min-height:36px;padding:0 .7rem;font-size:.72rem;font-weight:600;
+    letter-spacing:.06em;cursor:pointer;flex:none;
+  }
+  .expand:active{background:rgba(255,255,255,.1)}
+  .hint{color:var(--dimmer);font-size:.78rem;margin:.9rem 0 0;text-align:center}
+
+  /* ---------- contact sheet ---------- */
+  .sheet{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#000}
+  .sheet button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+
+  /* ---------- lightbox ---------- */
+  .lb{
+    position:fixed;inset:0;z-index:100;background:rgba(6,6,7,.985);
+    display:none;flex-direction:column;overscroll-behavior:contain;
+  }
+  .lb[open]{display:flex}
+  .lb-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:calc(env(safe-area-inset-top) + 10px) var(--pad) 10px;flex:none;
+  }
+  .lb-title{font-size:.82rem;color:var(--dim);letter-spacing:.04em;overflow:hidden;
+            text-overflow:ellipsis;white-space:nowrap}
+  .lb-close{
+    flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+    background:rgba(255,255,255,.06);color:#fff;font-size:1.15rem;line-height:1;cursor:pointer;
+  }
+  .lb-body{flex:1;min-height:0;display:grid;place-items:center;padding:0 var(--pad);overflow:hidden}
+  .lb-body img{max-width:100%;max-height:100%;object-fit:contain}
+  .lb-nav{
+    display:flex;align-items:center;justify-content:center;gap:.6rem;flex:none;
+    padding:12px var(--pad) calc(env(safe-area-inset-bottom) + 14px);flex-wrap:wrap;
+  }
+  .lb-nav button{
+    min-height:44px;min-width:44px;padding:0 1rem;border-radius:10px;
+    border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--txt);
+    font-size:.8rem;font-weight:600;cursor:pointer;
+  }
+  .lb-nav button[aria-pressed="true"]{background:var(--accent);color:#221a0d;border-color:var(--accent)}
+  .lb-nav button:disabled{opacity:.32}
+  .lb-slider{display:flex;align-items:center;gap:.7rem;flex:1 1 220px;min-width:180px;
+             padding:0 .4rem}
+  .lb-slider input{flex:1;accent-color:var(--accent);height:28px}
+  .lb-slider span{font-size:.68rem;color:var(--dimmer);letter-spacing:.08em;white-space:nowrap}
+
+  /* ---------- compatibility / install ---------- */
+  .split{display:grid;gap:1.2rem;grid-template-columns:1fr}
+  @media(min-width:820px){.split{grid-template-columns:1fr 1fr;gap:2.2rem}}
+  .panel{border:1px solid var(--line);border-radius:16px;padding:1.3rem 1.35rem;
+         background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.006))}
+  .panel h3{margin:0 0 .7rem;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+            color:var(--accent);font-weight:700}
+  .panel p,.panel li{color:var(--dim);font-size:.9rem}
+  .panel ul,.panel ol{margin:0;padding-left:1.15rem;display:grid;gap:.45rem}
+  .panel code{background:rgba(255,255,255,.07);padding:.1rem .35rem;border-radius:5px;
+              font-size:.84em;color:#f0e6d2}
+  .warn{border-color:rgba(226,185,110,.36);background:linear-gradient(180deg,rgba(226,185,110,.09),rgba(226,185,110,.02))}
+  .warn h3{color:#f0cd8c}
+  .warn p{color:#d9cfbe}
+
+  table.checks{width:100%;border-collapse:collapse;font-size:.84rem}
+  table.checks td{padding:.5rem .3rem;border-bottom:1px solid var(--line);color:var(--dim);
+                  vertical-align:top}
+  table.checks td:first-child{color:var(--txt);padding-right:.8rem}
+  table.checks .ok{color:#93c98a;white-space:nowrap;font-weight:600}
+
+  footer{border-top:1px solid var(--line);padding:calc(var(--pad)*1.2) 0 calc(var(--pad)*1.6);
+         color:var(--dimmer);font-size:.78rem}
+  footer a{color:var(--dim)}
+  .quiet{color:var(--dimmer)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Apple Log 2 · iPhone 17 Pro</p>
+    <h1>Golden Daylight<br><em>Cinema</em></h1>
+    <p class="lede">
+      One LUT. Harsh midday becomes warm, dimensional and expensive-looking —
+      honeyed sunlight, deep but detailed shadows, clean blue sky and believable
+      skin. Built to decode Apple Log 2 in Apple Wide Gamut and land directly on
+      Rec.709 SDR gamma&nbsp;2.4.
+    </p>
+    <div class="specs">
+      <span class="chip">33 × 33 × 33 .cube</span>
+      <span class="chip">Apple Log 2 → Rec.709</span>
+      <span class="chip">Gamma 2.4</span>
+      <span class="chip">Standalone — no conversion LUT</span>
+      <span class="chip">Single look</span>
+    </div>
+    <div class="cta">
+      <a class="btn btn-primary" id="dl-lut" href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube" download>
+        Download the .cube
+      </a>
+      <a class="btn btn-ghost" href="#comparisons">See the eight scenes</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ---------------------------------------------------------------- the look -->
+<section id="look" class="wrap">
+  <div class="sec-head">
+    <h2>The look</h2>
+    <p>Designed against measurement, not a slider preset</p>
+  </div>
+  <div class="look">
+    <div>
+      <p>
+        Midday footage rarely fails because it is too dark. It fails because the
+        light is <strong>flat, hard and characterless</strong> — bright surfaces
+        crowd the top of the range, shade goes muddy, and the sky turns to a cyan
+        wash. This LUT reshapes the tonal response so the highlights keep their
+        texture, the shadows keep their detail, and the two separate cleanly.
+      </p>
+      <p>
+        Warmth is the point, but a global warm filter is not. Honey is applied
+        <strong>in proportion to the colour already present</strong>, so sunlit
+        stone, sand, timber and skin pick it up while a neutral grey card, a white
+        shirt and a cloud edge stay exactly neutral. That is the difference between
+        a grade and an orange overlay.
+      </p>
+      <p>
+        The same discipline protects the things that usually break:
+        <strong>sky stays blue</strong> rather than drifting turquoise,
+        <strong>foliage goes slightly olive</strong> instead of radioactive
+        yellow-green, and <strong>skin is left to be skin</strong> — no smoothing,
+        no beauty processing, no red shift in deeper tones.
+      </p>
+      <p class="quiet" style="font-size:.84rem">
+        Because it is a tonal and chroma reshape rather than a heavy tint, it also
+        sits correctly on genuine golden-hour footage without doubling the warmth.
+      </p>
+    </div>
+    <ul class="rules">
+      <li><span class="dot"></span><span><b>Golden sunlight</b>Honey and faint amber in sunlit surfaces and midtones; whites pulled back to neutral so there is no yellow cast.</span></li>
+      <li><span class="dot"></span><span><b>Contrast</b>Rich midtones, deep shadows that still move, highlights that roll off instead of clipping flat.</span></li>
+      <li><span class="dot w"></span><span><b>Whites</b>Neutral above ~90% lightness. A grey card measures grey (spread 4&times;10<sup>-8</sup> at the LUT nodes).</span></li>
+      <li><span class="dot b"></span><span><b>Skies</b>Rich natural blue, cyan controlled toward blue, clouds neutral. No turquoise, no artificially darkened sky.</span></li>
+      <li><span class="dot g"></span><span><b>Greenery</b>Natural greens, pushed a touch warm and olive, chroma restrained so foliage never goes acid.</span></li>
+      <li><span class="dot"></span><span><b>Skin &amp; architecture</b>Subtly warm skin across light, medium and deep tones; warm stone and concrete with detail in the shadow recesses.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ comparisons -->
+<section id="comparisons" class="wrap">
+  <div class="sec-head">
+    <h2>Eight scenes</h2>
+    <p>Drag the divider — same frame, same exposure</p>
+  </div>
+  <div class="grid" id="cmp-grid"><!-- built by script --></div>
+  <p class="hint">
+    BEFORE is the plain Apple Log 2 → Rec.709 conversion with no creative grade.
+    AFTER is the same frame pushed through the delivered
+    <code>GOLDEN_DAYLIGHT_CINEMA.cube</code>.
+  </p>
+</section>
+
+<!-- ----------------------------------------------------------- contact sheet -->
+<section id="contact-sheet" class="wrap">
+  <div class="sec-head">
+    <h2>Contact sheet</h2>
+    <p>All eight comparisons on one page</p>
+  </div>
+  <div class="sheet">
+    <button type="button" id="sheet-btn" aria-label="Open the contact sheet full screen">
+      <img src="img/contact_sheet.jpg" alt="Contact sheet: eight before and after comparisons" loading="lazy" width="1400" height="1462">
+    </button>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ compatibility -->
+<section id="compatibility" class="wrap">
+  <div class="sec-head">
+    <h2>Compatibility &amp; install</h2>
+    <p>Read this before you shoot</p>
+  </div>
+  <div class="split">
+    <div class="panel">
+      <h3>The technical contract</h3>
+      <ul>
+        <li><strong>Input:</strong> Apple Log 2, Apple Wide Gamut</li>
+        <li><strong>Output:</strong> Rec.709 SDR, gamma 2.4</li>
+        <li><strong>Format:</strong> 33&times;33&times;33 3D LUT, <code>.cube</code>, domain 0–1</li>
+        <li><strong>Standalone:</strong> it decodes the log curve and converts the gamut itself — do not add a second conversion LUT</li>
+        <li>Apply it <em>directly</em> to the log clip</li>
+      </ul>
+      <p style="margin-top:.9rem">
+        <strong>Camera:</strong> recorded on iPhone 17 Pro / 17 Pro Max with
+        Blackmagic Camera for iOS. Apple Log 2 is Apple's wider-gamut log format
+        for the 17 Pro generation. Older iPhones record the original Apple Log,
+        which uses BT.2020 primaries — this file is not the right decode for that.
+      </p>
+    </div>
+    <div class="panel">
+      <h3>Shooting &amp; applying it</h3>
+      <ol>
+        <li>In Blackmagic Camera, choose <strong>Apple Log 2</strong> for the codec/colour space and shoot ProRes or HEVC Log.</li>
+        <li>Expose for the highlights — keep texture in the brightest sunlit surfaces. <em>A LUT cannot recover clipped highlights.</em></li>
+        <li>Load the <code>.cube</code> as a monitor LUT in the camera app to judge the look on set.</li>
+        <li>In post, apply it as an input/LUT node on the log footage, then trim exposure and white balance around it.</li>
+      </ol>
+      <p style="margin-top:.9rem" class="quiet">
+        The look is deliberately quiet in the shadows: if you want a brighter
+        overall image, lift the clip <em>before</em> the LUT.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------------- validation -->
+<section id="validation" class="wrap">
+  <div class="sec-head">
+    <h2>Validation</h2>
+    <p>Measured on the file you are downloading</p>
+  </div>
+  <div class="split">
+    <div class="panel">
+      <h3>What was tested</h3>
+      <table class="checks">
+        <tr><td>33&sup3; dimensions, syntax, 35,937 rows</td><td class="ok">pass</td></tr>
+        <tr><td>No NaN / Inf, all values in range</td><td class="ok">pass</td></tr>
+        <tr><td>Apple Log curve vs Apple's published anchors</td><td class="ok">pass</td></tr>
+        <tr><td>Apple Wide Gamut primaries vs OpenColorIO</td><td class="ok">pass</td></tr>
+        <tr><td>Rec.709 gamma 2.4 output encoding</td><td class="ok">pass</td></tr>
+        <tr><td>Neutral behaviour (no cast in greys)</td><td class="ok">pass</td></tr>
+        <tr><td>Clipping &amp; black behaviour</td><td class="ok">pass</td></tr>
+        <tr><td>Skin / sky / foliage across all eight scenes</td><td class="ok">pass</td></tr>
+        <tr><td>Nine calibrated skin tones</td><td class="ok">pass</td></tr>
+        <tr><td>Simulated exposure −2 … +2 EV</td><td class="ok">pass</td></tr>
+        <tr><td>AFTER images reproduce this exact file</td><td class="ok">pass</td></tr>
+        <tr><td>Banding / tonal smoothness vs plain conversion</td><td class="ok">pass</td></tr>
+      </table>
+    </div>
+    <div class="panel warn">
+      <h3>Honest limitations</h3>
+      <p>
+        <strong>This was not tested on a physical iPhone.</strong> No iPhone 17 Pro
+        or Blackmagic Camera hardware was available here. The Apple Log 2 decode is
+        implemented from Apple's published specification and cross-checked against
+        an independent reference, but on-device behaviour and the camera app's own
+        LUT slot were not exercised.
+      </p>
+      <p>
+        <strong>The footage is simulated, not iPhone sensor data.</strong> The eight
+        plates are AI-generated photorealistic images, converted to Apple Log 2 /
+        Apple Wide Gamut by a documented, reversible simulation. They exercise the
+        transform honestly — the LUT sees genuine log values — but they are not a
+        substitute for real recordings.
+      </p>
+      <p>
+        <strong>A LUT cannot recover clipped highlights.</strong> Anything already
+        at 100% stays white. Deep shadow detail that was not recorded cannot be
+        invented either; the toe is lifted, not restored.
+      </p>
+      <p class="quiet" style="font-size:.82rem">
+        Full method, sources and every measured number:
+        <a href="../VALIDATION_REPORT.txt">VALIDATION_REPORT.txt</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- -------------------------------------------------------------------- files -->
+<section id="files" class="wrap">
+  <div class="sec-head">
+    <h2>Files</h2>
+    <p>Download in the browser, then open in Files / Blackmagic Camera</p>
+  </div>
+  <div class="split">
+    <div class="panel">
+      <h3>In this gallery</h3>
+      <ul>
+        <li><a href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube" download>GOLDEN_DAYLIGHT_CINEMA.cube</a> — the LUT</li>
+        <li><a href="../CONTACT_SHEET/GOLDEN_DAYLIGHT_CINEMA_CONTACT_SHEET.png">Contact sheet (PNG)</a></li>
+        <li><a href="../VALIDATION/reference_chart.png">Reference chart (PNG)</a></li>
+        <li><a href="../README.txt">README.txt</a> — installation and usage</li>
+        <li><a href="../VALIDATION_REPORT.txt">VALIDATION_REPORT.txt</a></li>
+        <li><a href="../PREVIEWS/">All before / after PNGs</a></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Getting it onto the phone</h3>
+      <p>
+        In iOS Safari, tap the download link and confirm <em>Download</em>. The file
+        lands in <strong>Files &rsaquo; Downloads</strong>. From Blackmagic Camera,
+        load the LUT from the Files app. If your browser opens the .cube as text
+        instead of downloading it, use the GitHub link on the project page instead —
+        GitHub serves it with a download disposition.
+      </p>
+      <p class="quiet" style="font-size:.82rem">
+        The in-app preview is sandboxed in an iframe; some browsers block downloads
+        from embedded frames. That is a preview limitation, not a file problem.
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    GOLDEN DAYLIGHT CINEMA · Apple Log 2 → Rec.709 SDR gamma 2.4 · 33³ .cube<br>
+    Source plates are AI-generated stand-ins for iPhone footage; the LUT application
+    is real. Apple Log and Apple Wide Gamut are Apple Inc. specifications.
+  </p>
+</footer>
+
+<!-- --------------------------------------------------------------- lightbox --->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Full screen comparison">
+  <div class="lb-bar">
+    <div class="lb-title" id="lb-title">Scene</div>
+    <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="lb-body" id="lb-body"></div>
+  <div class="lb-nav">
+    <button id="lb-prev" aria-label="Previous scene">&#8592;</button>
+    <div class="lb-slider" id="lb-slider-wrap">
+      <span>BEFORE</span>
+      <input type="range" min="0" max="100" value="50" id="lb-range" aria-label="Compare before and after">
+      <span>AFTER</span>
+    </div>
+    <button id="lb-toggle" aria-pressed="false" aria-label="Toggle between before and after">Before / After</button>
+    <button id="lb-next" aria-label="Next scene">&#8594;</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SCENES = [
+    ["scene01","Harsh Midday City","Bright buildings, blue sky, hard architectural shadows",1408,768],
+    ["scene02","Midday Portrait","Direct overhead sun, visible skin texture",1408,768],
+    ["scene03","Mediterranean Street","Whitewashed stone, blue shutters, deep alley shade",1408,768],
+    ["scene04","Bright Beach Daylight","Pale sand, surf and bright cumulus",1408,768],
+    ["scene05","Landscape: Greenery &amp; Mountains","Mixed greens, haze on the far ridges",1408,768],
+    ["scene06","Golden-Hour Landscape","Already-warm light — must not double the warmth",1408,768],
+    ["scene07","Modern Architecture","Board-formed concrete, deep shadow recesses",1408,768],
+    ["scene08","Outdoor Travel","People and buildings, sun and open shade",1408,768]
+  ];
+
+  var grid = document.getElementById("cmp-grid");
+
+  /* ---------- build the comparison cards ---------- */
+  SCENES.forEach(function(s, i){
+    var id = s[0], title = s[1], note = s[2], w = s[3], h = s[4];
+    var card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="cmp" role="slider" tabindex="0" aria-label="'+title+' before and after comparison" '+
+           'aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">' +
+        '<img class="before" src="img/'+id+'_BEFORE.jpg" alt="'+title+' — plain Apple Log 2 to Rec.709 conversion" '+
+             'width="'+w+'" height="'+h+'" loading="'+(i<2?'eager':'lazy')+'" decoding="async">' +
+        '<img class="after" src="img/'+id+'_AFTER.jpg" alt="'+title+' — with GOLDEN DAYLIGHT CINEMA applied" '+
+             'width="'+w+'" height="'+h+'" loading="'+(i<2?'eager':'lazy')+'" decoding="async">' +
+        '<span class="tag l">BEFORE</span><span class="tag r">AFTER</span>' +
+        '<div class="divider"></div>' +
+        '<div class="handle"><svg viewBox="0 0 24 24"><path d="M9 6 4 12l5 6M15 6l5 6-5 6"/></svg></div>' +
+      '</div>' +
+      '<div class="meta"><h3>'+title+'</h3>' +
+        '<button class="expand" type="button">EXPAND</button></div>';
+    grid.appendChild(card);
+
+    var cmp = card.querySelector(".cmp");
+    var after = card.querySelector(".after");
+    var divider = card.querySelector(".divider");
+    var handle = card.querySelector(".handle");
+    var pct = 50;
+
+    function setP(v){
+      pct = Math.max(0, Math.min(100, v));
+      after.style.clipPath = "inset(0 0 0 " + pct + "%)";
+      divider.style.left = pct + "%";
+      handle.style.left = pct + "%";
+      cmp.setAttribute("aria-valuenow", Math.round(pct));
+    }
+
+    function fromEvent(e){
+      var r = cmp.getBoundingClientRect();
+      var x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+      setP(x / r.width * 100);
+    }
+
+    var dragging = false;
+    cmp.addEventListener("pointerdown", function(e){
+      dragging = true;
+      cmp.setPointerCapture && cmp.setPointerCapture(e.pointerId);
+      fromEvent(e);
+    });
+    cmp.addEventListener("pointermove", function(e){ if (dragging) fromEvent(e); });
+    cmp.addEventListener("pointerup", function(){ dragging = false; });
+    cmp.addEventListener("pointercancel", function(){ dragging = false; });
+    cmp.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft"){ setP(pct - 4); e.preventDefault(); }
+      if (e.key === "ArrowRight"){ setP(pct + 4); e.preventDefault(); }
+    });
+
+    function openLb(e){ if (e) e.stopPropagation(); openLightbox(i); }
+    card.querySelector(".expand").addEventListener("click", openLb);
+    cmp.addEventListener("dblclick", openLb);
+    setP(50);
+  });
+
+  /* ---------- lightbox ---------- */
+  var lb = document.getElementById("lb");
+  var lbBody = document.getElementById("lb-body");
+  var lbTitle = document.getElementById("lb-title");
+  var lbRange = document.getElementById("lb-range");
+  var lbToggle = document.getElementById("lb-toggle");
+  var lbPrev = document.getElementById("lb-prev");
+  var lbNext = document.getElementById("lb-next");
+  var cur = 0, mode = "compare";   /* compare | before | after */
+  var lastFocus = null;
+
+  function render(){
+    var id = SCENES[cur][0], title = SCENES[cur][1];
+    lbTitle.textContent = title + "  ·  " + (cur + 1) + " / " + SCENES.length;
+    var html;
+    if (mode === "compare"){
+      html = '<div style="position:relative;width:100%;height:100%;display:grid;place-items:center">' +
+             '<div style="position:relative;max-width:100%;max-height:100%;aspect-ratio:1408/768">' +
+             '<img src="img/'+id+'_BEFORE.jpg" alt="'+title+' before" style="max-height:100%;width:100%;object-fit:contain">' +
+             '<img id="lb-after" src="img/'+id+'_AFTER.jpg" alt="'+title+' after" ' +
+                'style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;clip-path:inset(0 0 0 '+lbRange.value+'%)">' +
+             '</div></div>';
+    } else {
+      html = '<img src="img/'+id+'_'+(mode === "before" ? "BEFORE" : "AFTER")+'.jpg" alt="'+title+' '+mode+'">';
+    }
+    lbBody.innerHTML = html;
+    document.getElementById("lb-slider-wrap").style.display = (mode === "compare") ? "" : "none";
+    lbToggle.setAttribute("aria-pressed", mode !== "compare");
+    lbPrev.disabled = cur === 0;
+    lbNext.disabled = cur === SCENES.length - 1;
+  }
+
+  function openLightbox(i){
+    lastFocus = document.activeElement;
+    cur = i; mode = "compare"; lbRange.value = 50;
+    lb.setAttribute("open","");
+    document.body.style.overflow = "hidden";
+    render();
+    document.getElementById("lb-close").focus();
+  }
+
+  function closeLightbox(){
+    lb.removeAttribute("open");
+    document.body.style.overflow = "";
+    lbBody.innerHTML = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  lbRange.addEventListener("input", function(){
+    var a = document.getElementById("lb-after");
+    if (a) a.style.clipPath = "inset(0 0 0 " + lbRange.value + "%)";
+  });
+  lbToggle.addEventListener("click", function(){
+    mode = (mode === "compare") ? "before" : (mode === "before" ? "after" : "compare");
+    render();
+  });
+  lbPrev.addEventListener("click", function(){ if (cur > 0){ cur--; render(); } });
+  lbNext.addEventListener("click", function(){ if (cur < SCENES.length - 1){ cur++; render(); } });
+  document.getElementById("lb-close").addEventListener("click", closeLightbox);
+  document.getElementById("sheet-btn").addEventListener("click", function(){
+    openSheet();
+  });
+
+  function openSheet(){
+    lastFocus = document.activeElement;
+    lb.setAttribute("open","");
+    document.body.style.overflow = "hidden";
+    lbTitle.textContent = "Contact sheet";
+    lbBody.innerHTML = '<a href="img/contact_sheet.jpg" target="_blank" rel="noopener" ' +
+      'style="display:grid;place-items:center;width:100%;height:100%;overflow:auto">' +
+      '<img src="img/contact_sheet.jpg" alt="Contact sheet" style="max-width:100%;height:auto"></a>';
+    document.getElementById("lb-slider-wrap").style.display = "none";
+    lbToggle.setAttribute("aria-pressed","true");
+    lbPrev.disabled = lbNext.disabled = true;
+  }
+
+  document.addEventListener("keydown", function(e){
+    if (!lb.hasAttribute("open")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft" && mode === "compare"){ lbRange.value = Math.max(0, +lbRange.value - 4); lbRange.dispatchEvent(new Event("input")); }
+    if (e.key === "ArrowRight" && mode === "compare"){ lbRange.value = Math.min(100, +lbRange.value + 4); lbRange.dispatchEvent(new Event("input")); }
+  });
+
+  /* iOS-style swipe between scenes in the lightbox */
+  (function(){
+    var x0 = null, y0 = null;
+    lbBody.addEventListener("touchstart", function(e){
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, {passive:true});
+    lbBody.addEventListener("touchend", function(e){
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6 && mode !== "compare"){
+        if (dx < 0 && cur < SCENES.length - 1){ cur++; render(); }
+        if (dx > 0 && cur > 0){ cur--; render(); }
+      }
+      x0 = y0 = null;
+    }, {passive:true});
+  })();
+})();
+</script>
+</body>
+</html>

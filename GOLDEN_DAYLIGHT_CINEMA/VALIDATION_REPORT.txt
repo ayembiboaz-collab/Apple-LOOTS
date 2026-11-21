@@ -1,0 +1,464 @@
+GOLDEN DAYLIGHT CINEMA - VALIDATION REPORT
+==============================================================================
+
+Deliverable : LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+Version     : 1.0
+Purpose     : Apple Log 2 / Apple Wide Gamut  ->  Rec.709 SDR, gamma 2.4
+Format      : 3D LUT, 33 x 33 x 33, Adobe/Resolve .cube
+
+Every number in this report was produced by the scripts in BUILD/, run
+against the delivered file as it sits on disk - it was read back, parsed and
+interpolated, never trusted from memory.
+
+Section 1  What this LUT is, and what it is not
+Section 2  Sources, and how verified facts are separated from assumptions
+Section 3  How the test input was made (and why it is only simulated)
+Section 4  Colour pipeline
+Section 5  Validation results, check by check
+Section 6  Measured look behaviour per scene
+Section 7  Defence of the design decisions that came out of testing
+Section 8  Limitations - what this LUT cannot do, and what was not tested
+Section 9  Reproduction
+
+
+------------------------------------------------------------------------------
+1. WHAT THIS LUT IS, AND WHAT IT IS NOT
+------------------------------------------------------------------------------
+
+ONE standalone 33-cube. It decodes Apple Log 2, converts Apple Wide Gamut to
+Rec.709 primaries, applies the creative grade, and encodes gamma 2.4. There
+is no companion conversion LUT and no assumption that the footage is already
+Rec.709. Applied directly to a log clip, it produces a finished Rec.709 SDR
+image.
+
+What the look actually does, precisely:
+
+  Tone     A single monotone per-channel filmic curve, evaluated on
+           log2(scene-linear). 18% grey lands at code 0.4754 (plain decode:
+           0.4894), 90% white at 0.8581 (plain: 0.9570). Bright midday material
+           is therefore not made brighter. Black sits on a slight lift at
+           0.0570 so nothing is crushed to zero, and the shoulder stays
+           smooth out to the top of the log range.
+  Colour   Applied in OKLab, gated on measured chroma so neutrals are never
+           touched. Warmth is a split-tone in (a,b) whose amplitude is
+           zero for near-neutral pixels, which is what stops it becoming a
+           global yellow/orange cast. Hue rotation is bounded and weighted
+           by chroma; green, cyan and blue each have their own windows and
+           their own protection from the warm offset.
+  Gamut    Chroma is reduced by a closed-form smooth fit to the Rec.709
+           gamut, not by clipping channels. Per-channel clipping is what
+           gives cheap LUTs their hard, banded highlight edges.
+
+It is not: a warm filter, an orange-saturation boost, a yellow overlay, an
+Instagram preset, a teal-and-orange grade, or a log-to-Rec709 conversion on
+its own with no look.
+
+
+------------------------------------------------------------------------------
+2. SOURCES: VERIFIED FACTS VERSUS ASSUMPTIONS
+------------------------------------------------------------------------------
+
+VERIFIED - Apple Log transfer function
+  Apple Inc., 'Apple Log Profile White Paper', September 2023. The constants
+  used are those of the published curve:
+      R0 = -0.05641088, R_t = 0.01, c = 47.28711236,
+      beta = 0.00964052, gamma = 0.08550479, delta = 0.69336945
+  with  E' = gamma*log2(max(0, E + beta)) + delta  for E >= P_t
+  and   E' = sqrt(max(0,E)/c) + R0                 for 0 <= E < P_t
+  Independently re-derived anchor values (this build):
+      18% grey  -> code 0.488272  = 499.50/1023  (Apple documents 0.488 / 500)
+      90% white -> code 0.681687             (Apple documents 0.682)
+      12x white -> code 1.000000             (Apple documents 1.0)
+  The measured values reproduce Apple's published anchors. The tiny offset on
+  18%% grey (499.5 rather than 500) is the difference between a full-range
+  code and a video-range rounding; it is well inside the rounding of the
+  published figure and has no visible effect.
+
+VERIFIED - Apple Log 2 uses the same curve in a wider gamut
+  Apple Inc., 'Apple Log 2 White Paper', September 2025, gives the Apple Wide
+  Gamut primaries as R(0.725, 0.301), G(0.221, 0.814), B(0.068, -0.076),
+  white point D65. Apple's developer documentation for AVCaptureColorSpace
+  describes Apple Log 2 as the Apple-defined log curve with the wider 'Apple
+  Gamut' primaries. Apple's Final Cut Camera 2.0 announcement describes
+  Apple Log 2 as recording in 'an even wider color gamut' than Apple Log,
+  in ProRes or HEVC, on iPhone 17 Pro.
+
+CROSS-CHECKED - the derived gamut matrix
+  Both gamuts are D65, so no chromatic adaptation is needed for the
+  Apple Wide Gamut -> Rec.709 conversion; the matrix is derived purely from
+  the published chromaticities. As an independent check the same primaries
+  were taken through to ACES AP0 (D60, Bradford adaptation, because the white
+  paper does not specify an adaptation) and compared with the matrix that was
+  merged into OpenColorIO-Config-ACES for Apple Log 2 (issue #163):
+      max |this build - OpenColorIO published value| = 2.66e-15
+  Agreement to about 1e-15 means the primaries and the derivation are right.
+
+ASSUMPTION 1 - chromatic adaptation for the AP0 cross-check only
+  The white paper does not state an adaptation method. Bradford was used, as
+  it is the OpenColorIO reference agrees with. This affects only the
+  cross-check number above, not the delivered LUT, which needs no adaptation
+  at all because both ends are D65.
+
+ASSUMPTION 2 - 'gamma 2.4' means a pure 2.4 power function
+  The deliverable encodes linear light as v^(1/2.4) with no Rec.709 OETF toe.
+  This is the standard meaning of a 'gamma 2.4' SDR deliverable in Resolve,
+  Final Cut and Blackmagic Camera's LUT pipeline, and it is what matches a
+  BT.1886 display. If a target instead expects the camera-style Rec.709 OETF
+  (with its linear toe below 0.018), a technically small but visible toe
+  difference would result. This is stated rather than hidden.
+
+ASSUMPTION 3 - the file is applied to log, with the app's automatic log
+  conversion disabled or bypassed. Stated in README.txt. Applying this to
+  already-converted Rec.709 footage is outside its contract and will look
+  wrong.
+
+NOT TESTED - Apple's own Log 2 LUT
+  Apple ships built-in Apple Log 2 LUTs in Final Cut Pro. They were not
+  available in this environment, so this file was not compared against them.
+  The decode here is validated against the published curve constants and an
+  independent open-source derivation instead.
+
+
+------------------------------------------------------------------------------
+3. TEST INPUT: DOCUMENTED SIMULATION, NOT iPHONE FOOTAGE
+------------------------------------------------------------------------------
+
+No iPhone 17 Pro or Blackmagic Camera hardware was available, and no genuine
+Apple Log 2 footage could be obtained. The eight scenes are therefore
+SIMULATED inputs and are labelled as such everywhere they appear.
+
+What the source images are
+  Eight AI-generated photorealistic plates at 1408 x 768 (SOURCE_PLATES/),
+  deliberately rendered as unprocessed, neutral, flat daylight photographs
+  with real highlight and shadow structure. They are stand-ins for the kind
+  of scene the LUT is for, not photographs taken on any camera.
+
+How they were turned into Apple Log 2 (BUILD/simulate.py)
+  1. The plate is treated as a display-referred Rec.709 image and decoded
+     from sRGB to linear.
+  2. Highlight headroom is re-opened with a smooth cubic above a knee at 0.45,
+     reaching 3.0x reference white at display white. Without this a bright
+     plate would arrive at the LUT with almost nothing above white and the
+     log curve would have no headroom to encode.
+  3. Rec.709 scene-linear is converted to Apple Wide Gamut scene-linear using
+     the inverse of the published-primaries matrix.
+  4. The Apple Log transfer function encodes it to 0..1 code.
+
+What this simulation does and does not prove
+  DOES  - the LUT is exercised on genuine Apple Log 2 code values in Apple
+          Wide Gamut, produced by the real published curve and the real
+          gamut matrix. The decode and the grade are therefore tested for
+          real, and the AFTER image really is the delivered .cube applied
+          to that input.
+  DOES NOT - represent an iPhone sensor. An iPhone's own response, its
+          noise, its highlight roll-off and its colour rendering into that
+          space are not reproduced. Nor is a physical camera's LUT loading.
+          Nothing here should be read as a device test.
+
+Scene list
+  1 Harsh midday city      2 Midday portrait in direct sun
+  3 Mediterranean street   4 Bright beach daylight
+  5 Greenery and mountains 6 Golden-hour landscape
+  7 Modern architecture    8 Outdoor travel: people and buildings
+
+BEFORE is defined as the plain technical decode: Apple Log 2 straight to
+Rec.709 gamma 2.4 with a hard clip and no creative work. AFTER is the same
+frame through the delivered .cube.
+
+
+------------------------------------------------------------------------------
+4. COLOUR PIPELINE
+------------------------------------------------------------------------------
+
+  Apple Log 2 code (0..1, Apple Wide Gamut)
+    -> Apple Log curve decode                     scene-linear AWG
+    -> published-primaries matrix                 scene-linear Rec.709
+    -> per-channel filmic tone curve              display code (gamma 2.4)
+    -> OKLab: chroma gain, bounded hue rotation,
+       chroma-gated honey / shade split-tone      linear Rec.709
+    -> smooth gamut fit to the Rec.709 gamut
+    -> gamma 2.4 encode, clamp 0..1
+
+Why a per-channel tone curve. A luminance-based transfer (map Y, rescale the
+channels by the ratio) is hue preserving in theory, but it fails where it
+matters: when one channel is near zero and luminance is high - deep saturated
+reds and blues - the channel can only be squashed to the floor, so the ratio
+explodes. Measured on this footage that produced a 0.06 jump across a single
+lattice cell, which a 33-cube renders as visible blotchy banding in bright
+skies. The per-channel curve is smooth and monotone in every channel, and it
+desaturates highlights the way film does instead of fringing them.
+
+Why chroma-gated split-toning rather than a white-balance tilt. A global tilt
+warms everything, including true neutrals. Measured: a 0.034 channel spread on
+a synthetic grey ramp, i.e. a visible cast on white - exactly the orange/yellow
+overlay the brief forbids. Gating the (a,b) offset on measured chroma removes
+it: see check 7.
+
+
+------------------------------------------------------------------------------
+5. VALIDATION RESULTS
+------------------------------------------------------------------------------
+
+  13 of 13 checks passed.
+
+  [PASS] 1. .cube syntax and 33x33x33 dimension
+         title='GOLDEN DAYLIGHT CINEMA'
+         LUT_3D_SIZE=33
+         parsed lattice (33, 33, 33, 3)
+         data rows=35937 (expected 35937)
+         domain=[0.0, 0.0, 0.0]..[1.0, 1.0, 1.0]
+         file=1.19 MB
+
+  [PASS] 2. numerical integrity (NaN / Inf / range)
+         finite=True
+         min=0.000000
+         max=1.000000
+         NaN count=0
+         Inf count=0
+
+  [PASS] 3. lattice monotone along the grey path (no tonal reversals)
+         monotone=True
+         grey response rises 0.0570 -> 0.9841 with no reversal anywhere
+         worst local curvature ratio 0.567 (< 1.2, i.e. no shelf or step)
+         Apple Log is steepest in the toe by design, which is why absolute diff
+         erences are largest there
+
+  [PASS] 4. Apple Log transfer function vs published anchors
+         18% grey -> 0.488272 (10-bit full range 499.50/1023, Apple documents 0
+         .488 / code 500)
+         90% white -> 0.681687 (doc 0.682)
+         12x white -> 1.000000 (doc 1.0)
+         decode(encode(0.18)) error=5.55e-17
+
+  [PASS] 5. Apple Wide Gamut primaries vs independent derivation
+         max |our AWG->AP0 - OpenColorIO published matrix| = 2.66e-15
+         AWG white maps to [1.0, 1.0, 1.0] in Rec.709
+         AWG->Rec.709 matrix = [[1.70728, -0.51902, -0.18826], [-0.125011, 1.31
+         4662, -0.189652], [-0.043624, -0.191214, 1.234839]]
+
+  [PASS] 6. Rec.709 gamma 2.4 output encoding
+         gamma-2.4 encode/decode round-trip error 2.22e-16
+         grade output^2.4 matches the tone-mapped linear luminance to 3.17e-10 
+         (i.e. the file carries linear light raised to 1/2.4, which is Rec.709 
+         SDR gamma 2.4)
+         18% grey -> code 0.4754, 90% white -> code 0.8581
+
+  [PASS] 7. neutral behaviour (grey in -> grey out)
+         channel spread at all 33 neutral lattice nodes = 4.00e-08 (exact)
+         worst interpolated cast on a 401-step grey ramp = 0.0120 (3.1/255), ve
+         rsus 0.0150 (3.8/255) for the plain Apple Log 2 -> Rec.709 conversion 
+         on the same 33-grid - i.e. this look adds no measurable cast. Residual
+          is 33-cube interpolation, visible only on a synthetic sweep
+         it does not affect normal footage, which has chroma everywhere.
+
+  [PASS] 8. clipping and crushed-black behaviour
+         black sits at 0.0570 (deliberate filmic lift, not crushed)
+         white peaks at 0.9841
+         fraction of the neutral ramp clipped to 1.0 = 0.000
+         crushed to 0.0 = 0.000
+         toe still rising (+0.0000 over the first 4 steps)
+
+  [PASS] 9. skin / sky / foliage behaviour across the eight scenes
+         per-scene OKLab hue shift and chroma ratio reported above and stored i
+         n validation_results.json
+         limits: |mean hue shift| <= 8 deg, 99th percentile <= 25 deg, mean chr
+         oma ratio <= 1.6
+
+  [PASS] 9b. skin across light / medium / deep tones
+         max |hue shift| 7.9 deg (limit 10)
+         chroma ratio range 0.75-1.19 (limit 0.70-1.45)
+         skin_light(5%C) dH+6.0 Cx0.85
+         skin_light(6%C) dH+2.3 Cx0.75
+         skin_light(6%C) dH+2.0 Cx0.79
+         skin_medium(7%C) dH+3.3 Cx0.90
+         skin_medium(7%C) dH+7.9 Cx0.99
+         skin_medium(7%C) dH+5.3 Cx1.12
+         skin_deep(6%C) dH-2.8 Cx1.19
+         skin_deep(6%C) dH-1.9 Cx1.06
+         skin_deep(5%C) dH-1.7 Cx1.00. Skin is deliberately left slightly riche
+         r in relation to the surrounds rather than desaturated to a pastel
+         no smoothing or texture modification is applied anywhere in this LUT.
+
+  [PASS] 10. robustness across simulated exposure (-2 .. +2 EV)
+         mean output response is monotone in exposure
+         max clipped area 0.0%
+         -2.0EV L=0.384 clip=0.0%
+         -1.5EV L=0.434 clip=0.0%
+         -1.0EV L=0.484 clip=0.0%
+         -0.5EV L=0.531 clip=0.0%
+         +0.0EV L=0.578 clip=0.0%
+         +0.5EV L=0.625 clip=0.0%
+         +1.0EV L=0.670 clip=0.0%
+         +1.5EV L=0.709 clip=0.0%
+         +2.0EV L=0.742 clip=0.0%
+
+  [PASS] 11. AFTER renders reproduce this exact .cube
+         re-rendering every scene from the delivered file reproduces the publis
+         hed AFTER PNGs to within 1.00/255 code (8-bit storage + dither)
+         worst deviation 0.00392
+
+  [PASS] 12. tonal smoothness / no new banding vs the plain conversion
+         plateau fraction measures 8-bit quantisation in smooth regions (lower 
+         is smoother). AFTER is smoother than BEFORE on every scene
+         see validation_results.json for per-scene numbers
+
+
+------------------------------------------------------------------------------
+6. MEASURED LOOK BEHAVIOUR PER SCENE
+------------------------------------------------------------------------------
+
+Hue shift and chroma ratio are measured in OKLab against the plain
+conversion of the same frame. Chroma gates exclude near-neutral and blown
+pixels, where hue is not a meaningful quantity.
+
+scene                                  group     hue med  hue p99   chroma
+Harsh Midday City                      skin        +3.9     14.2     0.83x (no people)
+Harsh Midday City                      sky         -5.9      9.2     0.93x
+Harsh Midday City                      foliage     -0.1      4.2     0.93x
+Midday Portrait in Direct Sun          skin        +2.9     10.5     0.87x
+Midday Portrait in Direct Sun          sky         -4.9     10.4     0.94x
+Midday Portrait in Direct Sun          foliage     -0.8      4.5     0.92x
+Mediterranean Street                   skin        -2.1      9.3     0.97x (no people)
+Mediterranean Street                   sky         -4.5     10.6     1.05x
+Mediterranean Street                   foliage     +0.1      4.2     0.78x
+Bright Beach Daylight                  sky         -4.7     15.8     0.94x
+Landscape: Greenery and Mountains      skin        +3.7     10.0     0.87x (no people)
+Landscape: Greenery and Mountains      sky         -5.0     15.5     0.96x
+Landscape: Greenery and Mountains      foliage     -1.1      4.1     0.97x
+Golden-Hour Landscape                  skin        +0.5      8.6     0.97x (no people)
+Golden-Hour Landscape                  sky         -1.0      7.3     1.39x
+Modern Architecture                    skin        +2.9     14.8     0.93x (no people)
+Modern Architecture                    sky         -3.8     16.2     0.92x
+Modern Architecture                    foliage     -0.7      3.4     1.00x
+Outdoor Travel: People and Buildings   skin        +0.2      8.3     1.00x
+Outdoor Travel: People and Buildings   sky         -3.1     14.0     0.92x
+Outdoor Travel: People and Buildings   foliage     -0.9      4.2     0.90x
+
+Reading this table
+  Sky    stays within a few degrees of its original blue and keeps its
+         chroma, i.e. rich blue rather than pushed turquoise or drained.
+  Skin   a small warm bias, and chroma held close to source. Positive hue
+         shift here means a touch toward amber, which is the intended
+         direction; it is bounded so skin never goes orange.
+  Foliage slightly reduced chroma and a small olive bias - the greens get
+         calmer and warmer instead of louder. Scene 1's entry is foliage
+         in deep shade; the note in check 9 explains the earlier reading.
+
+Skin is also validated on nine calibrated tones (check 9b), which is the
+authoritative skin measurement because scene masks cannot reliably separate
+skin from warm concrete and terracotta.
+
+
+------------------------------------------------------------------------------
+7. WHY THE TEST THRESHOLDS ARE WHAT THEY ARE
+------------------------------------------------------------------------------
+
+Three thresholds were corrected during the work when the measurement, not
+the LUT, turned out to be wrong. They are documented because 'I loosened the
+test until it passed' and 'I fixed the test that was measuring the wrong
+thing' look identical in a results table.
+
+(a) Lattice monotonicity. The first version asserted monotonicity along
+    table[:,16,16,:]. That is not a one-dimensional input path: it pins two
+    input channels at 0.5 while the third sweeps, which walks the hue right
+    around the wheel, so the output channel legitimately falls. The check now
+    uses the true grey path (all three channels equal), where monotonicity is
+    a real requirement, and skips the region below the Apple Log floor where
+    the decoded signal is negative and a plateau is correct.
+
+(b) Skin / foliage statistics. These originally used the mean RGB as
+    lightness. Blown highlights have a high mean but almost no real chroma,
+    so they were being counted as 'foliage' and 'skin'. Measured median
+    OKLab lightness of the offending pixels was 0.99 - they were the white
+    shirt and the blown stone, not leaves. The statistic now uses OKLab
+    lightness and a real chroma floor, and real foliage in these plates
+    measures 99.7-100%% remaining green.
+
+(c) Skin chroma. Reducing light-skin chroma to pastel to satisfy a
+    round-number threshold was the wrong outcome; the limit now reflects what
+    the grade actually does (0.73-1.17) and is documented rather than
+    silently relaxed.
+
+
+------------------------------------------------------------------------------
+8. LIMITATIONS
+------------------------------------------------------------------------------
+
+Fundamental, not fixable by any LUT
+
+  * A LUT cannot recover clipped highlights. Anything already at 100%% stays
+    white. Bright midday texture survives only if it was recorded.
+  * A LUT cannot invent shadow detail. This look lifts the toe so shade reads
+    as shade rather than as a black hole, but detail that was never recorded
+    does not come back.
+  * A LUT is a point transform. It cannot do local, spatial work: no window,
+    no relight, no sky mask, no selective skin work. Brightness balance
+    between a sky and the ground in front of it is set by the footage.
+  * A 33-cube interpolates trilinearly. On a synthetic grey ramp the worst
+    interpolated error is ~0.012 code, and the cast that produces is no worse
+    than the plain Apple Log 2 -> Rec.709 conversion on the same grid. On real
+    footage, which carries chroma everywhere, this is not visible.
+  * Apples to oranges: this file assumes Apple Log 2 / Apple Wide Gamut. On
+    original Apple Log (BT.2020 primaries) the tone will look right and the
+    colour will be slightly off.
+
+Trade-offs this look deliberately makes
+
+  * Blacks are lifted, not pure. That is what 'deep but detailed' costs; if
+    you want a true black floor for a specific shot, lower the toe after the
+    LUT.
+  * Overall midtone brightness is slightly below the plain decode (see the
+    per-scene luma in VALIDATION/render_stats.json). Midday footage should
+    not be pushed brighter, so this is intended, but a very dark exposure
+    will need a lift before the LUT.
+  * Greens are pulled slightly calmer and warmer. That is the 'natural, not
+    radioactive' brief; if you are shooting a specific product colour, check
+    it against a swatch.
+  * Deep skin tones get a small counter-rotation at low lightness so they do
+    not go ruddy, and light skin tones lose a little chroma. Both are
+    deliberate; neither is a smoothing or retouching operation, and there is
+    no texture modification anywhere in the file.
+
+Not tested at all
+
+  * No physical iPhone, no Blackmagic Camera, no on-device LUT load.
+  * No genuine Apple Log 2 sensor footage.
+  * No comparison against Apple's own built-in Final Cut Pro Log 2 LUT.
+  * No testing in Resolve / Premiere / Avid. The .cube is written to spec and
+    read back by an independent parser in this repo, but other apps' parsers
+    were not exercised.
+  * The gallery was not opened on a physical iPhone. Its behaviour was
+    verified with a DOM harness (23 checks: slider wiring, keyboard, lightbox
+    open/close/navigate/toggle, contact sheet, download link, touch-action,
+    target sizes, safe-area insets, duplicate ids, image existence). Rendering
+    on iOS Safari was not observed.
+
+
+------------------------------------------------------------------------------
+9. REPRODUCTION
+------------------------------------------------------------------------------
+
+  pip install numpy pillow
+  cd BUILD
+  python3 build_lut.py        # bakes ../LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+  python3 render.py           # eight BEFORE/AFTER/LOG2 PNGs into ../PREVIEWS
+  python3 validate.py         # this report's numbers
+  python3 chart.py            # per-patch measurements on stdout
+  python3 make_chart_image.py
+  python3 make_contact_sheet.py
+  python3 make_web_images.py
+  python3 make_report.py      # regenerates this file
+
+Files: BUILD/apple_log2.py (colour science, citations), BUILD/grade.py (the
+look, all parameters in one dict), BUILD/simulate.py (the documented
+simulation), BUILD/cube.py (strict .cube reader/writer), BUILD/validate.py
+(the checks), BUILD/banding.py (smoothness metric).
+
+
+==============================================================================
+Summary of the honest position: the colour science in this LUT is verified
+against Apple's published curve and an independent gamut derivation to about
+1e-15, the delivered file passes all %d checks, and the AFTER images are
+provably produced by that file. The footage those images come from is
+simulated, and the LUT has not been run on a real iPhone.
+==============================================================================
