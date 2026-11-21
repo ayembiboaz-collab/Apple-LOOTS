@@ -1,0 +1,114 @@
+[
+  {
+    "num": "01",
+    "slug": "harsh-midday-city",
+    "title": "Harsh midday city",
+    "source": "01_city_midday.jpg",
+    "native": [
+      500,
+      667
+    ],
+    "preview": [
+      1000,
+      1334
+    ]
+  },
+  {
+    "num": "02",
+    "slug": "midday-portrait",
+    "title": "Midday portrait in direct sun",
+    "source": "02_portrait_midday.jpg",
+    "native": [
+      500,
+      750
+    ],
+    "preview": [
+      1000,
+      1500
+    ]
+  },
+  {
+    "num": "03",
+    "slug": "mediterranean-street",
+    "title": "Mediterranean street",
+    "source": "03_mediterranean_street.jpg",
+    "native": [
+      1125,
+      750
+    ],
+    "preview": [
+      1600,
+      1067
+    ]
+  },
+  {
+    "num": "04",
+    "slug": "beach-daylight",
+    "title": "Bright beach daylight",
+    "source": "04_beach_daylight.jpg",
+    "native": [
+      1260,
+      707
+    ],
+    "preview": [
+      1600,
+      898
+    ]
+  },
+  {
+    "num": "05",
+    "slug": "landscape-greenery",
+    "title": "Landscape with greenery and mountains",
+    "source": "05_landscape_greenery.jpg",
+    "native": [
+      500,
+      333
+    ],
+    "preview": [
+      1000,
+      666
+    ]
+  },
+  {
+    "num": "06",
+    "slug": "golden-hour",
+    "title": "Golden-hour landscape",
+    "source": "06_golden_hour.jpg",
+    "native": [
+      500,
+      333
+    ],
+    "preview": [
+      1000,
+      666
+    ]
+  },
+  {
+    "num": "07",
+    "slug": "modern-architecture",
+    "title": "Modern architecture",
+    "source": "07_modern_architecture.jpg",
+    "native": [
+      1125,
+      750
+    ],
+    "preview": [
+      1600,
+      1067
+    ]
+  },
+  {
+    "num": "08",
+    "slug": "travel-street",
+    "title": "Outdoor travel scene with people",
+    "source": "08_travel_street.jpg",
+    "native": [
+      500,
+      333
+    ],
+    "preview": [
+      1000,
+      666
+    ]
+  }
+]

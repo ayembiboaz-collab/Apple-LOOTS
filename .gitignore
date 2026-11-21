@@ -1,0 +1,4 @@
+image-search/
+__pycache__/
+*.pyc
+.tmp/
