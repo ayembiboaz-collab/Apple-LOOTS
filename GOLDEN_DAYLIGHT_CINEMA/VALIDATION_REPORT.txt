@@ -1,7 +1,7 @@
 ================================================================================
 GOLDEN DAYLIGHT CINEMA — TECHNICAL VALIDATION REPORT
 ================================================================================
-Generated (UTC): 2026-11-21 01:07:18 UTC
+Generated (UTC): 2026-11-21 01:11:14 UTC
 LUT File       : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
 Target Camera  : iPhone 17 Pro / Blackmagic Camera for iOS (Apple Log 2)
 Output Target  : Rec.709 SDR, Display Gamma 2.4
