@@ -1,0 +1,11 @@
+# Reproducible intermediates — regenerate with scripts/simulate_log2.py
+work/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
