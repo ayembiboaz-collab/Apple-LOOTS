@@ -43,10 +43,10 @@ PARAMS = dict(
         (0.0300, 0.1880),
         (0.0600, 0.2620),
         (0.1000, 0.3380),
-        (0.1800, 0.4660),   # 18% grey  -> 119/255, rich midtone (plain decode 0.489)
-        (0.3000, 0.5780),
-        (0.5000, 0.7020),
-        (0.9000, 0.8680),   # 90% white -> 221/255, texture retained
+        (0.1800, 0.4790),   # 18% grey  -> 122/255, rich midtone (plain decode 0.489)
+        (0.3000, 0.5900),
+        (0.5000, 0.7100),
+        (0.9000, 0.8720),   # 90% white -> 222/255, texture retained
         (2.0000, 0.9130),
         (4.0000, 0.9500),
         (8.0000, 0.9740),
@@ -68,18 +68,18 @@ PARAMS = dict(
     highlight_perchannel_end=4.0,
 
     # ---- chroma / saturation ----
-    sat_gain=1.105,
-    vibrance=0.22,           # extra gain for low-chroma pixels
+    sat_gain=1.055,
+    vibrance=0.24,           # extra gain for low-chroma pixels
     high_chroma_taper=0.24,  # pull very saturated pixels back (no neon)
-    white_chroma_taper=0.62,
-    shadow_chroma_taper=0.16,
+    white_chroma_taper=0.30,
+    shadow_chroma_taper=0.12,
     chroma_comp=0.14,        # re-add chroma lost to the tonal curve
 
     # ---- hue shaping (degrees of OKLab hue rotation; bounded) ----
-    hue_warm_to_amber=2.2,   # orange/amber/warm neutrals -> honeyside
-    hue_green_to_olive=-3.4, # greens -> warmer olive, away from teal
-    hue_blue_to_violet=2.0,  # control cyan, keep sky blue (away from turquoise)
-    hue_cyan_to_blue=-2.6,
+    hue_warm_to_amber=1.6,   # orange/amber/warm neutrals -> honey side
+    hue_green_to_olive=-2.0, # greens -> warmer olive, away from teal
+    hue_blue_to_violet=1.5,  # control cyan, keep sky blue (away from turquoise)
+    hue_cyan_to_blue=-1.8,
     hue_skin_guard=-2.8,     # counter-rotate skin back from yellow
     skin_window=(20.0, 80.0),
     green_window=(105.0, 180.0),
@@ -87,24 +87,29 @@ PARAMS = dict(
     blue_window=(233.0, 315.0),
     warm_window=(315.0, 55.0),   # wraps through 0
 
-    # ---- honey / shade tilt, as linear-light channel gain ----
-    # Hue-independent, therefore smooth: no mottling in cloud edges or hazy sky.
-    tone_warm_L=(0.20, 0.58, 0.93),   # ramp in / peak / out (no cast at white)
-    warm_tilt=(0.085, 0.008, -0.075),  # R +, G +tiny, B - : honey, not yellow
-    tone_cool_L=(0.00, 0.30),
-    cool_tilt=(-0.020, -0.012, 0.055),  # toe: R/G down, B up -> clean cool shade
+    # ---- honey / shade split-tone ----
+    # Chroma-gated (see creative()): neutrals cannot receive it, so a grey card
+    # stays grey and there is no global yellow cast.
+    tone_warm_ab=(0.0022, 0.0104),
+    tone_warm_L=(0.20, 0.56, 0.94),   # ramp in / peak / out (clean at white)
+    tint_chroma_lo=0.010,
+    tint_chroma_hi=0.080,   # only clearly chromatic pixels take the tint
+    tone_cool_ab=(-0.0009, -0.0044),
+    tone_cool_L=(0.00, 0.34),
 
     # ---- per-group chroma multipliers (on top of sat_gain) ----
-    skin_sat_mult=0.94,
-    blue_sat_gain=1.12,
+    skin_sat_mult=0.90,
+    skin_guard_deep=3.6,     # deep skin sits redder after the per-channel curve
+    blue_sat_gain=1.10,
     cyan_sat_gain=0.88,
-    green_sat_gain=0.96,
+    green_sat_gain=0.92,
     neutral_guard=0.35,      # how much tint near-neutrals may take
 
     # ---- how strongly each group may be tinted honey (1 = full) ----
     skin_warm_mult=0.45,
     blue_warm_mult=0.10,
-    green_warm_mult=0.22,
+    green_warm_mult=0.04,   # foliage must never be tinted yellow: it goes olive
+                            # via a small hue rotation only, so it stays green
 )
 
 # OKLab matrices (Ottosson 2021)
@@ -309,43 +314,61 @@ def creative(code, p=PARAMS):
 
     # ---- 1. chroma gain ---------------------------------------------------
     gain = np.full_like(C, p["sat_gain"])
-    gain *= 1.0 + p["vibrance"] * (1.0 - smoothstep(0.0, 0.15, C))
+    # Vibrance lifts *dull* pixels, but it must not undo the deliberate
+    # desaturation of foliage or skin: on greens it was re-inflating exactly the
+    # colours we pull back, doubling their effective hue rotation (measured
+    # -15 deg of foliage hue shift). Those groups are excluded here.
+    vib_w = (1.0 - smoothstep(0.0, 0.15, C)) * (1.0 - w_green * cw) * (1.0 - w_skin * cw)
+    gain *= 1.0 + p["vibrance"] * vib_w
     gain *= 1.0 - p["high_chroma_taper"] * smoothstep(0.10, 0.26, C)
-    gain *= 1.0 - p["white_chroma_taper"] * smoothstep(0.84, 1.0, Lc)
-    gain *= 1.0 - p["shadow_chroma_taper"] * (1.0 - smoothstep(0.02, 0.28, Lc))
+    gain *= 1.0 - p["white_chroma_taper"] * smoothstep(0.90, 1.0, Lc) * (1.0 - w_skin * cw)
+    gain *= 1.0 - p["shadow_chroma_taper"] * (1.0 - smoothstep(0.02, 0.30, Lc))
     gain *= 1.0 + (p["blue_sat_gain"] - 1.0) * w_blue * cw
     gain *= 1.0 + (p["cyan_sat_gain"] - 1.0) * w_cyan * cw
     gain *= 1.0 + (p["green_sat_gain"] - 1.0) * w_green * cw
     gain *= 1.0 + (p["skin_sat_mult"] - 1.0) * w_skin * cw
 
     # ---- 2. bounded hue rotation (only where there is visible chroma) -----
+    # Rotation is measured in degrees of OKLab hue, so its visual effect is a
+    # fraction of the pixel's own chroma. Applying it at full strength to an
+    # already-desaturated pixel is meaningless, so weight by chroma as well.
+    rot_w = cw * smoothstep(0.02, 0.09, C)
     rot = np.zeros_like(C)
-    rot += p["hue_warm_to_amber"] * hue_window(H, *p["warm_window"]) * cw
-    rot += p["hue_green_to_olive"] * w_green * cw
-    rot += p["hue_cyan_to_blue"] * w_cyan * cw
-    rot += p["hue_blue_to_violet"] * w_blue * cw
-    rot += p["hue_skin_guard"] * w_skin * cw
+    rot += p["hue_warm_to_amber"] * hue_window(H, *p["warm_window"]) * rot_w
+    rot += p["hue_green_to_olive"] * w_green * rot_w
+    rot += p["hue_cyan_to_blue"] * w_cyan * rot_w
+    rot += p["hue_blue_to_violet"] * w_blue * rot_w
+    rot += p["hue_skin_guard"] * w_skin * rot_w
+    # the per-channel curve pushes dark, saturated skin toward red; counter it
+    # where it happens (low L) so melanin-rich skin stays golden, not ruddy
+    rot += p["skin_guard_deep"] * w_skin * rot_w * (1.0 - smoothstep(0.30, 0.62, Lc))
     H1 = H + rot
     C2 = C * gain
     Hr = np.radians(H1)
     lab2 = np.stack([Lc, C2 * np.cos(Hr), C2 * np.sin(Hr)], axis=-1)
 
-    # ---- 3. warmth as a smooth white-balance tilt in linear light ---------
-    # Weight: peaks in the upper midtones, fades to zero at white (no yellow
-    # cast) and is negligible in deep shade (separation is preserved).
-    w = bump(Lc, *p["tone_warm_L"])
-    # protect colour families that must not go amber
-    w = w * (1.0 - (1.0 - p["skin_warm_mult"]) * w_skin * cw)
-    w = w * (1.0 - (1.0 - p["blue_warm_mult"]) * w_blue * cw)
-    w = w * (1.0 - (1.0 - p["green_warm_mult"]) * w_green * cw)
-
+    # ---- 3. honey split-tone: an (a,b) offset, gated on chroma presence ----
+    # Warmth is added *in proportion to existing chroma*, never as a global
+    # white-balance tilt. A global tilt warms everything, including true
+    # neutrals - which is precisely the "yellow overlay" this look must not be,
+    # and which measurably put a 0.034 cast into a grey ramp. Chroma-gated
+    # split-toning warms sunlit stone, skin, wood and sand (all of which carry
+    # chroma) while leaving a neutral grey card exactly neutral.
     out = np.maximum(oklab_to_linear(gamut_fit(lab2)), 0.0)
-    wr, wg, wb = p["warm_tilt"]
-    out = out * (1.0 + w[..., None] * np.array([wr, wg, wb]))
 
-    # faint cool tilt in the toe: separates sun from shade without lifting black
-    cool = 1.0 - smoothstep(*p["tone_cool_L"], Lc)
-    out = out * (1.0 + cool[..., None] * np.array(p["cool_tilt"]))
+    g_chroma = smoothstep(p["tint_chroma_lo"], p["tint_chroma_hi"], C)
+    warm = bump(Lc, *p["tone_warm_L"]) * g_chroma
+    warm = warm * (1.0 - (1.0 - p["skin_warm_mult"]) * w_skin * cw)
+    warm = warm * (1.0 - (1.0 - p["green_warm_mult"]) * w_green * cw)
+    warm = warm * (1.0 - (1.0 - p["blue_warm_mult"]) * w_blue * cw)
+    cool = (1.0 - smoothstep(*p["tone_cool_L"], Lc)) * g_chroma
+
+    a2 = lab2[..., 1] + p["tone_warm_ab"][0] * warm + p["tone_cool_ab"][0] * cool
+    b2 = lab2[..., 2] + p["tone_warm_ab"][1] * warm + p["tone_cool_ab"][1] * cool
+    lab2 = np.stack([lab2[..., 0], a2, b2], axis=-1)
+
+    out_lin = np.maximum(oklab_to_linear(gamut_fit(lab2)), 0.0)
+    out = out_lin
 
     return np.clip(rec709_gamma24_encode(np.maximum(out, 0.0)), 0.0, 1.0)
 

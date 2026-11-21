@@ -15,16 +15,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.11021455242077197,
-      "lut_vs_analytic_mean_abs": 0.0029903885227808777,
+      "lut_vs_analytic_max_abs": 0.06783412246493742,
+      "lut_vs_analytic_mean_abs": 0.002977203246353178,
       "mean_luma_before": 0.4996411942661523,
-      "mean_luma_after": 0.4529376356225312,
+      "mean_luma_after": 0.45777288298178404,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9303783734721193,
+      "p99_luma_after": 0.9261952207214097,
       "clipped_fraction_before": 0.10203413529829546,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.035411179667771464,
-      "crushed_fraction_after": 3.66827454229798e-05
+      "crushed_fraction_after": 4.623875473484849e-06
     },
     {
       "id": "scene02",
@@ -34,16 +34,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.042407038641772477,
-      "lut_vs_analytic_mean_abs": 0.003041474097614187,
+      "lut_vs_analytic_max_abs": 0.027017128169556925,
+      "lut_vs_analytic_mean_abs": 0.003094266631859481,
       "mean_luma_before": 0.6683247882470236,
-      "mean_luma_after": 0.6152275544747541,
+      "mean_luma_after": 0.6260283927044433,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.933354840365602,
+      "p99_luma_after": 0.9196434494720689,
       "clipped_fraction_before": 0.10983214715514521,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.018779716106376264,
-      "crushed_fraction_after": 0.0001957440617108586
+      "crushed_fraction_after": 0.0
     },
     {
       "id": "scene03",
@@ -53,16 +53,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.1469629053568183,
-      "lut_vs_analytic_mean_abs": 0.0038415355829575326,
+      "lut_vs_analytic_max_abs": 0.09988422152112386,
+      "lut_vs_analytic_mean_abs": 0.003367858310464604,
       "mean_luma_before": 0.5514244142165042,
-      "mean_luma_after": 0.507417986131381,
+      "mean_luma_after": 0.5148155237193395,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9292246443450651,
+      "p99_luma_after": 0.9274146658837483,
       "clipped_fraction_before": 0.1984786216658775,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.07914841777146464,
-      "crushed_fraction_after": 0.0032237659801136365
+      "crushed_fraction_after": 0.000152587890625
     },
     {
       "id": "scene04",
@@ -72,16 +72,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.1344886120580525,
-      "lut_vs_analytic_mean_abs": 0.0054423489294358795,
+      "lut_vs_analytic_max_abs": 0.13150859357320802,
+      "lut_vs_analytic_mean_abs": 0.005659639709154484,
       "mean_luma_before": 0.7617542811134623,
-      "mean_luma_after": 0.7007969614663754,
+      "mean_luma_after": 0.7090934261332986,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9293529060520737,
+      "p99_luma_after": 0.9243783645646669,
       "clipped_fraction_before": 0.17711785827020202,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.0019383285984848485,
-      "crushed_fraction_after": 0.0013671258483270202
+      "crushed_fraction_after": 0.0001704668757891414
     },
     {
       "id": "scene05",
@@ -91,16 +91,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.08554469259462431,
-      "lut_vs_analytic_mean_abs": 0.002899469324172008,
+      "lut_vs_analytic_max_abs": 0.052021491207450136,
+      "lut_vs_analytic_mean_abs": 0.0028071069295174376,
       "mean_luma_before": 0.5919776553798164,
-      "mean_luma_after": 0.5326484453635577,
+      "mean_luma_after": 0.5437837105843677,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9105866960857287,
+      "p99_luma_after": 0.9112107725661257,
       "clipped_fraction_before": 0.25560444533222854,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.03779586637863005,
-      "crushed_fraction_after": 0.006109989050662879
+      "crushed_fraction_after": 0.0
     },
     {
       "id": "scene06",
@@ -110,16 +110,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.059733250565440876,
-      "lut_vs_analytic_mean_abs": 0.002270546374008394,
+      "lut_vs_analytic_max_abs": 0.021210653459483357,
+      "lut_vs_analytic_mean_abs": 0.0020574579433636905,
       "mean_luma_before": 0.4127314882400435,
-      "mean_luma_after": 0.3760519381092498,
+      "mean_luma_after": 0.3854354561726437,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9454511242937153,
+      "p99_luma_after": 0.9335567771161453,
       "clipped_fraction_before": 0.03909949100378788,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.04639257565893308,
-      "crushed_fraction_after": 0.0011365485913825758
+      "crushed_fraction_after": 0.0
     },
     {
       "id": "scene07",
@@ -129,16 +129,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.06824807443814015,
-      "lut_vs_analytic_mean_abs": 0.0037718885764823898,
+      "lut_vs_analytic_max_abs": 0.037732036980417494,
+      "lut_vs_analytic_mean_abs": 0.004277945069241419,
       "mean_luma_before": 0.582888737172984,
-      "mean_luma_after": 0.5290187786943497,
+      "mean_luma_after": 0.5348010012676433,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9370555847276684,
+      "p99_luma_after": 0.9307474725659951,
       "clipped_fraction_before": 0.17173566721906566,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.011196252071496212,
-      "crushed_fraction_after": 0.0017755681818181818
+      "crushed_fraction_after": 0.0
     },
     {
       "id": "scene08",
@@ -148,16 +148,16 @@
         768,
         1408
       ],
-      "lut_vs_analytic_max_abs": 0.12728143039848044,
-      "lut_vs_analytic_mean_abs": 0.003345664407591771,
+      "lut_vs_analytic_max_abs": 0.051373830818070676,
+      "lut_vs_analytic_mean_abs": 0.0033778446550530293,
       "mean_luma_before": 0.5212286195593377,
-      "mean_luma_after": 0.478581681804367,
+      "mean_luma_after": 0.48522740471237724,
       "p99_luma_before": 1.0,
-      "p99_luma_after": 0.9336846872746356,
+      "p99_luma_after": 0.9337900073953915,
       "clipped_fraction_before": 0.16602949662642044,
       "clipped_fraction_after": 0.0,
       "crushed_fraction_before": 0.10575512202099116,
-      "crushed_fraction_after": 0.0011069557883522727
+      "crushed_fraction_after": 0.0
     }
   ]
 }

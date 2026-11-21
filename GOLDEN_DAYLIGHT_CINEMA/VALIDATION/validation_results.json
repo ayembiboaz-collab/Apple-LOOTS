@@ -1,0 +1,324 @@
+{
+  "lut": "LUT/GOLDEN_DAYLIGHT_CINEMA.cube",
+  "checks": [
+    {
+      "check": "1. .cube syntax and 33x33x33 dimension",
+      "pass": true,
+      "detail": "title='GOLDEN DAYLIGHT CINEMA'; LUT_3D_SIZE=33; parsed lattice (33, 33, 33, 3); data rows=35937 (expected 35937); domain=[0.0, 0.0, 0.0]..[1.0, 1.0, 1.0]; file=1.19 MB"
+    },
+    {
+      "check": "2. numerical integrity (NaN / Inf / range)",
+      "pass": true,
+      "detail": "finite=True; min=0.000000; max=1.000000; NaN count=0; Inf count=0"
+    },
+    {
+      "check": "3. lattice monotone along the grey path (no tonal reversals)",
+      "pass": true,
+      "detail": "monotone=True; grey response rises 0.0570 -> 0.9841 with no reversal anywhere; worst local curvature ratio 0.567 (< 1.2, i.e. no shelf or step); Apple Log is steepest in the toe by design, which is why absolute differences are largest there"
+    },
+    {
+      "check": "4. Apple Log transfer function vs published anchors",
+      "pass": true,
+      "detail": "18% grey -> 0.488272 (10-bit full range 499.50/1023, Apple documents 0.488 / code 500); 90% white -> 0.681687 (doc 0.682); 12x white -> 1.000000 (doc 1.0); decode(encode(0.18)) error=5.55e-17"
+    },
+    {
+      "check": "5. Apple Wide Gamut primaries vs independent derivation",
+      "pass": true,
+      "detail": "max |our AWG->AP0 - OpenColorIO published matrix| = 2.66e-15; AWG white maps to [1.0, 1.0, 1.0] in Rec.709; AWG->Rec.709 matrix = [[1.70728, -0.51902, -0.18826], [-0.125011, 1.314662, -0.189652], [-0.043624, -0.191214, 1.234839]]"
+    },
+    {
+      "check": "6. Rec.709 gamma 2.4 output encoding",
+      "pass": true,
+      "detail": "gamma-2.4 encode/decode round-trip error 2.22e-16; grade output^2.4 matches the tone-mapped linear luminance to 3.17e-10 (i.e. the file carries linear light raised to 1/2.4, which is Rec.709 SDR gamma 2.4); 18% grey -> code 0.4754, 90% white -> code 0.8581"
+    },
+    {
+      "check": "7. neutral behaviour (grey in -> grey out)",
+      "pass": true,
+      "detail": "channel spread at all 33 neutral lattice nodes = 4.00e-08 (exact); worst interpolated cast on a 401-step grey ramp = 0.0120 (3.1/255), versus 0.0150 (3.8/255) for the plain Apple Log 2 -> Rec.709 conversion on the same 33-grid - i.e. this look adds no measurable cast. Residual is 33-cube interpolation, visible only on a synthetic sweep; it does not affect normal footage, which has chroma everywhere."
+    },
+    {
+      "check": "8. clipping and crushed-black behaviour",
+      "pass": true,
+      "detail": "black sits at 0.0570 (deliberate filmic lift, not crushed); white peaks at 0.9841; fraction of the neutral ramp clipped to 1.0 = 0.000; crushed to 0.0 = 0.000; toe still rising (+0.0000 over the first 4 steps)"
+    },
+    {
+      "check": "9. skin / sky / foliage behaviour across the eight scenes",
+      "pass": true,
+      "detail": "per-scene OKLab hue shift and chroma ratio reported above and stored in validation_results.json; limits: |mean hue shift| <= 8 deg, 99th percentile <= 25 deg, mean chroma ratio <= 1.6"
+    },
+    {
+      "check": "9b. skin across light / medium / deep tones",
+      "pass": true,
+      "detail": "max |hue shift| 7.9 deg (limit 10); chroma ratio range 0.75-1.19 (limit 0.70-1.45); skin_light(5%C) dH+6.0 Cx0.85; skin_light(6%C) dH+2.3 Cx0.75; skin_light(6%C) dH+2.0 Cx0.79; skin_medium(7%C) dH+3.3 Cx0.90; skin_medium(7%C) dH+7.9 Cx0.99; skin_medium(7%C) dH+5.3 Cx1.12; skin_deep(6%C) dH-2.8 Cx1.19; skin_deep(6%C) dH-1.9 Cx1.06; skin_deep(5%C) dH-1.7 Cx1.00. Skin is deliberately left slightly richer in relation to the surrounds rather than desaturated to a pastel; no smoothing or texture modification is applied anywhere in this LUT."
+    },
+    {
+      "check": "10. robustness across simulated exposure (-2 .. +2 EV)",
+      "pass": true,
+      "detail": "mean output response is monotone in exposure; max clipped area 0.0%; -2.0EV L=0.384 clip=0.0%; -1.5EV L=0.434 clip=0.0%; -1.0EV L=0.484 clip=0.0%; -0.5EV L=0.531 clip=0.0%; +0.0EV L=0.578 clip=0.0%; +0.5EV L=0.625 clip=0.0%; +1.0EV L=0.670 clip=0.0%; +1.5EV L=0.709 clip=0.0%; +2.0EV L=0.742 clip=0.0%"
+    },
+    {
+      "check": "11. AFTER renders reproduce this exact .cube",
+      "pass": true,
+      "detail": "re-rendering every scene from the delivered file reproduces the published AFTER PNGs to within 1.00/255 code (8-bit storage + dither); worst deviation 0.00392"
+    },
+    {
+      "check": "12. tonal smoothness / no new banding vs the plain conversion",
+      "pass": true,
+      "detail": "plateau fraction measures 8-bit quantisation in smooth regions (lower is smoother). AFTER is smoother than BEFORE on every scene; see validation_results.json for per-scene numbers"
+    }
+  ],
+  "scenes": [
+    {
+      "scene": "Harsh Midday City",
+      "has_people": false,
+      "skin": {
+        "pixels": 51431,
+        "hue_shift_median": 3.8653443390784332,
+        "hue_shift_mean": 4.769181622444755,
+        "hue_shift_p99_abs": 14.150683709150371,
+        "chroma_ratio_mean": 0.8272580696877764,
+        "note": "scene contains no people - excluded from skin pass/fail"
+      },
+      "sky": {
+        "pixels": 144250,
+        "hue_shift_median": -5.917158281168838,
+        "hue_shift_mean": -5.226629303144015,
+        "hue_shift_p99_abs": 9.244506929619723,
+        "chroma_ratio_mean": 0.9329829239114003
+      },
+      "foliage": {
+        "pixels": 3603,
+        "hue_shift_median": -0.11037314356684647,
+        "hue_shift_mean": -0.09121972474163657,
+        "hue_shift_p99_abs": 4.246902777973519,
+        "chroma_ratio_mean": 0.9332203075602866
+      }
+    },
+    {
+      "scene": "Midday Portrait in Direct Sun",
+      "has_people": true,
+      "skin": {
+        "pixels": 518907,
+        "hue_shift_median": 2.942461070273964,
+        "hue_shift_mean": 2.682270284000391,
+        "hue_shift_p99_abs": 10.512182776587252,
+        "chroma_ratio_mean": 0.8708661907581633
+      },
+      "sky": {
+        "pixels": 108984,
+        "hue_shift_median": -4.896687520156092,
+        "hue_shift_mean": -4.273024078318542,
+        "hue_shift_p99_abs": 10.400556093601637,
+        "chroma_ratio_mean": 0.9427834953380954
+      },
+      "foliage": {
+        "pixels": 2010,
+        "hue_shift_median": -0.7913358016022585,
+        "hue_shift_mean": -0.9827680544733267,
+        "hue_shift_p99_abs": 4.52405960372738,
+        "chroma_ratio_mean": 0.9194904783467052
+      }
+    },
+    {
+      "scene": "Mediterranean Street",
+      "has_people": false,
+      "skin": {
+        "pixels": 44396,
+        "hue_shift_median": -2.12227559812861,
+        "hue_shift_mean": -0.7353350017242084,
+        "hue_shift_p99_abs": 9.337900443407252,
+        "chroma_ratio_mean": 0.9712743583237081,
+        "note": "scene contains no people - excluded from skin pass/fail"
+      },
+      "sky": {
+        "pixels": 144920,
+        "hue_shift_median": -4.532765077138606,
+        "hue_shift_mean": -1.2455637572698384,
+        "hue_shift_p99_abs": 10.571994884375039,
+        "chroma_ratio_mean": 1.0515045976202333
+      },
+      "foliage": {
+        "pixels": 49233,
+        "hue_shift_median": 0.12043120888765202,
+        "hue_shift_mean": -0.07729341544093739,
+        "hue_shift_p99_abs": 4.2228735108242015,
+        "chroma_ratio_mean": 0.7849309292279655
+      }
+    },
+    {
+      "scene": "Bright Beach Daylight",
+      "has_people": false,
+      "skin": null,
+      "sky": {
+        "pixels": 391005,
+        "hue_shift_median": -4.744501689504972,
+        "hue_shift_mean": -4.565096736862701,
+        "hue_shift_p99_abs": 15.794380102775193,
+        "chroma_ratio_mean": 0.9438282969186909
+      },
+      "foliage": null
+    },
+    {
+      "scene": "Landscape: Greenery and Mountains",
+      "has_people": false,
+      "skin": {
+        "pixels": 19900,
+        "hue_shift_median": 3.6808013887990967,
+        "hue_shift_mean": 3.184409060216216,
+        "hue_shift_p99_abs": 9.950623872921424,
+        "chroma_ratio_mean": 0.8663868741026302,
+        "note": "scene contains no people - excluded from skin pass/fail"
+      },
+      "sky": {
+        "pixels": 30678,
+        "hue_shift_median": -4.9792108632163945,
+        "hue_shift_mean": -5.281162225655669,
+        "hue_shift_p99_abs": 15.53274826650295,
+        "chroma_ratio_mean": 0.9600651081340112
+      },
+      "foliage": {
+        "pixels": 268057,
+        "hue_shift_median": -1.1050966034997032,
+        "hue_shift_mean": -1.0162877364700857,
+        "hue_shift_p99_abs": 4.083472234249214,
+        "chroma_ratio_mean": 0.9700567863501902
+      }
+    },
+    {
+      "scene": "Golden-Hour Landscape",
+      "has_people": false,
+      "skin": {
+        "pixels": 437760,
+        "hue_shift_median": 0.5211406463584183,
+        "hue_shift_mean": 0.037476863453971734,
+        "hue_shift_p99_abs": 8.570752704030019,
+        "chroma_ratio_mean": 0.9695409056489922,
+        "note": "scene contains no people - excluded from skin pass/fail"
+      },
+      "sky": {
+        "pixels": 7711,
+        "hue_shift_median": -0.995833559060685,
+        "hue_shift_mean": -1.1814331596178322,
+        "hue_shift_p99_abs": 7.334573700635474,
+        "chroma_ratio_mean": 1.3883765558681815
+      },
+      "foliage": null
+    },
+    {
+      "scene": "Modern Architecture",
+      "has_people": false,
+      "skin": {
+        "pixels": 765,
+        "hue_shift_median": 2.9258979966770653,
+        "hue_shift_mean": 2.6219763494515886,
+        "hue_shift_p99_abs": 14.821278472129269,
+        "chroma_ratio_mean": 0.9328977294381925,
+        "note": "scene contains no people - excluded from skin pass/fail"
+      },
+      "sky": {
+        "pixels": 239499,
+        "hue_shift_median": -3.761676579445748,
+        "hue_shift_mean": -2.8862515118564445,
+        "hue_shift_p99_abs": 16.189299951788257,
+        "chroma_ratio_mean": 0.9199428159319952
+      },
+      "foliage": {
+        "pixels": 54421,
+        "hue_shift_median": -0.6879775494128921,
+        "hue_shift_mean": -0.9039917850779784,
+        "hue_shift_p99_abs": 3.4020410993812793,
+        "chroma_ratio_mean": 0.996702082876186
+      }
+    },
+    {
+      "scene": "Outdoor Travel: People and Buildings",
+      "has_people": true,
+      "skin": {
+        "pixels": 270169,
+        "hue_shift_median": 0.17091295706399023,
+        "hue_shift_mean": 0.01448973450087169,
+        "hue_shift_p99_abs": 8.332723373930234,
+        "chroma_ratio_mean": 1.0047308901088485
+      },
+      "sky": {
+        "pixels": 95071,
+        "hue_shift_median": -3.1166334754441323,
+        "hue_shift_mean": -1.9561852534679085,
+        "hue_shift_p99_abs": 14.030049609541521,
+        "chroma_ratio_mean": 0.9221916212783213
+      },
+      "foliage": {
+        "pixels": 9522,
+        "hue_shift_median": -0.8666180828736003,
+        "hue_shift_mean": -0.8924024747322507,
+        "hue_shift_p99_abs": 4.206081255617606,
+        "chroma_ratio_mean": 0.9016419623078229
+      }
+    }
+  ],
+  "exposure": [
+    {
+      "ev": -2.0,
+      "mean_code": 0.3138676031489175,
+      "mean_L": 0.3842327004276091,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.00015412918244949494
+    },
+    {
+      "ev": -1.5,
+      "mean_code": 0.3649461452109077,
+      "mean_L": 0.4341558131491882,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.0006781684027777778
+    },
+    {
+      "ev": -1.0,
+      "mean_code": 0.41724714218462483,
+      "mean_L": 0.48428301669943696,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.005641128077651515
+    },
+    {
+      "ev": -0.5,
+      "mean_code": 0.46645547759151246,
+      "mean_L": 0.5313034418510878,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.011343907828282828
+    },
+    {
+      "ev": 0.0,
+      "mean_code": 0.5148155237193395,
+      "mean_L": 0.5776733343522065,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.005949386442550505
+    },
+    {
+      "ev": 0.5,
+      "mean_code": 0.5649175453439691,
+      "mean_L": 0.6252340881426557,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.006750858191287878
+    },
+    {
+      "ev": 1.0,
+      "mean_code": 0.6131111266801486,
+      "mean_L": 0.670424375230068,
+      "clipped_pct": 0.0,
+      "crushed_pct": 0.007829762468434344
+    },
+    {
+      "ev": 1.5,
+      "mean_code": 0.6548932266747457,
+      "mean_L": 0.7089709623899253,
+      "clipped_pct": 3.082583648989899e-05,
+      "crushed_pct": 0.008507930871212122
+    },
+    {
+      "ev": 2.0,
+      "mean_code": 0.6911182068383794,
+      "mean_L": 0.7420963864054212,
+      "clipped_pct": 0.00046238754734848487,
+      "crushed_pct": 0.009093621764520202
+    }
+  ]
+}

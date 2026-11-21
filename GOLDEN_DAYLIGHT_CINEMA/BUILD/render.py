@@ -61,30 +61,8 @@ def _dither(h, w, seed=0):
     return ((rng.random((h, w, 1)) + rng.random((h, w, 1)) - 1.0) / 255.0)
 
 
-def _write_png16(a16, path):
-    """Write a 16-bit-per-channel RGB PNG (pillow cannot do this directly)."""
-    import struct
-    import zlib
-    h, w, _ = a16.shape
-    raw = b"".join(b"\x00" + a16[y].astype(">u2").tobytes() for y in range(h))
-
-    def chunk(tag, data):
-        return (struct.pack(">I", len(data)) + tag + data +
-                struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF))
-
-    ihdr = struct.pack(">IIBBBBB", w, h, 16, 2, 0, 0, 0)
-    with open(path, "wb") as fh:
-        fh.write(b"\x89PNG\r\n\x1a\n")
-        fh.write(chunk(b"IHDR", ihdr))
-        fh.write(chunk(b"IDAT", zlib.compress(raw, 6)))
-        fh.write(chunk(b"IEND", b""))
-
-
-def to_png(arr, path, bit16=False, dither=True, seed=0):
+def to_png(arr, path, dither=True, seed=0):
     a = np.clip(arr, 0.0, 1.0)
-    if bit16:
-        _write_png16((a * 65535.0 + 0.5).astype(np.uint16), path)
-        return
     if dither:
         a = np.clip(a + _dither(a.shape[0], a.shape[1], seed), 0.0, 1.0)
     Image.fromarray((a * 255.0 + 0.5).astype(np.uint8)).save(
@@ -108,11 +86,11 @@ def main(only=None):
         after = apply_cube(log2, table, meta["domain_min"], meta["domain_max"])
 
         base = f"{sid}_{stem}"
-        # The simulated log plate is saved at 16 bit: a real Apple Log 2
-        # recording is 10-bit, so 8-bit would misrepresent (and visibly
-        # band) the steep log signal before it ever reaches the LUT.
-        to_png(log2, os.path.join(PREVIEWS, f"{base}_LOG2_SIMULATED_16bit.png"),
-               bit16=True)
+        # The simulated log plate is included so the input can be inspected.
+        # Dither is applied here for the same storage reason as below: 8-bit
+        # PNG of the steep log signal bands on its own even when the float
+        # data is smooth (measured: plateau 0.206 vs 0.133 on the source).
+        to_png(log2, os.path.join(PREVIEWS, f"{base}_LOG2_SIMULATED.png"), seed=7)
         to_png(before, os.path.join(PREVIEWS, f"{base}_BEFORE.png"))
         to_png(after,  os.path.join(PREVIEWS, f"{base}_AFTER.png"))
 
