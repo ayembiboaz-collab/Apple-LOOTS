@@ -1,0 +1,14 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Development scratch (regenerable, kept out of Git by design)
+dev/tune_cache/
+GOLDEN_DAYLIGHT_CINEMA/SCENES/*.npy
+dev/*.npy
+dev/*.json
+
+# The ZIP is committed on purpose (it is a deliverable), but never left in
+# a nested recursive copy of itself.
+GOLDEN_DAYLIGHT_CINEMA/~$*
