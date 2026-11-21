@@ -13,6 +13,5 @@ _research/
 
 # Local scratch
 *.tmp
-
-# ZIP is rebuilt by BUILD/package_zip.py; keep the delivered archive out of the
-# snapshot cap but verify it separately (see VALIDATION_REPORT.txt).
+GOLDEN_DAYLIGHT_CINEMA/BUILD/gallery_tests/node_modules/
+GOLDEN_DAYLIGHT_CINEMA/BUILD/gallery_tests/package*.json

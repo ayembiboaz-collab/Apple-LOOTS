@@ -22,8 +22,10 @@ cards.length === 8 ? ok("8 comparison cards built", `${cards.length}`)
 /* 2. every image referenced exists on disk */
 const imgs = [...doc.querySelectorAll("img")].map(i=>i.getAttribute("src"));
 const missing = imgs.filter(s=>{
-  const p = "/home/user/Apple-LOOTS/GOLDEN_DAYLIGHT_CINEMA/GALLERY/" + s.replace(/^\.\//,"");
-  return !fs.existsSync(p);
+  // this file lives in BUILD/gallery_tests/, the document in GALLERY/,
+  // so "img/x.jpg" resolves to ../../GALLERY/img/x.jpg
+  const clean = s.replace(/^\.\//, "");
+  return !fs.existsSync(new URL("../../GALLERY/" + clean, import.meta.url));
 });
 missing.length===0 ? ok("all <img> sources exist", `${imgs.length} checked`)
                    : bad("missing images", missing.join(", "));
@@ -86,7 +88,7 @@ window.document.dispatchEvent(new window.KeyboardEvent("keydown",{key:"Escape",b
 
 /* 7. download link resolves */
 const dl = doc.getElementById("dl-lut").getAttribute("href");
-fs.existsSync(new URL("../../LUT/", import.meta.url)+dl.split("/").pop())
+fs.existsSync(new URL("../../LUT/" + dl.split("/").pop(), import.meta.url))
   ? ok("download link points at the real .cube", dl) : bad("download link broken", dl);
 doc.getElementById("dl-lut").hasAttribute("download")
   ? ok("download attribute present") : bad("no download attribute");
