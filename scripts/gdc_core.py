@@ -178,10 +178,12 @@ class PCHIP:
 #     camera-manufacturer Rec.709 conversions;
 #   * highlights roll off along a long, smooth shoulder (no digital clip);
 #   * the per-channel ratio T(x)/x falls monotonically above mid grey, giving
-#     natural highlight desaturation without midtone colour inversions.
+#     natural highlight desaturation without midtone colour inversions;
+#   * a designed film black floor (code 0.012) and a grid-friendly toe keep the
+#     33^3 cube smooth around sensor black (see VALIDATION_REPORT.txt).
 TONE_STOPS = [-np.inf, -12, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
               1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
-TONE_CODE = [0.0, 0.003, 0.012, 0.025, 0.045, 0.070, 0.095, 0.130, 0.165,
+TONE_CODE = [0.012, 0.013, 0.016, 0.022, 0.033, 0.052, 0.080, 0.130, 0.165,
              0.210, 0.265, 0.330, 0.420, 0.570, 0.695, 0.775, 0.835, 0.878,
              0.908, 0.930, 0.946, 0.973, 0.990]
 TONE_X = [0.18 * (2.0 ** u) for u in TONE_STOPS]
