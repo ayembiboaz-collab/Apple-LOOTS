@@ -1,0 +1,1 @@
+These scripts belong to the earlier version merged into main and do not build the current Golden Daylight Cinema deliverables. They remain for history. For the current project use ../source/build.py, ../source/validate.py and ../source/package.py instead.

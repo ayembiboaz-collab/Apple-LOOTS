@@ -1,0 +1,11 @@
+LUT SHA256 ab34003a92a0673fe245148a1df1d1ee6ed886158cc11d9d0f38a4003c946297
+rows 35937 finite True range 0.0 1.0
+lattice channel values equal 0, 1 7962 24859 of 107811
+01 1280x853 mean before 0.5379 after 0.5084; after any-channel black 0.1942%, any-channel white 0.0000%
+02 1280x853 mean before 0.5897 after 0.5557; after any-channel black 1.3975%, any-channel white 0.0000%
+03 1280x853 mean before 0.3435 after 0.3275; after any-channel black 3.5819%, any-channel white 0.0000%
+04 1280x853 mean before 0.6469 after 0.6169; after any-channel black 0.0670%, any-channel white 0.0000%
+05 1280x853 mean before 0.5127 after 0.4845; after any-channel black 0.2427%, any-channel white 0.0000%
+06 1280x855 mean before 0.4188 after 0.3996; after any-channel black 0.0306%, any-channel white 0.0000%
+07 1280x853 mean before 0.5242 after 0.4986; after any-channel black 0.1978%, any-channel white 0.0000%
+08 1280x853 mean before 0.4560 after 0.4354; after any-channel black 0.3707%, any-channel white 0.0000%
