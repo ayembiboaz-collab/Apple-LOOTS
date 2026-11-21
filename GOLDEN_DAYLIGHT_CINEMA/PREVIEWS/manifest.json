@@ -1,0 +1,50 @@
+[
+  {
+    "scene": "01_midday_city",
+    "title": "Harsh midday city",
+    "before": "01_midday_city_BEFORE.png",
+    "after": "01_midday_city_AFTER.png"
+  },
+  {
+    "scene": "02_midday_portrait",
+    "title": "Midday portrait in direct sun",
+    "before": "02_midday_portrait_BEFORE.png",
+    "after": "02_midday_portrait_AFTER.png"
+  },
+  {
+    "scene": "03_mediterranean_street",
+    "title": "Mediterranean street",
+    "before": "03_mediterranean_street_BEFORE.png",
+    "after": "03_mediterranean_street_AFTER.png"
+  },
+  {
+    "scene": "04_beach_daylight",
+    "title": "Bright beach daylight",
+    "before": "04_beach_daylight_BEFORE.png",
+    "after": "04_beach_daylight_AFTER.png"
+  },
+  {
+    "scene": "05_landscape_mountains",
+    "title": "Natural landscape, greenery & mountains",
+    "before": "05_landscape_mountains_BEFORE.png",
+    "after": "05_landscape_mountains_AFTER.png"
+  },
+  {
+    "scene": "06_golden_hour",
+    "title": "Golden-hour landscape",
+    "before": "06_golden_hour_BEFORE.png",
+    "after": "06_golden_hour_AFTER.png"
+  },
+  {
+    "scene": "07_modern_architecture",
+    "title": "Modern architecture",
+    "before": "07_modern_architecture_BEFORE.png",
+    "after": "07_modern_architecture_AFTER.png"
+  },
+  {
+    "scene": "08_travel_people",
+    "title": "Outdoor travel scene with people",
+    "before": "08_travel_people_BEFORE.png",
+    "after": "08_travel_people_AFTER.png"
+  }
+]

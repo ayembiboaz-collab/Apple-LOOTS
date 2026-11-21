@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+image-search/
+tools/validate_output.txt
+tools/validate_err.txt
