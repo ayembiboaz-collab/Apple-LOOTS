@@ -10,3 +10,6 @@ __pycache__/
 
 # Research scratch (PDFs are referenced by URL in the validation report)
 _research/
+
+# Local scratch
+*.tmp

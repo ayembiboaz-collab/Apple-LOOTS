@@ -1,0 +1,163 @@
+{
+  "lut": "LUT/GOLDEN_DAYLIGHT_CINEMA.cube",
+  "lut_shape": [
+    33,
+    33,
+    33,
+    3
+  ],
+  "scenes": [
+    {
+      "id": "scene01",
+      "title": "Harsh Midday City",
+      "plate": "SOURCE_PLATES/harsh_midday_city.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.11021455242077197,
+      "lut_vs_analytic_mean_abs": 0.0029903885227808777,
+      "mean_luma_before": 0.4996411942661523,
+      "mean_luma_after": 0.4529376356225312,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9303783734721193,
+      "clipped_fraction_before": 0.10203413529829546,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.035411179667771464,
+      "crushed_fraction_after": 3.66827454229798e-05
+    },
+    {
+      "id": "scene02",
+      "title": "Midday Portrait in Direct Sun",
+      "plate": "SOURCE_PLATES/midday_portrait.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.042407038641772477,
+      "lut_vs_analytic_mean_abs": 0.003041474097614187,
+      "mean_luma_before": 0.6683247882470236,
+      "mean_luma_after": 0.6152275544747541,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.933354840365602,
+      "clipped_fraction_before": 0.10983214715514521,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.018779716106376264,
+      "crushed_fraction_after": 0.0001957440617108586
+    },
+    {
+      "id": "scene03",
+      "title": "Mediterranean Street",
+      "plate": "SOURCE_PLATES/mediterranean_street.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.1469629053568183,
+      "lut_vs_analytic_mean_abs": 0.0038415355829575326,
+      "mean_luma_before": 0.5514244142165042,
+      "mean_luma_after": 0.507417986131381,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9292246443450651,
+      "clipped_fraction_before": 0.1984786216658775,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.07914841777146464,
+      "crushed_fraction_after": 0.0032237659801136365
+    },
+    {
+      "id": "scene04",
+      "title": "Bright Beach Daylight",
+      "plate": "SOURCE_PLATES/bright_beach_daylight.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.1344886120580525,
+      "lut_vs_analytic_mean_abs": 0.0054423489294358795,
+      "mean_luma_before": 0.7617542811134623,
+      "mean_luma_after": 0.7007969614663754,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9293529060520737,
+      "clipped_fraction_before": 0.17711785827020202,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.0019383285984848485,
+      "crushed_fraction_after": 0.0013671258483270202
+    },
+    {
+      "id": "scene05",
+      "title": "Landscape: Greenery and Mountains",
+      "plate": "SOURCE_PLATES/landscape_greenery_mountains.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.08554469259462431,
+      "lut_vs_analytic_mean_abs": 0.002899469324172008,
+      "mean_luma_before": 0.5919776553798164,
+      "mean_luma_after": 0.5326484453635577,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9105866960857287,
+      "clipped_fraction_before": 0.25560444533222854,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.03779586637863005,
+      "crushed_fraction_after": 0.006109989050662879
+    },
+    {
+      "id": "scene06",
+      "title": "Golden-Hour Landscape",
+      "plate": "SOURCE_PLATES/golden_hour_landscape.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.059733250565440876,
+      "lut_vs_analytic_mean_abs": 0.002270546374008394,
+      "mean_luma_before": 0.4127314882400435,
+      "mean_luma_after": 0.3760519381092498,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9454511242937153,
+      "clipped_fraction_before": 0.03909949100378788,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.04639257565893308,
+      "crushed_fraction_after": 0.0011365485913825758
+    },
+    {
+      "id": "scene07",
+      "title": "Modern Architecture",
+      "plate": "SOURCE_PLATES/modern_architecture.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.06824807443814015,
+      "lut_vs_analytic_mean_abs": 0.0037718885764823898,
+      "mean_luma_before": 0.582888737172984,
+      "mean_luma_after": 0.5290187786943497,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9370555847276684,
+      "clipped_fraction_before": 0.17173566721906566,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.011196252071496212,
+      "crushed_fraction_after": 0.0017755681818181818
+    },
+    {
+      "id": "scene08",
+      "title": "Outdoor Travel: People and Buildings",
+      "plate": "SOURCE_PLATES/outdoor_travel_people.png",
+      "resolution": [
+        768,
+        1408
+      ],
+      "lut_vs_analytic_max_abs": 0.12728143039848044,
+      "lut_vs_analytic_mean_abs": 0.003345664407591771,
+      "mean_luma_before": 0.5212286195593377,
+      "mean_luma_after": 0.478581681804367,
+      "p99_luma_before": 1.0,
+      "p99_luma_after": 0.9336846872746356,
+      "clipped_fraction_before": 0.16602949662642044,
+      "clipped_fraction_after": 0.0,
+      "crushed_fraction_before": 0.10575512202099116,
+      "crushed_fraction_after": 0.0011069557883522727
+    }
+  ]
+}
