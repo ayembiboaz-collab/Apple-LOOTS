@@ -1,17 +1,14 @@
 # tools/ — independent GOLDEN_DAYLIGHT_CINEMA pipeline (alternative, non-canonical)
 
 > **Read this first.** This folder holds the *self-contained* build & validation
-> pipeline written for this project. It was developed on the same base as the
-> main-line suite and reaches the same destination, but the **canonical
-> deliverable** that ships in `GOLDEN_DAYLIGHT_CINEMA/` is the main-line one
-> (see `README.md`, `BUILDING.md`, root `SOURCES.md`, and
-> `GOLDEN_DAYLIGHT_CINEMA/VALIDATION_REPORT.txt`): its `.cube` passed more
-> rigorous checks (monotonic neutral ramp, tetrahedral ReproDiff = 0.0 for all
-> 8 renders, OCIO cross-check ≈ 4.5e-07). This pipeline's pass-7 build measured
-> worse on those axes (sub-1%-of-range shoulder non-monotonicity, neutral
-> spread ≈ 0.059) and was superseded by the merge — but it is kept as an
-> independent cross-check, since an entire second implementation agreeing on
-> direction is worth more than either alone.
+> pipeline written in the same week as the canonical deliverable. Three parallel
+> lines of work converged on this repo (the canonical suite now on `main`, and
+> this alternative implementation). The **canonical deliverable** is the one in
+> `GOLDEN_DAYLIGHT_CINEMA/`, documented at the repo root (`README.md`) and in
+> `GOLDEN_DAYLIGHT_CINEMA/VALIDATION_REPORT.txt` — every validation section
+> there reports PASS. This pipeline is kept as an **independent cross-check**:
+> an entire second implementation agreeing on direction is worth more than
+> either alone. Note it was *not* the code behind the shipped cube.
 
 ## Layout
 
@@ -28,20 +25,23 @@
 - `validate_lut.py` — A–H suite (OCIO cross-check, monotonicity, sweeps, ROI skin/sky/foliage);
   reads `ALT_PREVIEWS/`. Note: this suite's "PASS" exit code does **not** imply
   the cube is clean — sections D (neutral spread), E (axis smoothness), and
-  F (trilinear fidelity) report known limitations of the pass-7 bake.
+  F (trilinear fidelity) report known limitations of our pass-7 bake.
 - `source_images/` — eight real photographs used as simulated-plate inputs
-  (see `source_images/CREDITS.md`). The canonical suite instead uses
-  AI-generated photoreal plates (`sources/plates/`, see root `SOURCES.md`).
+  (see `source_images/CREDITS.md`).
 - `requirements.txt` — numpy, scipy, Pillow, colour-science, PyOpenColorIO
 
-## Key difference vs canonical
+## Key differences vs canonical
 
-| Aspect | tools/ pipeline (this) | canonical (main-line) |
+| Aspect | tools/ pipeline (this) | canonical (on `main`) |
 |---|---|---|
-| Preview plates | real sRGB photos, simulated Log 2 | AI-generated neutral plates, simulated Log 2 |
-| Tone/grade | honey gate + pass-7 toe | integrated grade, passes monotonicity |
-| Cube evaluation | trilinear | tetrahedral |
-| Validation verdict | exit 0 with warnings (see VALIDATION_REPORT of the canonical suite vs `tools/validate_*.txt`) | stricter, all PASS |
+| Preview plates | real photographs, simulated Log 2 (`source_images/`) | real photographs, inverse-EOTF + scene headroom expansion, simulated Log 2 (`sources/master_scenes/`, credits in `sources/CREDITS_AND_SOURCES.json`) |
+| Grade | honey gate + pass-7 luma-neutral toe | consolidated grade; canonical validation report all sections PASS (`33³ trilinear vs analytical: mean 0.00268, p99 0.0283`) |
+| Validation | exit 0 **with warnings** (neutral spread ≈ 0.059, shoulder non-monotonicity ≈ −0.007, axis/trilinear outliers in the far out-of-gamut AWG corner) | all PASS, per `GOLDEN_DAYLIGHT_CINEMA/VALIDATION_REPORT.txt` |
+| Output paths | writes into `ALT_PREVIEWS/`, `GALLERY/alt_img/` (redirected) | canonical `PREVIEWS/`, `GALLERY/` |
+| Our pass-7 cube | recoverable at git commit `b5a98a2` | — |
 
-If you want to compare the two cubes side by side, keep the canonical cube and
-ours recoverable at git tag history: our pass-7 bake is commit `b5a98a2`.
+## Why keep it
+
+- Second, independent implementation of Apple Log 2 decode + AWG handling — discrepancies between the two would be instantly suspicious.
+- Self-contained (no dependency on `scripts/`), good for eyeballing the math.
+- Documents *what didn't ship and why*, which is worth more than a clean success story.

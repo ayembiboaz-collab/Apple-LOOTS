@@ -24,10 +24,10 @@
     "after": "04_bright_beach_daylight_AFTER.png"
   },
   {
-    "scene": "05_natural_landscape_greenery_mountains",
-    "title": "Natural Landscape (Greenery & Mountains)",
-    "before": "05_natural_landscape_greenery_mountains_BEFORE.png",
-    "after": "05_natural_landscape_greenery_mountains_AFTER.png"
+    "scene": "05_natural_landscape_greenery",
+    "title": "Natural Landscape with Greenery and Mountains",
+    "before": "05_natural_landscape_greenery_BEFORE.png",
+    "after": "05_natural_landscape_greenery_AFTER.png"
   },
   {
     "scene": "06_golden_hour_landscape",
@@ -42,9 +42,9 @@
     "after": "07_modern_architecture_AFTER.png"
   },
   {
-    "scene": "08_outdoor_travel_people_buildings",
-    "title": "Outdoor Travel Scene (People & Buildings)",
-    "before": "08_outdoor_travel_people_buildings_BEFORE.png",
-    "after": "08_outdoor_travel_people_buildings_AFTER.png"
+    "scene": "08_outdoor_travel_scene",
+    "title": "Outdoor Travel Scene with People and Buildings",
+    "before": "08_outdoor_travel_scene_BEFORE.png",
+    "after": "08_outdoor_travel_scene_AFTER.png"
   }
 ]
