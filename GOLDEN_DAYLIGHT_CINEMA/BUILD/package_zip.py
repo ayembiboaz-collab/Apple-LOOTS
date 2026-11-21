@@ -58,10 +58,17 @@ def main():
     files = collect()
     if os.path.exists(ZIP):
         os.remove(ZIP)
+    # Fixed timestamp and permissions so the archive is byte-for-byte
+    # reproducible: rebuilding an unchanged folder must not produce a new blob.
+    FIXED_DATE = (2025, 11, 21, 0, 0, 0)
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for path in files:
             arc = os.path.join(NAME, os.path.relpath(path, ROOT))
-            z.write(path, arc)
+            info = zipfile.ZipInfo(arc, date_time=FIXED_DATE)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = (0o644 & 0xFFFF) << 16
+            with open(path, "rb") as fh:
+                z.writestr(info, fh.read(), compresslevel=9)
     print(f"wrote {os.path.basename(ZIP)}  "
           f"({os.path.getsize(ZIP)/1e6:.1f} MB, {len(files)} files)")
 
