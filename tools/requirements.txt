@@ -1,6 +1,0 @@
-numpy>=1.24
-pillow>=10.0
-scipy>=1.10
-# validation-only cross-checks (optional, used by validate_lut.py):
-colour-science>=0.4.4
-opencolorio>=2.3

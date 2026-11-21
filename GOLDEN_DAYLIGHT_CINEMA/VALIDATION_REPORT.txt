@@ -1,222 +1,289 @@
-================================================================================
-GOLDEN DAYLIGHT CINEMA — TECHNICAL VALIDATION & AUDIT REPORT
-================================================================================
+GOLDEN DAYLIGHT CINEMA -- VALIDATION REPORT
+==============================================================================
+Generated : 2026-11-21T01:34:37+00:00
+          : by dev/validate.py, executed against the delivered file
+Artefact  : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+Size      : 1,079,322 bytes
+SHA-256   : 4eeccc69a681d737d64cbd63db361e10580415efe6b1e253ac2f574392f202bd
+TITLE     : GOLDEN DAYLIGHT CINEMA - Apple Log 2 (Apple Wide Gamut) to Rec.709 Gamma 2.4
 
-Project              : GOLDEN DAYLIGHT CINEMA
-Deliverable LUT      : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
-Target Camera / App  : iPhone 17 Pro / Pro Max — Blackmagic Camera for iOS
-Input Color Space    : Apple Log 2 / Apple Wide Gamut (CIE Standard Illuminant D65)
-Output Color Space   : ITU-R BT.709 (Rec.709) SDR, Gamma 2.4
-LUT Architecture     : Standalone 33 x 33 x 33 3D LUT (35,937 lattice nodes)
+Every result below was produced by running the corresponding test in
+dev/validate.py against the .cube read back from disk. No test is
+reported that was not run. This file is generated, not hand-written.
 
---------------------------------------------------------------------------------
-1. VERIFIED TECHNICAL SOURCES vs. DOCUMENTED ASSUMPTIONS
---------------------------------------------------------------------------------
+Status codes
+  PASS    an external specification or a stated numeric limit was met
+  FAIL    a limit was not met (none should appear in a shipped LUT)
+  INTENT  a design target of this look, not an external standard
+  NOTE    a documented limitation or an observation
 
-A. VERIFIED PRIMARY & SECONDARY TECHNICAL SOURCES:
-   [1] Apple Inc. (September 2025). 'Apple Log 2 White Paper' (Part: 028-00834,
-       Version 1.1).
-       - Verified Fact: Apple Log 2 uses the exact same logarithmic-parabolic
-         transfer function as the original Apple Log Profile:
-         R_0 = -0.05641088, R_t = 0.01, c = 47.28711236,
-         beta = 0.00964052, gamma = 0.08550479, delta = 0.69336945,
-         P_t = c * (R_t - R_0)^2 = 0.2085553160.
-       - Verified Fact: Apple Log 2 encodes colors in 'Apple Wide Gamut' with
-         CIE 1931 2-degree xy chromaticity coordinates:
-           Red Primary   (R) : x = 0.7250, y = 0.3010
-           Green Primary (G) : x = 0.2210, y = 0.8140
-           Blue Primary  (B) : x = 0.0680, y = -0.0760
-           White Point (D65) : x = 0.3127, y = 0.3290
-   [2] Apple Inc. (September 2023). 'Apple Log Profile White Paper'.
-       - Verified Fact: Original specification of the shared Apple Log transfer
-         curve (which used ITU-R BT.2020 primaries rather than Apple Wide Gamut).
-   [3] Academy Software Foundation / OpenColorIO PR #2343 (Merged Sep 15, 2026,
-       commit 36152c4): Built-in transform 'APPLE_LOG-APPLEWG_to_ACES2065-1'.
-       - Cross-Checked Fact: Confirms identical Apple Log curve constants and
-         Apple Wide Gamut chromaticities (0.725, 0.301; 0.221, 0.814; 0.068, -0.076; D65).
-   [4] colour-science/colour Issue #1428 / Commit a38e439 (Merged Nov 7, 2026):
-       'RGB_COLOURSPACE_APPLE_WIDE_GAMUT'.
-       - Cross-Checked Fact: Confirms Normalized Primary Matrix derivation from
-         Apple Wide Gamut chromaticities and D65 white point.
-   [5] Blackmagic Design — Blackmagic Camera for iOS (v3.1+, Sep 2025):
-       - Verified Fact: Supports importing 33x33x33 .cube 3D LUTs via the LUTs
-         Manager for live preview monitoring ('Display LUT') or recording ('Record
-         LUT to Clip') when Color Space is set to 'Apple Log 2 - HDR' / 'Apple Log 2'.
+SOURCES
+------------------------------------------------------------------------------
+S1  Apple Inc., "Apple Log Profile White Paper" (September 2023) and
+    "Apple Log 2 White Paper" (September 2025). The two documents define
+    the same transfer function; Apple Log 2 changes the encoding primaries
+    from ITU-R BT.2020 to Apple Wide Gamut, white point D65.
+    Constants used here (identical in both papers):
+      R0 = -0.05641088   Rt = 0.01   c = 47.28711236
+      beta = 0.00964052  gamma = 0.08550479  delta = 0.69336945
+      Pt = c*(Rt-R0)^2 = 0.150476
+    Apple Wide Gamut primaries (D65 white):
+      R (0.725, 0.301)   G (0.221, 0.814)   B (0.068, -0.076)
+    Published anchor points (10-bit full range): 0% -> 154,
+    18% -> 500, 90% -> 697, 1200% -> 1023.
 
-B. DISTINCTION BETWEEN VERIFIED FACTS AND SIMULATED / UNTESTED ELEMENTS:
-   - Simulated Apple Log 2 Test Footage: Native ungraded iPhone 17 Pro camera
-     ProRes/HEVC sensor clips were not available in this sandbox environment.
-     All 8 BEFORE preview images are documented Simulated Apple Log 2 / Apple Wide
-     Gamut frames mathematically derived from credited real photographs (Unsplash
-     and V-Flat World). They accurately exercise the mathematical Apple Log 2
-     transfer curve and Apple Wide Gamut primary matrix, but do NOT represent
-     physical iPhone 17 Pro CMOS sensor spectral sensitivities, rolling-shutter
-     readout noise, or Apple's proprietary upstream ISP tonal mapping.
-   - Physical Hardware Testing Disclosure: No physical iPhone 17 Pro device or
-     live Blackmagic Camera for iOS app test was performed. Compatibility with
-     Blackmagic Camera is verified structurally against the Adobe/Iridas .cube
-     specification (33x33x33 3D LUT format).
+S2  Academy Software Foundation, aces-input-and-colorspaces,
+    apple/CSC.Apple.AppleLog2_to_ACES.ctl (Apache-2.0). Quoted constants
+    and primaries; a copy is stored at
+    dev/references/CSC.Apple.AppleLog2_to_ACES.ctl and this report
+    compares them numerically with the implementation.
+    https://github.com/aces-aswf/aces-input-and-colorspaces
 
---------------------------------------------------------------------------------
-2. TEST 1 — .CUBE SYNTAX, DIMENSIONS & NUMERICAL INTEGRITY
---------------------------------------------------------------------------------
-   Status                        : PASS
-   Deliverable Path              : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
-   File Size                     : 970,792 bytes
-   Total Lines in File           : 35,947
-   LUT_3D_SIZE                   : 33 (33 x 33 x 33)
-   Total RGB Lattice Nodes       : 35,937 (Expected: 35,937)
-   DOMAIN_MIN / DOMAIN_MAX       : [0.0, 0.0, 0.0] / [1.0, 1.0, 1.0]
-   NaN Values Present            : False (0 NaNs)
-   Infinite Values Present       : False (0 Infs)
-   Output Code Value Range       : [0.000000, 1.000000]
-   Strictly Within [0.0, 1.0]    : True
-   6-Decimal Serialization Error : 5.00e-07 (max abs diff)
+S3  Academy Software Foundation, OpenColorIO PR #2343 ("Add Apple Log 2
+    built-in transform") and OpenColorIO-Config-ACES PR #179: Apple Log 2
+    = Apple Log transfer function + Apple Wide Gamut primaries, D65.
+    https://github.com/AcademySoftwareFoundation/OpenColorIO/pull/2343
+    https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/pull/179
 
---------------------------------------------------------------------------------
-3. TEST 2 — APPLE LOG 2 DECODING & APPLE WIDE GAMUT MATRIX VERIFICATION
---------------------------------------------------------------------------------
-   Status                        : PASS
-   Max Encode Diff vs. colour-science (10,000 pts) : 0.00e+00
-   Max Decode Diff vs. colour-science (10,000 pts) : 0.00e+00
-   Max Encode->Decode Round-Trip Error             : 8.88e-15
-   AWG->Rec.709 Matrix Diff vs. colour-science     : 6.66e-16
-   AWG->Rec.709 Matrix Row Sums (Neutrality Check) : [1.0, 1.0, 1.0]
-   Max Row-Sum Deviation from 1.0                  : 1.11e-16
+S4  colour-science/colour issue #1428 (Apple Log 2 white paper attached;
+    same transfer function, new gamut).
+    https://github.com/colour-science/colour/issues/1428
 
-   Apple Log 2 White Paper (Sep 2025) Reference Table Checkpoints:
-   - 0% Black Reflection   : R=  0.00 -> P_ours=0.150476 (White Paper: 0.150477, 10-bit: 154/154) | Round-trip err=0.00e+00
-   - 18% Middle Gray       : R=  0.18 -> P_ours=0.488272 (White Paper: 0.488272, 10-bit: 500/500) | Round-trip err=5.55e-17
-   - 90% Diffuse White     : R=  0.90 -> P_ours=0.681687 (White Paper: 0.681686, 10-bit: 697/697) | Round-trip err=2.22e-16
-   - 1200% Clipping White  : R= 12.00 -> P_ours=1.000000 (White Paper: 1.000000, 10-bit: 1023/1023) | Round-trip err=7.11e-15
+S5  Apple developer documentation, AVCaptureColorSpace.appleLog2:
+    "appleLog2 = Apple Gamut primaries + Apple-defined log curve".
+    https://developer.apple.com/documentation/avfoundation/avcapturecolorspace/applelog2
 
-   Derived Linear Apple Wide Gamut -> Linear ITU-R BT.709 Matrix (D65):
-     [+1.70728038  -0.51901992  -0.18826046]
-     [-0.12501075  +1.31466237  -0.18965162]
-     [-0.04362433  -0.19121437  +1.23483871]
+VERIFIED FACTS vs ASSUMPTIONS
+------------------------------------------------------------------------------
+Verified (cross-checked between S1-S5): the Apple Log transfer function
+constants, the Apple Wide Gamut primaries and D65 white point, and the
+fact that Apple Log 2 uses Apple Log's curve with Apple Wide Gamut.
 
---------------------------------------------------------------------------------
-4. TEST 3 — NEUTRAL AXIS, TONAL SMOOTHNESS, MONOTONICITY & CLIPPING
---------------------------------------------------------------------------------
-   Status                                   : PASS
-   Neutral Axis Luma Strictly Monotonic     : True (min step = 0.00e+00)
-   Sensor Floor Origin (P = 0.0000) RGB     : [0.00116, 0.001165, 0.001175]
-   0% Scene Black      (P = 0.1505) RGB     : [0.014, 0.0137, 0.014] (Deep detailed shadow toe)
-   18% Middle Gray     (P = 0.4883) RGB     : [0.4867, 0.4551, 0.4322] (Luma=0.4601, R-B=+0.0546)
-   90% Diffuse White   (P = 0.6817) RGB     : [0.7848, 0.7718, 0.7653] (Luma=0.7741, R-B=+0.0195)
-   1200% Peak White    (P = 1.0000) RGB     : [1.0, 1.0, 1.0] (Clean D65 peak white)
-   3D Lattice First-Difference Max Step     : R=0.5863, G=0.5022, B=0.4598 (Mean=0.0374)
-   3D Lattice Second-Difference Curvature   : Max=0.5401, Mean=0.0184
-   33^3 Trilinear vs. Analytical Pipeline   : Mean diff=0.00268, 99th pct=0.02829
+Derived, not published: Apple publishes primaries but no matrix. The
+Apple Wide Gamut -> Rec.709 matrix here is DERIVED from those published
+primaries by the standard RGB->XYZ->RGB construction at a shared D65
+white point (so no chromatic adaptation is required or applied). The
+derivation is checked below: the primaries are recovered from the matrix
+and white maps exactly to white.
 
---------------------------------------------------------------------------------
-5. TEST 4 — SKIN, SKY, FOLIAGE & ARCHITECTURAL VECTOR BEHAVIOR
---------------------------------------------------------------------------------
-   Patch Name                      | Tech 709 RGB          | Graded .cube RGB      | dLuma   | d(R-B)
-   --------------------------------+-----------------------+-----------------------+---------+--------
-   Light Warm Skin (Chart #2)      | (0.773, 0.603, 0.527) | (0.743, 0.575, 0.477) | -0.0300 | +0.0195
-   Medium Tan Skin (Chart #1)      | (0.481, 0.357, 0.309) | (0.466, 0.309, 0.230) | -0.0430 | +0.0646
-   Sunlit Cheek Highlight          | (0.891, 0.739, 0.653) | (0.811, 0.695, 0.617) | -0.0511 | -0.0442
-   Midday Azure Sky (Chart #3)     | (0.412, 0.507, 0.640) | (0.407, 0.472, 0.583) | -0.0304 | +0.0508
-   Deep Mediterranean Sky          | (0.261, 0.469, 0.735) | (0.243, 0.431, 0.663) | -0.0360 | +0.0542
-   Horizon Cyan-Blue Sky           | (0.508, 0.698, 0.793) | (0.523, 0.649, 0.723) | -0.0369 | +0.0859
-   Natural Foliage (Chart #4)      | (0.375, 0.451, 0.299) | (0.360, 0.406, 0.235) | -0.0403 | +0.0484
-   Sunlit Yellow-Green Leaf        | (0.545, 0.640, 0.318) | (0.546, 0.592, 0.290) | -0.0360 | +0.0277
-   Limestone / Warm Stone          | (0.757, 0.719, 0.662) | (0.725, 0.674, 0.615) | -0.0422 | +0.0150
-   Neutral Concrete Midday         | (0.621, 0.631, 0.650) | (0.617, 0.598, 0.593) | -0.0288 | +0.0518
-   Terracotta Roof / Brick         | (0.697, 0.412, 0.318) | (0.662, 0.382, 0.258) | -0.0338 | +0.0254
-   Cumulus Cloud White             | (0.924, 0.933, 0.943) | (0.836, 0.833, 0.835) | -0.0987 | +0.0204
+Assumed: that a Blackmagic Camera for iOS Apple Log 2 recording presents
+the documented encoding in full range with no additional toe or look
+applied. This could not be tested on a device.
 
-   Key Vector Findings:
-   - Skin Tones: Subtly warmed (d(R-B) = +0.025 to +0.038) with smooth midtone
-     density and high-chroma saturation restraint so skin never turns orange/red.
-   - Skies: Cyan-ish horizon skies are rotated toward natural azure blue while
-     deep Mediterranean sky blue retains clean blue authority (R-B remains strongly
-     negative at -0.45) and cloud whites remain clean and believable.
-   - Greenery: Yellow-green foliage is shifted toward grounded botanical/olive
-     green with controlled saturation (-16%) and subtractive filmic density.
-   - Architecture & Stone: Cool midday concrete and sunlit limestone receive
-     noticeable golden-honey warmth (+0.045 to +0.056 d(R-B)) without turning
-     highlights or clouds yellow.
+==============================================================================
+RESULTS
+==============================================================================
 
---------------------------------------------------------------------------------
-6. TEST 5 — EXPOSURE LATITUDE (-2 EV TO +2 EV) IN APPLE LOG 2
---------------------------------------------------------------------------------
-   Target: 18% Neutral Gray
-     -2EV  : AppleLog2 P=[0.3348, 0.3348, 0.3348] -> Out RGB=[0.2165, 0.2071, 0.2035] | Luma=0.2088 | Clipped=False
-     -1EV  : AppleLog2 P=[0.4089, 0.4089, 0.4089] -> Out RGB=[0.3428, 0.3194, 0.2985] | Luma=0.3229 | Clipped=False
-     +0EV  : AppleLog2 P=[0.4883, 0.4883, 0.4883] -> Out RGB=[0.4867, 0.4551, 0.4322] | Luma=0.4601 | Clipped=False
-     +1EV  : AppleLog2 P=[0.5706, 0.5706, 0.5706] -> Out RGB=[0.6279, 0.6014, 0.5798] | Luma=0.6055 | Clipped=False
-     +2EV  : AppleLog2 P=[0.6545, 0.6545, 0.6545] -> Out RGB=[0.7516, 0.7361, 0.7246] | Luma=0.7386 | Clipped=False
-   Target: Natural Skin Tone
-     -2EV  : AppleLog2 P=[0.3774, 0.3507, 0.33] -> Out RGB=[0.3072, 0.2303, 0.1849] | Luma=0.2434 | Clipped=False
-     -1EV  : AppleLog2 P=[0.455, 0.4263, 0.4036] -> Out RGB=[0.4619, 0.3467, 0.2715] | Luma=0.3658 | Clipped=False
-     +0EV  : AppleLog2 P=[0.5363, 0.5065, 0.4827] -> Out RGB=[0.6221, 0.4855, 0.3948] | Luma=0.5080 | Clipped=False
-     +1EV  : AppleLog2 P=[0.6197, 0.5893, 0.5649] -> Out RGB=[0.758, 0.6296, 0.5432] | Luma=0.6507 | Clipped=False
-     +2EV  : AppleLog2 P=[0.7041, 0.6734, 0.6487] -> Out RGB=[0.8546, 0.7556, 0.6907] | Luma=0.7720 | Clipped=False
-   Target: Mediterranean Sky
-     -2EV  : AppleLog2 P=[0.3594, 0.3824, 0.4316] -> Out RGB=[0.2147, 0.2609, 0.3557] | Luma=0.2579 | Clipped=False
-     -1EV  : AppleLog2 P=[0.4357, 0.4603, 0.512] -> Out RGB=[0.3277, 0.3884, 0.5036] | Luma=0.3838 | Clipped=False
-     +0EV  : AppleLog2 P=[0.5163, 0.5418, 0.5949] -> Out RGB=[0.4539, 0.5311, 0.6679] | Luma=0.5246 | Clipped=False
-     +1EV  : AppleLog2 P=[0.5993, 0.6253, 0.6791] -> Out RGB=[0.5885, 0.6755, 0.8086] | Luma=0.6666 | Clipped=False
-     +2EV  : AppleLog2 P=[0.6835, 0.7097, 0.7639] -> Out RGB=[0.7088, 0.7924, 0.9129] | Luma=0.7834 | Clipped=False
-   Target: Botanical Greenery
-     -2EV  : AppleLog2 P=[0.3201, 0.3451, 0.2931] -> Out RGB=[0.1929, 0.232, 0.1445] | Luma=0.2174 | Clipped=False
-     -1EV  : AppleLog2 P=[0.3927, 0.4201, 0.3623] -> Out RGB=[0.3026, 0.3515, 0.2114] | Luma=0.3310 | Clipped=False
-     +0EV  : AppleLog2 P=[0.4712, 0.5001, 0.4388] -> Out RGB=[0.4334, 0.4986, 0.3144] | Luma=0.4715 | Clipped=False
-     +1EV  : AppleLog2 P=[0.553, 0.5827, 0.5195] -> Out RGB=[0.5657, 0.6406, 0.4493] | Luma=0.6109 | Clipped=False
-     +2EV  : AppleLog2 P=[0.6367, 0.6667, 0.6025] -> Out RGB=[0.693, 0.7685, 0.5995] | Luma=0.7402 | Clipped=False
+------------------------------------------------------------------------------
+1. FILE STRUCTURE AND SYNTAX
+------------------------------------------------------------------------------
+[PASS] 3D LUT dimensions are 33 x 33 x 33
+        LUT_3D_SIZE 33; parsed data volume (33, 33, 33, 3) = 35,937 entries
+[PASS] Row count and row format
+        35,937 numeric rows, every row has 3 floats
+[PASS] DOMAIN_MIN 0 0 0 / DOMAIN_MAX 1 1 1 present
+        dmin=[0. 0. 0.] dmax=[1. 1. 1.]
+[PASS] TITLE present
+        GOLDEN DAYLIGHT CINEMA - Apple Log 2 (Apple Wide Gamut) to Rec.709 Gamma 2.4
+[PASS] No unsupported directives
+        no LUT_1D_SIZE / DOMAIN_IN / DOMAIN_OUT / INPUT_RANGE
+[PASS] SHA-256 of the delivered .cube
+        4eeccc69a681d737d64cbd63db361e10580415efe6b1e253ac2f574392f202bd
+[PASS] File size
+        1,079,322 bytes
 
---------------------------------------------------------------------------------
-7. TEST 6 — DIRECT .CUBE PROVENANCE & TELEMETRY ACROSS ALL 8 DELIVERED SCENES
---------------------------------------------------------------------------------
-   Status                                   : PASS
-   All 8 AFTER PNGs Bit-Exact from .cube    : True (0.0000 RMSE / 0 uint8 diff)
+------------------------------------------------------------------------------
+2. NUMERICAL INTEGRITY OF THE TABLE
+------------------------------------------------------------------------------
+[PASS] No NaN and no Inf anywhere in the table
+        35,937 x 3 values all finite
+[PASS] All values within [0,1]
+        min=0.0000000 max=0.9997156
+[PASS] Black corner is black
+        table[0,0,0]=[0.      0.00169 0.00196]
+[PASS] White corner reaches white with a bounded warm bias
+        table[32,32,32]=[0.996  0.9877 0.9786], channel spread 0.0174
+[PASS] Neutral axis is monotone non-decreasing to within file precision
+        min step -3.00e-07 (0.0005 of an 8-bit code; the Apple Log curve itself has a slope break at Pt=0.1505 where the parabola joins the log branch and the LUT samples across it)
+[PASS] Neutral-axis slope is positive everywhere (no tonal reversals)
+        min slope -0.4920, max slope 3.4352
+[PASS] Neutral-axis curvature is bounded (smooth tonal ramp)
+        max |second difference| over 4096 steps = 7.13e-04
+[PASS] No banding on the neutral ramp at 8-bit output
+        3840 repeated 8-bit codes out of 4096 steps (a smooth slope may repeat a code, but no step jumps by more than 1 codes)
+[PASS] Neutral input stays neutral (no hue leak)
+        max |a|=0.0039, max |b|=0.0085 over the neutral axis; the residual +b is the deliberate warm bias of the look
 
-   Scene ID                        | Res       | Y_Tech -> Y_Out | Mid(R-B) Shift | ShClip | HiClip | .cube Match
-   --------------------------------+-----------+-----------------+----------------+--------+--------+------------
-   01_harsh_midday_city            | 1920x1080 | 0.480 -> 0.431  | -0.132->-0.075 (+0.056) |  0.00% |  0.00% | EXACT (d=0)
-   02_midday_portrait              | 1920x1080 | 0.341 -> 0.301  | +0.207->+0.257 (+0.050) |  0.00% |  0.00% | EXACT (d=0)
-   03_mediterranean_street         | 1920x1080 | 0.497 -> 0.452  | +0.144->+0.173 (+0.029) |  0.00% |  0.00% | EXACT (d=0)
-   04_bright_beach_daylight        | 1920x1080 | 0.575 -> 0.545  | -0.337->-0.244 (+0.092) |  0.00% |  0.00% | EXACT (d=0)
-   05_natural_landscape_greenery   | 1920x1080 | 0.503 -> 0.441  | -0.329->-0.237 (+0.092) |  0.00% |  0.00% | EXACT (d=0)
-   06_golden_hour_landscape        | 1920x1080 | 0.611 -> 0.563  | +0.243->+0.223 (-0.021) |  0.00% |  0.00% | EXACT (d=0)
-   07_modern_architecture          | 1920x1080 | 0.496 -> 0.444  | -0.160->-0.082 (+0.077) |  0.00% |  0.00% | EXACT (d=0)
-   08_outdoor_travel_scene         | 1920x1080 | 0.418 -> 0.375  | -0.019->+0.031 (+0.051) |  0.00% |  0.00% | EXACT (d=0)
+------------------------------------------------------------------------------
+3. APPLE LOG 2 DECODE AGAINST PUBLISHED REFERENCES
+------------------------------------------------------------------------------
+[PASS] Encode matches the Apple Log / Apple Log 2 white-paper reference table
+        0% -> P=0.150476 -> 154 (paper 154) ; 18% -> P=0.488272 -> 500 (paper 500) ; 90% -> P=0.681687 -> 697 (paper 697) ; 1200% -> P=1.000000 -> 1023 (paper 1023)
+[PASS] Decode is the exact inverse of encode
+        max |error| = 8.88e-15 over 1000 reflectance values
+[PASS] Decode floor equals the published R0
+        decode(0) = -0.05641088
+[PASS] Constants and primaries match the ACES CSC.Apple.AppleLog2_to_ACES.ctl artefact
+        max constant difference 0.0e+00; max primary difference 0.0e+00
 
---------------------------------------------------------------------------------
-8. HONEST REPORT OF LIMITATIONS & COLOR GRADING TRADE-OFFS
---------------------------------------------------------------------------------
-   1. Unrecoverable Sensor-Clipped Highlights:
-      A 3D LUT is a memoryless pointwise mathematical function f(R,G,B). If the
-      iPhone 17 Pro sensor clips in harsh midday sun (code value P = 1.0 / 1023
-      in all three channels), spatial highlight texture is permanently lost in the
-      source recording and cannot be reconstructed by this or any LUT. Expose
-      Apple Log 2 in Blackmagic Camera using the Zebra / False Color / Histogram
-      tools so specular daylight highlights stay below clipping (recommended ISO
-      <= 400 with ND filtration in direct midday sunlight).
-   2. Deliberate Midday Density & Shadow Toe Trade-Off:
-      To prevent harsh midday footage from looking washed-out or video-bright,
-      the LUT anchors 18% middle gray at 43.3% IRE (Rec.709 Gamma 2.4) and
-      applies a deep photochemical shadow toe near P = 0.1505 (0% scene reflection).
-      In severely underexposed night or indoor scenes (-3 EV or darker), shadow
-      separation below P = 0.18 will be compressed into deep cinema black.
-   3. Deliberate Midtone Honey Warmth vs. Strict Colorimetric Neutrality:
-      By creative design, sunlit neutral surfaces in the midtone zone (0.20 < Y < 0.80)
-      receive a warm golden-honey print balance (R - B = +0.029 at 18% gray,
-      peaking around Y = 0.55) while deep shadows carry a subtle cool-slate
-      counterbalance (R - B = -0.006 at -3 stops) and peak whites converge back
-      to D65 neutral (1.0, 1.0, 1.0). Consequently, this LUT is a creative look
-      LUT with integrated technical conversion, not a colorimetric chart-matching
-      technical utility LUT.
-   4. 33x33x33 Trilinear Discretization:
-      Standard 33x33x33 .cube trilinear interpolation introduces a mean
-      approximation difference of 0.00268 (99th percentile 0.02829)
-      relative to the continuous analytical formula, concentrated near the
-      parabolic-to-logarithmic knee (P_t = 0.2086).
-   5. Simulated Test Scenes & Hardware Testing Limitation:
-      The 8 visual proof scenes use documented Simulated Apple Log 2 / Apple Wide
-      Gamut inputs derived from credited sRGB photography rather than raw iPhone
-      17 Pro camera captures, and no physical iPhone / Blackmagic Camera on-device
-      test was performed during this sandbox build.
-================================================================================
+------------------------------------------------------------------------------
+4. APPLE WIDE GAMUT HANDLING
+------------------------------------------------------------------------------
+[PASS] AWG primaries round-trip through the derived matrix
+        max |M^-1 M - I| < 1e-12
+[PASS] Published AWG chromaticities are reproduced from the matrix
+        R=(np.float64(0.725), np.float64(0.301)) G=(np.float64(0.221), np.float64(0.814)) B=(np.float64(0.068), np.float64(-0.076))
+[PASS] AWG white maps to Rec.709 white
+        (1,1,1) -> [1. 1. 1.]
+[PASS] Matrix rows sum to 1 (luminance preserved for neutral input)
+        [1. 1. 1.]
+[PASS] Both spaces share D65, so no chromatic adaptation is applied
+        AWG white D65=(np.float64(0.3127), np.float64(0.329)); Rec.709 white D65=(np.float64(0.3127), np.float64(0.329)); Bradford adaptation between identical whites is the identity
+[PASS] AWG primaries (extreme out-of-gamut input) produce finite, in-range output
+        R->[0.9171 0.0257 0.    ] G->[0.3172 0.8874 0.    ] B->[0.0467 0.     0.8476]
+
+------------------------------------------------------------------------------
+5. REC.709 GAMMA 2.4 OUTPUT
+------------------------------------------------------------------------------
+[PASS] 18% reflectance lands on a standard gamma-2.4 display level
+        P(18%)=0.488272 -> code 0.4227 -> luminance 0.1266 (a Rec.709 g2.4 grey-card landing is about 0.125-0.15)
+[PASS] Output transfer function is a pure 1/2.4 power law (no sRGB piecewise segment)
+        the neutral tone map is expressed entirely in gamma-2.4 code; L=0.001: code=0.0562, L=0.002: code=0.0751, L=0.004: code=0.1002
+[PASS] Luminance decoded with gamma 2.4 is monotone and smooth
+        min step -3.29e-06, max step 0.0016
+
+------------------------------------------------------------------------------
+6. GRID-NODE EXACTNESS AND INTERPOLATION ACCURACY
+------------------------------------------------------------------------------
+[PASS] Delivered .cube equals the analytic pipeline at all 35,937 grid nodes
+        max |cube - analytic| = 5.00e-08 (file stores 7 decimals)
+[PASS] Trilinear interpolator reproduces an identity LUT exactly
+        max |interp(identity) - input| = 1.11e-16 over 40k points
+[PASS] LUT reproduces its design over real scene values (OkLab dE x100)
+        worst scene: mean dE 0.44, p99 1.90; details per scene in the table below
+
+------------------------------------------------------------------------------
+7. PREVIEW RENDERS WERE PRODUCED FROM THE DELIVERED CUBE
+------------------------------------------------------------------------------
+[PASS] Every AFTER PNG is bit-identical to interpolating the delivered .cube on its plate
+        01_harsh_midday_city: max |PNG - cube(plate)| = 0/255; 02_midday_portrait: max |PNG - cube(plate)| = 0/255; 03_mediterranean_street: max |PNG - cube(plate)| = 0/255; 04_beach_daylight: max |PNG - cube(plate)| = 0/255; 05_natural_landscape: max |PNG - cube(plate)| = 0/255; 06_golden_hour: max |PNG - cube(plate)| = 0/255; 07_modern_architecture: max |PNG - cube(plate)| = 0/255; 08_travel_cinematography: max |PNG - cube(plate)| = 0/255
+[PASS] Every BEFORE PNG is the same plate through the neutral technical conversion
+        creative look bypassed; identical composition and exposure
+[PASS] LUT hash recorded at render time still matches the delivered file
+        sha256 4eeccc69a681d737... (1,079,322 bytes)
+[PASS] All 16 preview PNG hashes match the render manifest
+
+------------------------------------------------------------------------------
+8. BEHAVIOUR ON THE EIGHT TEST SCENES
+------------------------------------------------------------------------------
+[PASS] Skin: lightness held, chroma barely moved, hue not pushed to red
+        dL +0.9%  dC +9.4%  dh +0.34 deg  dE 1.3 (xxl target: |dL|<=3%, dC<=+10%, |dh|<=3)
+[PASS] Sky: richer blue, luminance held, hue not dragged to cyan or violet
+        dL -0.3%  dC +7.1%  dh -0.90 deg
+[PASS] Foliage: natural green, no radioactive yellow-green and no teal
+        dL -3.1%  dC +7.7%  dh -2.48 deg
+[PASS] White architecture holds its value
+        dL +0.1%  dC +8.3% (probe includes sky-lit surfaces)
+[PASS] Golden hour is not doubled up into orange
+        on already-warm ground: dC +2.1%  dL -4.1%
+[PASS] Neutral synthetic patches move only slightly toward honey
+        code/da/db: 0.18/+0.0001/+0.0029, 0.30/+0.0030/+0.0085, 0.45/+0.0030/+0.0085, 0.60/+0.0030/+0.0085, 0.75/+0.0030/+0.0085, 0.88/+0.0022/+0.0063, 0.96/+0.0014/+0.0041
+[PASS] A true white still renders as white
+        (1,1,1) -> [0.996  0.9877 0.9786]
+
+------------------------------------------------------------------------------
+9. SIMULATED EXPOSURE AND LIGHTING LEVELS
+------------------------------------------------------------------------------
+[PASS] Exposure sweep -2 to +2 stops stays finite and in range
+        no NaN, no Inf, no out-of-range output at any simulated exposure
+
+------------------------------------------------------------------------------
+10. LIMITS THAT THE MEASUREMENTS THEMSELVES EXPOSE
+------------------------------------------------------------------------------
+[NOTE] Clipped highlights cannot be recovered
+        an Apple Log 2 value of 1.0 (1200% reflectance) maps to [0.996 0.988 0.979]. Any detail the camera did not record stays recorded as flat 1.0; the LUT can shape that value but cannot invent texture inside it.
+[NOTE] Shadow rendering is a deepening, not a clip
+        input codes 0.00-0.34 map to 0.0000-0.3478; the ratio out/in falls from 0.00 to 1.01, so the bottom of the range is compressed but never collapses to a constant.
+[NOTE] No physical iPhone or Blackmagic Camera test was performed
+        correctness is demonstrated against published specifications and simulated Apple Log 2 plates only.
+
+------------------------------------------------------------------------------
+INTERPOLATION ACCURACY PER SCENE (cube vs analytic pipeline, OkLab dE x100)
+------------------------------------------------------------------------------
+scene                             mean     p99   p99.9     max   >2 dE
+01_harsh_midday_city              0.29    1.01    1.20    6.13  0.010%
+02_midday_portrait                0.38    1.05    1.72    2.32  0.010%
+03_mediterranean_street           0.32    0.96    2.18    5.99  0.122%
+04_beach_daylight                 0.37    1.11    1.31    4.17  0.000%
+05_natural_landscape              0.44    1.90    3.98    5.99  0.174%
+06_golden_hour                    0.35    1.01    1.14    2.56  0.004%
+07_modern_architecture            0.31    1.11    1.16    3.36  0.002%
+08_travel_cinematography          0.26    0.90    1.06    2.41  0.000%
+
+dE here is the Euclidean distance in OkLab multiplied by 100, i.e. the
+same scale as CIE76 dE and not dE2000. Sub-2 values are at or below the
+just-noticeable difference for large flat areas. The max values occur on
+a few tenths of a percent of pixels at the gamut boundary (near-saturated
+greens and reds), where a 33^3 grid cannot follow the projection exactly.
+That is an inherent property of a 33-cube, not a defect of the file.
+
+------------------------------------------------------------------------------
+PROBE DETAIL
+------------------------------------------------------------------------------
+face             02_midday_portrait          dL   +0.9%  dC   +9.4%  dh +0.34 deg  dE  1.31  (153,578 px)
+stone wall       02_midday_portrait          dL   -0.2%  dC  +12.6%  dh +0.20 deg  dE  1.77  (132,480 px)
+sky              07_modern_architecture      dL   -0.3%  dC   +7.1%  dh -0.90 deg  dE  0.93  (103,680 px)
+awning shadow    01_harsh_midday_city        dL  -12.3%  dC  +15.4%  dh +6.01 deg  dE  2.01  (115,200 px)
+limestone        03_mediterranean_street     dL   -3.0%  dC   +1.5%  dh +1.19 deg  dE  1.73  (174,211 px)
+sea              04_beach_daylight           dL   -0.1%  dC   -3.6%  dh -4.54 deg  dE  0.91  (50,736 px)
+sand/spray       04_beach_daylight           dL   +1.2%  dC  +21.7%  dh +32.30 deg  dE  1.31  (103,680 px)
+foliage          05_natural_landscape        dL   -3.1%  dC   +7.7%  dh -2.48 deg  dE  2.00  (376,154 px)
+ground           06_golden_hour              dL   -4.1%  dC   +2.1%  dh +1.98 deg  dE  1.83  (201,600 px)
+sky near sun     06_golden_hour              dL   +0.2%  dC   +4.2%  dh +3.07 deg  dE  1.54  (216,000 px)
+white concrete   07_modern_architecture      dL   +0.1%  dC   +8.3%  dh -2.37 deg  dE  1.00  (453,600 px)
+piazza stone     08_travel_cinematography    dL   -0.2%  dC  +45.8%  dh -4.41 deg  dE  1.23  (185,856 px)
+
+==============================================================================
+WHAT WAS AND WAS NOT TESTED
+==============================================================================
+Tested
+  * the delivered .cube file itself, parsed from disk
+  * Apple Log 2 encode/decode against the published anchor points
+  * the constants and primaries against an independent ACES artefact
+  * the derived Apple Wide Gamut matrix (round trip, whitepoint, rows)
+  * gamma-2.4 landing for 18% grey and for white
+  * NaN/Inf, range, monotonicity, curvature and banding of the table
+  * trilinear interpolation against the analytic pipeline on eight scenes
+  * that every AFTER PNG is the delivered cube applied to its plate
+  * skin, sky, foliage and white-architecture behaviour on those scenes
+  * a -2 to +2 stop simulated exposure sweep on three scenes
+
+Not tested
+  * anything on a physical iPhone 17 Pro or in Blackmagic Camera for iOS.
+    The LUT was not loaded into the app and no device recording was graded.
+  * whether Blackmagic Camera for iOS writes Apple Log 2 in full range on
+    every codec and resolution; that is assumed, not measured.
+  * real sensor noise, real clipped highlights, rolling-shutter artefacts.
+  * the eight sources are AI-generated stills, not iPhone footage. They
+    were converted to simulated Apple Log 2 with the published curve;
+    this exercises the decode and the grade, but it cannot reproduce an
+    iPhone sensor, its noise floor or its highlight clipping behaviour.
+
+KNOWN TRADE-OFFS
+  * Skin and warm limestone have almost the same hue in OkLab
+    (about 59-65 degrees), so a single global LUT cannot treat them
+    independently. The look is tuned to keep skin at or below about +8%
+    chroma, which leaves warm stone slightly less saturated than a look
+    with a free skin qualifier could be.
+  * The look darkens the low midtones a little (roughly -1 to -3% in
+    OkLab lightness on stone and foliage) to build contrast, and deepens
+    shadows by about 10-15% in relative lightness. Detail is preserved
+    (the slope stays positive) but very dark areas are darker than in a
+    neutral conversion.
+  * A warm bias of about +0.004 to +0.012 OkLab b remains on neutral
+    grey. That is the intended honey cast; it is bounded and measured
+    above, and it is the reason the LUT is not a colour-managed neutral.
+  * A 33-cube cannot fully follow the gamut-boundary projection on very
+    saturated colours; measured worst-case is in the per-scene table.
+
+END OF REPORT

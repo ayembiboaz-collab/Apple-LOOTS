@@ -1,14 +1,14 @@
-# Union of both lines of work (see merge commit): main's hygiene + this branch's
+# Python
+.venv/
 __pycache__/
 *.pyc
-.venv/
-.DS_Store
-Unselected files/
-image-search/
-tools/validate_output.txt
-tools/validate_err.txt
 
-# Local convenience artifact (53 MB; build with: zip -r GOLDEN_DAYLIGHT_CINEMA.zip GOLDEN_DAYLIGHT_CINEMA)
-# Note: GOLDEN_DAYLIGHT_CINEMA.zip is tracked in this repo (synced with releases);
-# ignore rule only affects future accidental adds of OTHER zip outputs.
-/GOLDEN_DAYLIGHT_CINEMA.zip
+# Development scratch (regenerable, kept out of Git by design)
+dev/tune_cache/
+GOLDEN_DAYLIGHT_CINEMA/SCENES/*.npy
+dev/*.npy
+dev/*.json
+
+# The ZIP is committed on purpose (it is a deliverable), but never left in
+# a nested recursive copy of itself.
+GOLDEN_DAYLIGHT_CINEMA/~$*
