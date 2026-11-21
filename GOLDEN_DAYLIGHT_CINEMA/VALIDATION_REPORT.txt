@@ -1,27 +1,117 @@
 GOLDEN DAYLIGHT CINEMA — VALIDATION REPORT
-==========================================
-Scope: software tests and visual inspection of AI-generated stills. This is NOT a camera test, a calibrated-display assessment, or proof of behavior on all skin tones. No physical iPhone, Blackmagic Camera app, iPhone Safari, or real Apple Log 2 recording was available or tested.
+2026-11-21. The evidence is simulated; this is not a camera certification.
 
-COLOR SCIENCE AND REFERENCES
-Apple identifies appleLog2 as Apple Gamut and an Apple-defined Log curve: https://developer.apple.com/documentation/avfoundation/avcapturecolorspace/applelog2 . Apple's Log 2 white paper is listed at https://developer.apple.com/download/all/?q=Apple%20Log%202 ; the original was not accessed directly here. The shared curve and Apple Wide Gamut coordinates were cross-checked via the Academy Software Foundation implementation https://github.com/AcademySoftwareFoundation/OpenColorIO/pull/2343 , the independent technical article https://www.cined.com/log-cam-and-raw-cam-bring-open-gate-raw-and-log-video-to-older-iphones-a-skeptical-look/ and curve implementation https://github.com/colour-science/colour/blob/develop/colour/models/rgb/transfer_functions/apple_log_profile.py . An independent ASWF matrix reference is https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/issues/163 . We do not claim to have directly checked the white paper itself.
+REFERENCE AND DESIGN
+Apple documents Apple Log 2 as using Apple Gamut primaries and an Apple-defined
+log transfer: https://developer.apple.com/documentation/avfoundation/avcapturecolorspace/applelog2
+Apple's September 2025 Apple Log 2 white paper is listed at
+https://developer.apple.com/download/all/?q=Apple%20Log%202 . We could not
+access that original document in this environment and did not independently read
+it. Instead, its constants were cross-checked against the OpenColorIO (OCIO)
+Apple camera implementation, https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/main/src/OpenColorIO/transforms/builtins/AppleCameras.cpp
+and CineD's published description:
+https://www.cined.com/log-cam-and-raw-cam-bring-open-gate-raw-and-log-video-to-older-iphones-a-skeptical-look/
+The independently published Colour Science implementation of Apple Log:
+https://github.com/colour-science/colour/blob/develop/colour/models/rgb/transfer_functions/apple_log_profile.py
 
-Implemented: Apple Log curve constants R0=-0.05641088, Rt=0.01, sigma=47.28711236, beta=0.00964052, gamma=0.08550479, delta=0.69336945; Log 2 gamut xy R (.725,.301), G (.221,.814), B (.068,-.076), D65. Derive RGB-XYZ matrices and transform AWG to BT.709/D65 linear. Approximate matrix rows:
- 1.70728038 -0.51901992 -0.18826046
--0.12501075  1.31466237 -0.18965162
--0.04362433 -0.19121437  1.23483871
-Then a creative luminance shoulder, saturation/gamut compression and restrained warm midtone bias; finally normalized display RGB raised to 1/2.4. This is a pure gamma 2.4 display encoding, not the BT.709 camera OETF or the full BT.1886 black-level-dependent EOTF. Apple primaries/curve are input references; the tone and creative rendering are our design, not an Apple reference output transform.
+Input chromaticities from OCIO: R (.725,.301), G (.221,.814), B (.068,-.076),
+D65 (.3127,.3290). Same Log curve as Apple Log: R0=-.05641088, Rt=.01,
+c=47.28711236, beta=.00964052, gamma=.08550479, delta=.69336945. Piecewise
+inverse is square root below c*(Rt-R0)^2 and 2^((P-delta)/gamma)-beta above.
+Negative scene values are handled by the formula but subsequently compressed
+or clipped by the creative output mapping. The RGB->XYZ matrices are derived
+from these primaries and D65; the D65 Apple Wide Gamut to Rec.709 matrix is:
+ 1.707280377 -0.519019920 -0.188260457
+-0.125010746  1.314662365 -0.189651619
+-0.043624333 -0.191214371  1.234838705
 
-ACTUAL TESTS
-- Parsed final cube: 33^3 = 35,937 RGB rows, 0–1 domain, red fastest; all 107,811 channel entries finite and in [0,1]. SHA-256 ab34003a92a0673fe245148a1df1d1ee6ed886158cc11d9d0f38a4003c946297.
-- Encoding 18% scene grey: approximately 0.48827. Decoding that code reproduces 0.18 within 0.0001. Derived AWG->ACES AP0 with Bradford D65->D60 agrees with ASWF issue matrix to max 2.67e-15 (source/test_matrix.py). These check the pre-look conversion, not that the complete creative LUT should match a neutral reference LUT.
-- Neutral input sampled from Log 0.15–0.85 in 1000 steps after trilinear lookup: luminance channel-average monotonic to floating-point precision (minimum step -3.4e-16). Intentional warm bias causes neutral channel inequality; maximum channel spread 0.100 in this range, mostly very dark values where encoding magnifies small differences. Neutral is not perfectly neutral.
-- Simulated neutral 18% grey at -2,-1,0,+1,+2 stops, delivered LUT trilinear RGB respectively: (.27706,.26887,.25821), (.36493,.35728,.34784), (.47947,.47291,.46414), (.62732,.62185,.61450), (.80819,.80716,.80565). These are synthetic swatches, not camera exposure tests.
-- Lattice values at exact 0: 7,962; exact 1: 24,859 of 107,811 channels. Large numbers are expected on extreme/unphysical RGB corners and bright out-of-range scene signals, but also reveal real clipping. The shoulder becomes a hard white plateau for high luminance, so extreme bright highlights may lose separation. Negative/out-of-gamut colours are compressed and may shift hue or lose saturation. Black and near-black are constrained, so fine shadow detail and chroma can be lost. 33-point sampling/interpolation can introduce error and banding, particularly near black and gamut boundaries.
-- Eight before/after pairs are same-size 1280x853 pixels (golden-hour: 1280x855). Each scene's after was produced by reading the delivered .cube and trilinear interpolation, not by a separately evaluated grade. Rebuilding yielded matching SHA-256 hashes for all 16 PNGs. In the 8-bit after PNGs, fraction of pixels with at least one channel at 0 ranges 0.03%–3.59%; none has a channel at 255. This metric is not a measurement of sensor clipping. Before/after mean encoded image values are listed in source/validation-results.txt; all eight after means were lower than their neutral references.
-- Visually inspected the after contact sheet on the available environment: the simulated portrait skin remains plausibly warm, skies remain broadly blue, greenery remains green, and the warm sunset is not uniformly yellow. The beach source already has cyan water. These are subjective observations of generated imagery, not calibrated judgments, and a single generated portrait cannot establish performance on diverse complexions.
-- Gallery JavaScript was exercised with a DOM shim for eight cards, slider updates, modal open/close and relative image paths. This is not a browser rendering, touch, Safari or physical-device test. Downloads in Arena's embedded preview were not tested.
+The output is our own creative rendering: scene-linear conversion, negative
+component gamut compression, moderate midtone contrast, smooth luminance
+shoulder, restrained midtone warmth with reduction for already-warm colours,
+green/cyan saturation control, output gamut compression and clamp, followed by
+1/2.4 power. An ideal black level is assumed for the gamma-2.4 display. This is
+not Apple's official view transform, BT.709 camera OETF, an ACES output
+transform, or a promise of physically correct scene reconstruction. BT.1886
+reference: https://www.itu.int/rec/R-REC-BT.1886
 
-PREVIEW PROVENANCE AND SIMULATION
-All eight source images were generated for this project using Arena's AI image generation tool; source files are retained in source/images in the repository. They depict requested subjects but are synthetic and can contain invented details; they are not iPhone photos or actual sensor images. We assumed sRGB SDR images, decoded the sRGB transfer function, interpreted this restricted linear data as scene-referred Rec.709, converted through the inverse of the AWG->709 matrix and encoded with the Apple Log curve. Out-of-range code values are clipped to 0–1. This inversion cannot reconstruct sensor response, clipped details, highlight latitude, original illumination, or true raw scene radiometry. BEFORE is the same estimated linear scene rendered neutrally with gamma 2.4; AFTER is the final LUT output from the simulated Log values. PNG is 8-bit and browsers generally treat untagged images as sRGB, not a calibrated gamma 2.4 reference display; the images demonstrate relative appearance only. Scene composition and estimated exposure are identical within each pair.
+SIMULATION AND IMAGE CREDITS
+All eight sources are AI-generated with Arena's image generation tool for this
+project on 2026-11-21, and retained in the project's Git repository. No source
+is genuine iPhone capture, raw camera data, or a representation of a specific
+real person or place. Images are assumed to be sRGB, decoded to display-linear,
+then *assumed* to represent relative scene-linear Rec.709; converted into Apple
+Wide Gamut, encoded with the Log curve, then clipped to the LUT domain. This is
+not an inverse camera pipeline and cannot recreate sensor highlight headroom,
+noise, scene-referred exposures, color response, clipped detail or white balance.
+BEFORE is the same original sRGB image, a neutral normalized reference rather
+than raw flat log. AFTER is the saved final .cube sampled trilinearly at those
+simulated log pixels. For web PNG display, output gamma 2.4 is decoded to display
+light then re-encoded to sRGB, with rounding to 8 bits. The source pixels are
+1376 x 768; the 1600 x 894 comparison PNGs are Lanczos-upscaled, not new detail.
+Every pair uses the same source, dimensions and exposure.
 
-The supplied transform is a creative starting point, not a guarantee of color accuracy. Shoot tests under real lighting and evaluate scopes, shadows, skies, foliage and diverse skin tones before critical use; adjust exposure and white balance upstream. A LUT cannot recover clipped highlights.
+TESTS PERFORMED ON THE DELIVERED CUBE
+- Parsed 33^3 = 35,937 triplets in red-fastest .cube order, TITLE, size and
+  domain 0..1; numerical range 0..1, no NaN or infinity. Cube SHA-256:
+  0941c6e60adc0b38e27662253ffb352d059b3329cc492de647480f8f1e9f238d
+- Independent curve anchors: linear 0 -> .15047645, .01 -> .20855532,
+  .18 -> .48827246 and 1 -> .69455298; .18 decoding error <1e-8. Curve
+  constants checked against the independently published implementations above.
+- D65 neutral remains neutral through the input matrix to within 1e-12. A
+  separate Bradford/D60 conversion to ACES AP0 matched OCIO's published matrix
+  https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/issues/163
+  to 2.7e-15 maximum absolute error. No adaptation is needed between the D65
+  input and D65 Rec.709 output. The creative stage intentionally warms neutrals.
+- Output gamma 2.4 is implemented as display-linear^(1/2.4) after grading;
+  previews reverse that power before sRGB encoding. No calibrated monitor or
+  independent reference display was used.
+- On 10,001 evenly spaced neutral input samples, min channel step was -0.0001093
+  and max +0.0004638 (387 negative channel steps across 30,000 channel steps).
+  This small but real non-monotonicity is from trilinear interpolation/gamut
+  mapping near bright neutrals: tonal smoothness is NOT perfect. Maximum neutral
+  channel spread is 0.02248 in gamma-coded output, intentionally slightly warm.
+- 22.56% of all lattice output channel values are 0 and 20.21% are 1; these are
+  heavily populated by combinations of extreme/nonphysical wide-gamut inputs and
+  should not be confused with real-image clipping. The extreme-gamut behavior
+  is a trade-off, not evidence of universally preserved color detail. In the
+  eight rendered scenes, 0.000% of output channels were <=.001 or >=.999 before
+  PNG quantization (rounded to three decimal places). The source images can
+  already contain clipped highlights; this test cannot recover those details.
+- 50,000 random log RGB triples in .15.. .8: trilinear cube versus continuous
+  analytic transform mean absolute error .00517, worst .482 in gamma-coded
+  output. The large worst case is an extreme out-of-gamut combination. On every
+  eighth pixel in each synthetic source, mean errors were .00170 to .00317,
+  99th-percentile .01660 to .03721, and worst individual error .04314 to .09981.
+  Highly saturated colors and strong channel differences can shift noticeably;
+  trilinear and tetrahedral hosts may also differ. This is a real 33-point limit.
+- A neutral, skin-like, sky-like, and foliage-like RGB swatch were simulated at
+  -2, -1, 0, +1, +2 stops; complete output values and all scene measurements
+  are in scripts/measurements.json in the source repository. At +2, the blue
+  swatch hit output 1.0 and the warm swatch approached 1.0, showing saturation
+  and highlight trade-offs. These are mathematical swatches, not a measured
+  human skin chart or different real-world camera exposures.
+- Mean RGB shifts for each full scene and clipping counts are in the repository's
+  scripts/measurements.json. Average displayed brightness fell in all eight
+  samples by approximately .0157 to .0233 normalized sRGB, not an exposure
+  increase. The portrait, travel, skies and vegetation were visually inspected
+  on the contact sheet: portrait remains recognizable with warmer, slightly
+  darker skin; blues stay blue; greenery is subdued; golden-hour becomes darker
+  without an obvious blanket orange. This is a subjective screen review, not
+  an objective guarantee across skin tones or lighting. Shadow detail is
+  reduced somewhat; the LUT cannot add scene detail. Check on real footage.
+- scripts/verify_renders.py recomputed all eight AFTER images from the actual
+  delivered .cube using trilinear sampling and found zero 8-bit pixel difference.
+- Local HTTP HEAD requests succeeded for gallery, LUT, PNG and contact sheet.
+  JSDOM interaction smoke tests created 8 cards, changed sliders and opened/
+  closed the image viewer using a dialog shim. This is not a real browser,
+  touch, Safari, fullscreen API, or device test. Viewer is a full-screen dialog,
+  not a request for OS-level fullscreen. Download behavior in Arena and Safari
+  is untested. Direct GitHub links are an alternative if embedding blocks it.
+
+OTHER LIMITATIONS
+No physical iPhone, Blackmagic Camera, actual Apple Log 2 clip, skin chart,
+calibrated reference display, or professional grading suite was tested. Camera
+and app support and full/legal range handling should be confirmed with test
+clips. One LUT cannot fix white balance or local exposure or recover clipping.
+Highly saturated sources, blue/cyan or skin may change hue; 33-point
+interpolation can introduce small errors and there is no spatial processing.
