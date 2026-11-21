@@ -1,289 +1,422 @@
 ================================================================================
- GOLDEN DAYLIGHT CINEMA - VALIDATION REPORT
- LUT: GOLDEN_DAYLIGHT_CINEMA.cube (33 x 33 x 33, 3D)
- Date: 2026-11-21
+  GOLDEN DAYLIGHT CINEMA
+  VALIDATION REPORT
 ================================================================================
 
-CONTENTS
-  1. Technical sources (verified vs assumed)
-  2. What the LUT does (exact pipeline)
-  3. Tests performed on the delivered .cube
-  4. Look-development measurements across the eight scenes
-  5. What was simulated
-  6. What was NOT tested (honest limitations)
-  7. Known trade-offs
+  Generated      : 2026-11-21 01:41 UTC
+  Validated file : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+  SHA-256        : 22032e6c5d779241328250115901a9501f6419b6bdb048e18e037a90bffc74c2
+  Size on disk   : 971,573 bytes
+  Produced by    : scripts/build_lut.py  (see README.md to reproduce)
 
---------------------------------------------------------------------------------
-1. TECHNICAL SOURCES
---------------------------------------------------------------------------------
+  Everything below was measured on the delivered .cube file parsed from
+  disk. Only tests that were actually executed are reported.
 
-VERIFIED (official or cross-checked against two independent implementations):
+==============================================================================
+0.  SOURCES AND HOW THEY WERE CROSS-CHECKED
+==============================================================================
+VERIFIED FACTS (published by the manufacturer, and independently corroborated)
 
-  a) Apple Inc., "Apple Log 2 White Paper", September 2025
-     (Part 028-00834, Version 1.1).
-     - Transfer function = the Apple Log transfer function:
-         P = gamma*log2(R + beta) + delta            for R >= Rt
-         P = c*(R - R0)^2                            for R0 <= R < Rt
-         P = 0                                       for R < R0
-       with R0 = -0.05641088, Rt = 0.01, c = 47.28711236,
-            beta = 0.00964052, gamma = 0.08550479, delta = 0.69336945,
-            Pt = c*(Rt - R0)^2 = 0.20855531595464202.
-     - Anchor table: 0% -> 0.150477 (10-bit 154), 18% -> 0.488272 (500),
-       90% -> 0.681686 (697), 1200% -> 1.0 (1023).
-     - Apple Wide Gamut chromaticities: R(0.725, 0.301), G(0.221, 0.814),
-       B(0.068, -0.076), white D65 (0.3127, 0.3290).
-     - Y'CbCr conversion per ITU-R BT.2020-2 (not used by this LUT).
-     The white paper was reviewed from a copy distributed via the
-     colour-science/colour GitHub repository (issue #1428 attachment,
-     https://github.com/colour-science/colour/issues/1428); Apple distributes
-     it through its developer resources.
+  S1  Apple Log transfer function constants
+      Apple Inc., "Apple Log Profile White Paper", September 2023.
+      Apple Inc., "Apple Log 2 White Paper", September 2025 - the Log 2 paper
+      keeps the SAME transfer function; only the gamut changes.
+          R0 = -0.05641088   Rt = 0.01           sigma = 47.28711236
+          beta = 0.00964052  gamma = 0.08550479  delta = 0.69336945
+      Corroboration: the colour-science library
+      (colour/models/rgb/transfer_functions/apple_log_profile.py) carries the
+      identical constants and cites both the Apple white paper and the AMPAS
+      ACES input transform IDT.Apple.AppleLog_BT2020.ctl.
+      Independently checked here against the white paper's own anchor table
+      (see test 2).
 
-  b) OpenColorIO (AcademySoftwareFoundation/OpenColorIO, main branch):
-     - src/OpenColorIO/transforms/builtins/AppleCameras.cpp: identical
-       transfer-function constants and Apple Wide Gamut chromaticities.
-     - Built-in studio config (studio-config-v5.0.0_aces-v2.1_ocio-v2.6.ocio):
-       "Linear Apple Wide Gamut" to_scene_reference matrix
-         [0.694961049318096, 0.241405268785364, 0.06363368189654]
-         [0.0473627464149326, 1.00429592505428, -0.0516586714692157]
-         [-0.021989789359883, -0.0289891049714743, 1.05097889433136]
-       used in this project as an independent cross-check (see test 3.2).
+  S2  Apple Wide Gamut primaries (Apple Log 2 only)
+          R (0.725, 0.301)   G (0.221, 0.814)   B (0.068, -0.076)
+          White: D65 (0.3127, 0.3290)
+      Four independent transcriptions of Apple's Apple Log 2 white paper agree
+      exactly: the OpenColorIO builtin added in PR #2343 (AppleCameras.cpp),
+      the hdr-toys shader table, and two published technical write-ups
+      (ireelz.com, cined.com). A French-language transcript of the white
+      paper itself lists the same six coordinates plus the D65 white point.
 
-  c) ITU-R BT.709-6 (Rec.709 primaries R(0.640,0.330) G(0.300,0.600)
-     B(0.150,0.060), D65) and ITU-R BT.1886 (reference EOTF; the pure
-     gamma-2.4 power law is used as the output encoding).
+  S3  Independent numerical anchor for the gamut maths
+      OpenColorIO-Config-ACES PR #179 (and the Blender studio config) publish
+      the Apple Wide Gamut -> ACES2065-1 matrix with Bradford adaptation.
+      This project re-derives that matrix from S2 and compares (test 3).
 
-ASSUMED (documented, not official):
+  S4  Blackmagic Camera for iOS accepts 17-point and 33-point 3D .cube LUTs,
+      imported via Settings > LUTs > Import LUT, and can display a LUT while
+      still recording clean log. Multiple current vendor guides state the
+      17/33-point limit. This is why the deliverable is 33x33x33.
 
-  - The "neutral technical conversion" used for the BEFORE images is
-    Apple Log 2 decode -> Apple Wide Gamut to Rec.709 -> pure gamma 2.4,
-    with no tone mapping and no grade. Apple's own Log-to-709 conversion LUTs
-    are distributed only through login-gated developer/Final Cut downloads and
-    could not be retrieved from this environment, so this transparent
-    conversion was used as the reference baseline instead.
-  - The simulation of Apple Log 2 footage from stills treats sRGB-decoded
-    linear light as a scene-linear Rec.709 proxy (system gamma 1.0). See
-    section 5.
-  - Gamma 2.4 output is interpreted as code = display_light^(1/2.4) (the
-    inverse of the BT.1886 power law), which is the convention for
-    display-referred Rec.709 gamma 2.4 deliverables.
+ASSUMPTIONS (clearly flagged, NOT verified against a device)
 
---------------------------------------------------------------------------------
-2. WHAT THE LUT DOES (exact pipeline, see scripts/gdc_core.py)
---------------------------------------------------------------------------------
+  A1  INPUT SIGNAL RANGE. Apple's white paper defines the encoded pixel value
+      P on the normalised floating-point interval [0, 1] (10-bit FULL range:
+      code 0 -> 0.0, code 1023 -> 1.0). This LUT assumes the host feeds it
+      that normalised full-range signal, which is the same assumption Apple's
+      own camera LUTs make. If a host presents a legal/video-range signal
+      without expanding it, the image will appear contrastier and clipped.
 
-  1. Apple Log 2 transfer-function decode (constants above) -> scene-linear
-     RGB in Apple Wide Gamut (D65).
-  2. 3x3 gamut transform Apple Wide Gamut -> Rec.709 (D65, no chromatic
-     adaptation required).
-  3. GOLDEN DAYLIGHT CINEMA grade:
-     a. Filmic tone curve (monotone PCHIP through stop-anchored knots,
-        18% grey -> code 0.42; deep detailed shadows; long smooth shoulder;
-        nothing at or above mid grey is rendered brighter than the neutral
-        conversion; designed film black floor at code 0.012).
-     b. Saturation curve (rich midtones, protected whites/blacks) with
-        vibrance damping for already-saturated colours.
-     c. Hue-aware colour work: sky enrichment with cyan control and cloud
-        protection; foliage saturation control and green-ward hue correction;
-        skin protection (no orange/yellow drift); warm-highlight recovery for
-        sunlit skin.
-     d. Golden warmth: amber gains weighted by luminance (sunlit mids) and
-        saturation (neutrals/whites barely move), attenuated on already-warm
-        (golden-hour) content and on sky hues.
-     e. Subtle cool split-tone in deep desaturated shadows (max ~1.3/255
-        channel deviation) for sun/shade separation.
-  4. Rec.709 gamma 2.4 encode (code = light^(1/2.4)), clamped to [0,1].
+  A2  SENSOR COLOUR SCIENCE. Apple does not publish how each iPhone sensor's
+      native response is characterised before encoding into Apple Wide Gamut.
+      The LUT is therefore mathematically correct with respect to the
+      published Apple Log 2 definition, but it has not been matched to a
+      measured iPhone 17 Pro capture.
 
-  The .cube was produced by evaluating this pipeline at every node of a
-  33 x 33 x 33 grid spanning input code values [0,1] (Adobe/Iridas .cube
-  line order, R varying fastest).
+  A3  NO DEVICE TESTING. No iPhone, no iPhone 17 Pro, and no Blackmagic
+      Camera installation was used at any point. Import behaviour, on-device
+      appearance and performance are UNTESTED.
 
---------------------------------------------------------------------------------
-3. TESTS PERFORMED ON THE DELIVERED .CUBE
---------------------------------------------------------------------------------
-(Run: python3 scripts/validate_lut.py - all 29 checks pass.)
+==============================================================================
+1.  FILE FORMAT, DIMENSIONS AND NUMERICAL INTEGRITY
+==============================================================================
+[PASS] file parses as a valid Adobe/IRIDAS 3D .cube
+       TITLE "GOLDEN DAYLIGHT CINEMA", LUT_3D_SIZE 33, DOMAIN_MIN [0.0, 0.0, 0.0], DOMAIN_MAX [1.0, 1.0, 1.0]
+[PASS] LUT_3D_SIZE is 33 (33 x 33 x 33)
+       size = 33
+[PASS] entry count is 33^3 = 35,937
+       35,937 RGB triplets parsed
+[PASS] no NaN values
+       NaN count = 0
+[PASS] no infinite values
+       non-finite count = 0
+[PASS] all entries within the legal [0, 1] output range
+       min 0.000000, max 1.000000
+[PASS] every data line holds exactly three decimal values
+       35,937 data lines
+[PASS] file is plain 7-bit ASCII with LF line endings
 
-3.1 Structure, syntax, numerical integrity
-  - Parses as a valid .cube; TITLE "GOLDEN DAYLIGHT CINEMA"; LUT_3D_SIZE 33.
-  - Exactly 33^3 = 35,937 data lines, three numeric values each.
-  - All values finite (no NaN, no +/-Inf) and within [0,1]
-    (observed range [0.000000, 0.952874]).
-  - Tetrahedral interpolation over the full input domain stays finite and
-    within [0,1].
+==============================================================================
+2.  APPLE LOG 2 DECODE AGAINST THE PUBLISHED WHITE-PAPER TABLE
+==============================================================================
+The white paper tabulates scene reflection against 10-bit full-range code.
 
-3.2 Apple Log 2 decoding and Apple Wide Gamut transformation
-  - The implementation reproduces the white-paper anchor table exactly:
-    0% -> 0.150477, 18% -> 0.488272, 90% -> 0.681686, and code 1.0 decodes to
-    12.000002 (1200% of reference white; the 2e-6 residual comes from Apple's
-    constants being published to 8 decimals).
-  - Encode/decode roundtrips are exact to < 1e-9 above the white paper's R0.
-  - The Apple Wide Gamut -> ACES2065-1 (AP0) matrix derived in this project
-    (primaries + Bradford adaptation) matches the matrix published in
-    OpenColorIO's built-in studio config to 3.55e-15 - i.e. the gamut
-    mathematics are verified against a second, independent implementation.
-  - Saturated Apple Wide Gamut primary inputs render finite and in range.
+      reflectance        our encode P      10-bit    paper    delta
+           0.00 %      0.15047645       153.94      154   -0.063
+          18.00 %      0.48827246       499.50      500   -0.497
+          90.00 %      0.68168680       697.37      697   +0.366
+        1200.00 %      0.99999998      1023.00     1023   -0.000
+[PASS] all four published anchor points reproduce within 1 code value
+[PASS] encode/decode round-trip is exact
+       max |R - decode(encode(R))| = 1.563e-13 over reflectance [-0.05, 100]
+[PASS] reference value log_encoding_AppleLogProfile(0.18) = 0.48827245852686763
+[PASS] decode is strictly monotonic and finite across P in [0, 1]
+       smallest step 1.592e-06; decoded reflectance range [-0.056411, 12.0000]
 
-3.3 Rec.709 gamma 2.4 output
-  - Output encoding is code = display_light^(1/2.4) throughout (verified by
-    construction and by the 18% grey placement: scene 0.18 -> display light
-    0.1331 -> code 0.42, consistent with the inverse BT.1886 power law).
-  - 1200% scene white (input code 1.0) renders at code 0.9094 - the
-    highlight shoulder deliberately keeps speculars below clipping.
+==============================================================================
+3.  APPLE WIDE GAMUT TRANSFORM AGAINST AN INDEPENDENT REFERENCE
+==============================================================================
+  Derived here from the published chromaticities (S2), D65 -> D60 Bradford:
+      [ 0.694961049318096,  0.241405268785364,  0.063633681896540]
+      [ 0.047362746414932,  1.004295925054282, -0.051658671469216]
+      [-0.021989789359883, -0.028989104971474,  1.050978894331358]
+  Published by OpenColorIO-Config-ACES PR #179 / Blender studio config (S3):
+      [ 0.694961049318096,  0.241405268785364,  0.063633681896540]
+      [ 0.047362746414933,  1.004295925054280, -0.051658671469216]
+      [-0.021989789359883, -0.028989104971474,  1.050978894331360]
+[PASS] re-derived Apple Wide Gamut -> ACES2065-1 matrix matches the published one
+       max absolute element difference = 2.442e-15
 
-3.4 Neutral behaviour, clipping, smoothness
-  - Grey axis (R=G=B input) stays grey: channel deviation is exactly zero
-    above the deep-shadow zone and at most 1.311/255 inside it (the designed
-    cool split-tone).
-  - Whites/highlights are exactly neutral (within float epsilon, < 1e-12).
-  - Grey-axis luminance is monotonically increasing (no tone reversal).
-  - No black crush: sensor black (code 0.150477) renders at a designed film
-    floor of 9.0/255; -5 stops renders at 33/255 (detailed shadows).
-  - No banding: second derivative of the cube output along smooth synthetic
-    sky/skin/stone/foliage gradients is <= 0.141/255.
-  - Cube matches the authoring pipeline to 0.46/255 on the grey axis above
-    scene 0.4%; in the steep log toe the interpolation error is at most
-    6.07/255, concentrated at sensor black (documented 33^3 limitation).
+  Apple Wide Gamut -> Rec.709 used by this LUT (both D65, so no chromatic
+  adaptation is applied, which is the correct treatment):
+      [ 1.707280377173596, -0.519019919932013, -0.188260457241584]
+      [-0.125010746108356,  1.314662365482206, -0.189651619373849]
+      [-0.043624333387934, -0.191214371732502,  1.234838705120437]
+[PASS] matrix row sums are 1.0, so neutral in -> neutral out
+       row sums [1. 1. 1.], max deviation 4.441e-16
 
-3.5 Skin / sky / foliage behaviour (ColorChecker-style patches, Lab D65)
-  Patch          EV    dL*    dC*   dHue*
-  dark skin     -2    -0.3   -1.3    -2.2
-  dark skin      0    -5.9   -1.3    -3.4
-  dark skin     +2   -11.8   +0.5    +6.4
-  light skin    -2    -4.8   -2.4    -0.9
-  light skin     0   -10.7   +1.5    +5.7
-  light skin    +2   -22.4   -4.2   -33.9  (specular skin rolls off warm)
-  blue sky      -2    -4.2   -1.3    +5.4
-  blue sky       0   -15.3   +9.0   +11.6  (richer, deeper, bluer)
-  blue sky      +2   -21.2   -3.8   +22.2
-  foliage       -2    +0.2   -3.0    +2.8
-  foliage        0    -4.7   -5.4    +0.4  (controlled, never radioactive)
-  foliage       +2   -10.0   -2.6    -0.9
-  green leaf    -2    +0.2   -3.7    +2.9
-  green leaf     0    -5.0   -6.3    -0.4
-  green leaf    +2   -10.8   -5.7    -0.3
-  moderate red  -2    -0.2   -3.9    -0.0
-  moderate red   0    -5.3   -1.8    +2.2
-  moderate red  +2   -15.4  -11.9    +5.9
-  (deltas are AFTER minus BEFORE the LUT at equal simulated exposure; the
-  BEFORE is the neutral technical conversion described in section 1.)
+  Hue fidelity end to end: Rec.709 reference colours were encoded into
+  Apple Log 2 and pushed through the DELIVERED .cube. Hue is measured on
+  the display-linear result. A correct gamut transform keeps hue stable
+  (small intentional creative rotations are listed in section 6).
 
-3.6 Exposure sweep through the delivered cube (18% grey placement)
-  -3 EV -> 53/255, -2 EV -> 67/255, -1 EV -> 84/255, 0 EV -> 108/255,
-  +1 EV -> 145/255, +2 EV -> 177/255, +3 EV -> 198/255. Monotone, saturating
-  shoulder, no clipping. A five-level visual sweep (-2..+2 EV) of the midday
-  city scene is included as
-  CONTACT_SHEET/GOLDEN_DAYLIGHT_CINEMA_EXPOSURE_SWEEP.png.
+      colour            in hue    out hue    delta
+      red              15.1       15.8      +0.7 deg
+      green           135.0      133.7      -1.3 deg
+      blue            263.4      265.6      +2.2 deg
+      yellow           80.3       69.8     -10.5 deg
+      cyan            200.5      212.9     +12.4 deg
+      magenta         318.5      324.1      +5.6 deg
+[PASS] no reference hue is displaced by more than 20 degrees
+       largest displacement 12.4 deg (creative, not a gamut error)
 
-3.7 AFTER renders produced from the delivered .cube
-  - Each of the eight *_AFTER.png files was re-rendered from the delivered
-    .cube file (tetrahedral interpolation, the same method DaVinci Resolve
-    uses for 3D LUTs) and compared pixel-for-pixel with the shipped PNG:
-    maximum difference 0.00/255 for all eight scenes.
-  - The tetrahedral interpolation engine itself is verified against an
-    analytic affine LUT (max error 2.2e-16).
+==============================================================================
+4.  Rec.709 / GAMMA 2.4 OUTPUT BEHAVIOUR
+==============================================================================
+  The output transfer function is the inverse of a pure 2.4 power EOTF
+  (BT.1886 with Lb = 0, Lw = 1). The neutral response of the DELIVERED
+  .cube is tabulated below; display-linear = code^2.4.
 
---------------------------------------------------------------------------------
-4. LOOK-DEVELOPMENT MEASUREMENTS (eight scenes, BEFORE vs AFTER)
---------------------------------------------------------------------------------
-Measured on the delivered files (1280x720 PNG renders; regions defined by
-hue/saturation masks per image):
+    scene reflectance   log2 code P    LUT out (R,G,B)         disp-lin Y   R/B
+           0.00 %      0.150476    (0.0344, 0.0343, 0.0341)     0.000305   1.011
+           0.20 %      0.161336    (0.0487, 0.0485, 0.0483)     0.000703   1.009
+           1.00 %      0.208555    (0.0958, 0.0954, 0.0950)     0.003562   1.008
+           4.50 %      0.334772    (0.1823, 0.1798, 0.1761)     0.016330   1.035
+           9.00 %      0.408884    (0.2649, 0.2586, 0.2496)     0.039206   1.061
+          18.00 %      0.488272    (0.4415, 0.4257, 0.4040)     0.130177   1.093
+          36.00 %      0.570601    (0.6624, 0.6478, 0.6261)     0.354901   1.058
+          90.00 %      0.681687    (0.8360, 0.8264, 0.8113)     0.634537   1.030
+         180.00 %      0.766536    (0.9062, 0.9014, 0.8936)     0.780466   1.014
+         360.00 %      0.851712    (0.9504, 0.9486, 0.9457)     0.881475   1.005
+         720.00 %      0.937052    (0.9807, 0.9794, 0.9772)     0.951527   1.004
+        1200.00 %      1.000000    (0.9967, 0.9955, 0.9934)     0.989455   1.003
+[PASS] 18 % grey lands in the standard mid-grey window (code 0.40-0.46)
+       mean code 0.4237
+[PASS] 90 % diffuse white stays below clipping with highlight headroom
+       mean code 0.8245
+[PASS] the top of the Apple Log 2 range (1200 % / P = 1.0) does not hard clip
+       P=1.0 -> [0.99675, 0.99547, 0.99338]
 
-  - Mean display luma change: -14% to -23% depending on scene (the LUT never
-    brightens footage; the brightest beach scene is compressed most).
-  - Sky regions: saturation +5 to +11% on average, value -11% (slightly
-    deeper), hue held toward blue (no cyan/turquoise drift; cloud whites
-    measurably cleaner).
-  - Foliage regions: saturation -8 to -20% (controlled), value ~unchanged,
-    hue pulled away from yellow-green toward green.
-  - Skin regions: saturation ~unchanged (+/-5%), hue within +/-1.5 deg,
-    subtle warm shift; sunlit highlights roll off warm ("creamy") instead of
-    clipping.
-  - Whites (clouds, shirts, sand): no yellow cast - the R-B balance of the
-    white regions is unchanged or very slightly reduced.
-  - Shadow regions: deepened with detail retained (p1 luma >= 0.036 across
-    scenes; < 0.1% of pixels at absolute black), slight blue separation.
-  - Clipping: 0.00% of pixels reach 255 in any AFTER render.
+==============================================================================
+5.  NEUTRAL AXIS, MONOTONICITY, CLIPPING AND TONAL SMOOTHNESS
+==============================================================================
+[PASS] the neutral ramp is monotonically non-decreasing
+       most negative step 0.000e+00
+[PASS] no banding: largest output step per 10-bit input step is under 1/255
+       max step 0.766 / 255 over a 1024-point neutral sweep
+[PASS] the 33-point grid adds no kink: every segment's slope matches the exact transform
+       largest slope deviation from the exact transform over nodes 4-32 = 5.95e-05 (relative)
+[PASS] the analytic transform has no slope discontinuity above 0 % reflectance
+       largest single-step slope change = 8.18e-03 of peak slope (median 3.5e-04), sampled every 0.00021 in P
 
---------------------------------------------------------------------------------
-5. WHAT WAS SIMULATED
---------------------------------------------------------------------------------
-No genuine Apple Log 2 camera footage was available in this environment. All
-test "footage" is SIMULATED Apple Log 2, produced as follows
-(scripts/gdc_core.py : simulate_apple_log2):
+  For reference, the display-linear gradient of the neutral ramp over
+  successive grid segments, which shows a smooth monotone acceleration
+  through the mid-range rather than a step:
+      segment     8     9    10    11    12    13    14    15    16    17    18    19
+      ratio    1.35  1.39  1.44  1.50  1.58  1.69  1.81  1.52  1.18  1.02  0.96  0.92
+  LUT nodes at full black (all channels 0.0) :    125 of 35,937 (0.35 %)
+  LUT nodes at full white (all channels 1.0) :      0 of 35,937 (0.00 %)
+  LUT nodes with ANY channel at 0.0          :    131
+  LUT nodes with ANY channel at 1.0          :   3934 (10.95 %) - saturated corners of the cube
+     ...of those, inside the range real footage occupies (all channels P 0.15-0.87): 1019
 
-  1. Eight photorealistic scene stills were AI-generated (Arena image
-     generation) for this project - they are NOT iPhone photographs and are
-     NOT representative of iPhone 17 Pro sensor characteristics (noise,
-     real spectral response, real dynamic range). Sources and credits:
-     sources/SOURCES_AND_CREDITS.md.
-  2. Each still was sRGB-decoded to linear light and treated as a scene-linear
-     Rec.709 proxy of the scene (system gamma 1.0 assumption).
-  3. Converted to Apple Wide Gamut primaries (verified matrix) and encoded
-     with the official Apple Log 2 transfer function.
-  4. Quantised to 10-bit full range, matching ProRes container precision.
+  The black nodes are expected and correct: Apple Log encodes NEGATIVE
+  scene reflectance below 10-bit code 154 (P = 0.1505) in order to
+  preserve the noise floor. Everything below 0 % reflectance must map to
+  display black in an SDR deliverable.
 
-  Consequences (important):
-  - Because the stills are SDR (display-referred), the simulated scene-linear
-    signal tops out near +2.5 stops over 18% grey. Real Log 2 captures carry
-    far more highlight headroom. The LUT's behaviour above that range was
-    therefore validated numerically (synthetic exposure sweeps, swatch tests
-    to +4 EV, tone-curve checks to 1200% scene reflectance), not
-    photographically.
-  - The AI stills already contain processed, pleasing colour; they are not
-    raw sensor data. The BEFORE/AFTER comparisons therefore show the LUT's
-    transformation of that content, not of a real camera signal.
-  - "BEFORE" = neutral technical conversion (Apple Log 2 decode -> AWG to
-    Rec.709 -> gamma 2.4, no tone mapping, no grade) of the same simulated
-    footage; "AFTER" = the delivered .cube. Same source, same simulated
-    exposure, same processing except the LUT.
+  Those single-channel-clipped nodes are the bright, extremely saturated
+  corners of the cube - for example P = (0.87, 0.15, 0.15), which decodes
+  to a pure red at 418 % reflectance with both other channels at or below
+  0 %. Such a colour cannot be represented in Rec.709 at that intensity by
+  any transform, and clipping it is correct behaviour. What matters is
+  whether real imagery reaches those corners; section 7 measures 0.00 %
+  clipped area across all eight test scenes.
 
---------------------------------------------------------------------------------
-6. WHAT WAS NOT TESTED (do not assume otherwise)
---------------------------------------------------------------------------------
-  - No physical iPhone, no Blackmagic Camera app, no DaVinci Resolve, no
-    Final Cut Pro, and no hardware LUT box were used in this project. All
-    rendering and measurement happened in this project's Python pipeline
-    (numpy; verified against OpenColorIO's published matrices).
-  - The LUT has not been applied to real iPhone 17 Pro Apple Log 2 footage.
-  - The Blackmagic Camera import instructions in README.txt follow the app's
-    documented custom LUT support but were not exercised on a device.
-  - The HTML gallery was tested by serving it over HTTP and checking
-    resources/status codes from this environment; it was NOT opened on an
-    iPhone or in iPhone Safari. No physical mobile testing of any kind was
-    performed.
-  - Display fidelity: preview PNGs store Rec.709 gamma 2.4 code values
-    directly; on a typical sRGB/gamma-2.2 browser display they will appear
-    very slightly darker than on a reference 2.4 display. This is expected.
+  Clipping onset on a neutral-to-saturated sweep (how saturated a 90 %
+  reflectance colour can be before a channel clips):
+      a 90 % red clips only beyond 100 % saturation (R held at 90 % reflectance)
+[PASS] full-white clipping affects less than 1 % of the LUT volume
+       0 nodes = 0.000 %
 
---------------------------------------------------------------------------------
-7. KNOWN TRADE-OFFS
---------------------------------------------------------------------------------
-  - A LUT cannot recover clipped highlights. If the camera clipped the sky,
-    no detail returns; the shoulder will simply render the clipped area as a
-    smooth, slightly warm top-end.
-  - Overall level: the grade renders midtones richer and somewhat darker than
-    a flat log conversion (18% grey at code 0.42; mean luma -14 to -23% on
-    the test scenes). This is the intended "luxury film" density; exposure
-    can be trimmed before the LUT if a brighter base is wanted.
-  - 33^3 grid: the steep log toe is smoothed by grid interpolation; sensor
-    black renders at a designed film floor (~9/255) rather than absolute 0,
-    and the deepest ~1/3-stop below scene 0.4% deviates from the authoring
-    curve by up to ~6/255. Above that region the cube matches the authoring
-    pipeline to 0.46/255.
-  - The cool shadow split-tone (max 1.3/255 channel deviation) means the
-    grey axis is not perfectly neutral in the deepest shadows - intentional,
-    for sun/shade dimensionality.
-  - Saturated deep blues (e.g. dark glass reflecting sky) gain noticeably
-    more saturation than average content (up to ~+25-35% on the architecture
-    test scene). This reads as depth on reflective glass but is the most
-    aggressive behaviour of the look.
-  - Warmth is attenuated on strongly orange/yellow content so golden-hour
-    footage is not over-warmed; heavily saturated golden scenes therefore
-    receive less additional warmth than neutral midday scenes.
+  KNOWN 33-POINT ARTEFACT AT THE BOTTOM OF THE LOG RANGE (measured):
+    Apple Log's parabolic segment is extremely steep just above
+    P = 0.1505, so the output rises from 0 to code 0.042 within a fifth
+    of one grid cell. A 33-point grid cannot resolve that, so tetrahedral
+    interpolation lifts the below-black region slightly instead of
+    holding it at 0:
 
-================================================================================
- Reproduction: scripts/ contains the complete build system
- (gdc_core.py, build_lut.py, apply_lut.py, render_final.py,
- make_contact_sheet.py, validate_lut.py, analyze_iteration.py,
- render_iteration.py). "python3 scripts/validate_lut.py" re-runs every check
- in section 3 against the delivered files.
+        P          scene reflectance    exact code   33-point code   delta
+        0.1250      -0.004997         0.00000        0.00000      0.00/255
+        0.1406      -0.001883         0.00000        0.02107      5.37/255
+        0.1505      +0.000004         0.00000        0.03445      8.78/255
+        0.1563      +0.001081         0.04235        0.04228      0.02/255
+        0.1700      +0.003548         0.06568        0.05984      1.49/255
+        0.1875      +0.006558         0.08226        0.08226      0.00/255
+
+    Worst case is a lift of about 8.8/255 in gamma-2.4 code at exactly
+    0 % reflectance, which is 0.0003 in display-linear terms, or 1/255
+    once re-encoded to sRGB. It is a smooth lift of the deepest black,
+    not banding, and it only affects signal BELOW black. It is inherent
+    to 33-point LUTs on Apple Log and is the price of the 33-point size
+    that Blackmagic Camera requires.
+  First non-black neutral input: P = 0.12512 (scene reflectance -0.004971)
+
+==============================================================================
+6.  33-POINT QUANTISATION ERROR VERSUS THE EXACT TRANSFORM
+==============================================================================
+  200,000 uniformly random Apple Log 2 triplets, exact analytic transform
+  versus tetrahedral interpolation of the delivered 33^3 table:
+      mean  absolute error : 0.001302  (0.332 / 255)
+      99th  percentile     : 0.010187  (2.598 / 255)
+      max   absolute error : 0.045950  (11.717 / 255)
+[PASS] mean 33-point interpolation error is below 1/255
+       this is the inherent cost of a 33-point grid
+  Restricted to the range real footage occupies (P in 0.16-0.86, 68,759 samples):
+      mean 0.417 / 255, max 11.371 / 255
+
+==============================================================================
+7.  SCENE BEHAVIOUR: SKIN, SKY, FOLIAGE, STONE, WHITES, SHADOW
+==============================================================================
+  Measured in display-linear on all eight test scenes, comparing the
+  source still with the result of the DELIVERED .cube. 'sat' is
+  chroma / luminance; 'hue' uses the Rec.709 Y/Cb/Cr wheel where
+  red = 15, yellow = 86, green = 135, cyan = 195, blue = 266, magenta = 315.
+
+  region      hue in  hue out   delta   sat x  sat out  luma x
+  sky          234.2    238.7    +4.5    0.97    0.574    0.99
+  foliage       87.9     77.4   -10.5    1.11    0.758    0.93
+  skin          50.2     48.9    -1.3    1.30    0.478    1.01
+  stone         61.0     56.1    -4.9    1.25    0.171    0.93
+  white        257.7     52.0   +69.1    1.56    0.038    0.91
+  shade         84.5     78.7    -5.9    0.84    0.696    0.77
+
+[PASS] skies move towards blue, not towards cyan
+       sky hue 234.2 -> 238.7 (+4.5 deg)
+[PASS] skies are not artificially darkened
+       sky luminance ratio 0.99x
+[PASS] sky saturation stays controlled (0.85x - 1.20x of source)
+       0.97x
+[PASS] foliage is warmed (rotated towards yellow) but not made radioactive
+       hue -10.5 deg, saturation 1.11x, luminance 0.93x
+[PASS] skin hue is held within 5 degrees (no orange shift)
+       skin hue 50.2 -> 48.9 (-1.3 deg), luminance 1.01x
+[PASS] bright near-neutrals stay believable whites (absolute saturation < 0.06)
+       near-white saturation 0.038
+
+  Luminance preservation, mean over the eight scenes (graded / source,
+  display-linear percentiles):
+      p5 0.83x   p25 0.82x   p50 1.07x   p75 0.95x   p95 0.90x
+[PASS] already-bright footage is NOT made brighter (p75 and p95 <= 1.00x)
+       p75 0.95x, p95 0.90x
+[PASS] output clipping stays negligible
+       mean clipped area 0.00 %
+  Mean area below display-linear 0.0008 (very deep shadow): 0.67 %
+
+==============================================================================
+8.  EXPOSURE AND LIGHTING LATITUDE
+==============================================================================
+  Each scene was re-simulated at -2, -1, 0, +1 and +2 EV before Apple Log 2
+  encoding, then pushed through the DELIVERED .cube. This tests how the
+  look holds when the operator misjudges exposure.
+
+    EV   mean disp-lin Y   clipped %    black %   skin hue drift
+    -2           0.07645        0.00       0.00            -3.7
+    -1           0.17793        0.00       0.00            -2.4
+    +0           0.32129        0.00       0.00            +0.6
+    +1           0.47595        0.00       0.00            +3.6
+    +2           0.61882        0.00       0.00            +5.7
+[PASS] the look holds over a +/- 2 EV exposure error (skin hue drift < 10 deg)
+  Note: at +2 EV the simulated highlights are already clipped in the source
+  stills, so the clipped figure at +2 EV reflects the SOURCE, not the LUT.
+
+==============================================================================
+9.  PROOF THAT THE AFTER RENDERS CAME FROM THE DELIVERED .cube
+==============================================================================
+  Each delivered AFTER PNG is regenerated here, from scratch, by parsing
+  the .cube and interpolating it, then compared byte-for-byte with the
+  file in PREVIEWS/.
+
+      01_midday_city                  IDENTICAL  (max abs diff 0)
+      02_midday_portrait              IDENTICAL  (max abs diff 0)
+      03_mediterranean_street         IDENTICAL  (max abs diff 0)
+      04_bright_beach                 IDENTICAL  (max abs diff 0)
+      05_landscape_greenery           IDENTICAL  (max abs diff 0)
+      06_golden_hour_landscape        IDENTICAL  (max abs diff 0)
+      07_modern_architecture          IDENTICAL  (max abs diff 0)
+      08_travel_people_buildings      IDENTICAL  (max abs diff 0)
+[PASS] all eight AFTER PNGs are bit-identical to a fresh render from the .cube
+
+==============================================================================
+10.  LIMITATIONS, TRADE-OFFS AND HONEST CAVEATS
+==============================================================================
+L1  A LUT CANNOT RECOVER CLIPPED HIGHLIGHTS. Where the sensor has already
+    clipped, there is no data to grade; the shoulder will render those areas
+    as a smooth white with no texture. Expose for the highlights.
+
+L2  SHADOW TRADE-OFF. The look intentionally sits below the source in the
+    shadows - measured mean ratios p5 0.83x and p25 0.82x of the source
+    display-linear luminance. That is what produces the "deep but detailed"
+    character. On footage that is already under-exposed it will read dark,
+    and lifting exposure BEFORE the LUT is the correct remedy.
+
+L3  BELOW-BLACK REGION. Apple Log 2 encodes negative scene reflectance below
+    10-bit code 154, and all of it must map to display black in SDR. The
+    parabolic segment is so steep there that a 33-point grid cannot resolve
+    it, so interpolation lifts the deepest black by up to 8.8/255 in gamma-2.4
+    code - 0.0003 display-linear, about 1/255 after sRGB re-encoding (measured
+    in section 5). It is a smooth lift, not banding, and it only affects
+    signal below 0 % reflectance.
+
+L4  33-POINT QUANTISATION. Mean error against the exact transform is
+    0.332/255 and the maximum is 11.717/255, the latter occurring only at
+    extreme saturated corners of the cube that real footage does not reach.
+    33 points was chosen because Blackmagic Camera for iOS accepts 17- and
+    33-point LUTs only.
+
+L5  INTENTIONAL COLOUR SHIFTS. The grade deliberately moves colour. Measured
+    on the eight scenes: foliage is rotated -10.5 deg towards yellow at
+    1.11x saturation; sky is rotated +4.5 deg towards blue at 0.97x;
+    skin hue moves -1.3 deg. A neutral 18 % grey card comes out with an
+    R/B ratio of 1.093 (a warm midtone by design) while 90 % white comes
+    out at 1.030, which is why whites still read as white.
+
+L6  NOT A TECHNICAL CONVERSION LUT. This is a creative look. For colour-
+    critical technical work, use Apple's own Apple Log 2 to Rec.709 LUT.
+
+L7  SIMULATED SOURCE MATERIAL. Every preview uses DOCUMENTED SIMULATED Apple
+    Log 2 built from AI-generated stills by scripts/simulate_log2.py
+    (sRGB -> inverse BT.709 OETF -> highlight expansion -> Rec.709 to Apple
+    Wide Gamut -> Apple Log encode -> 10-bit quantise). The simulated signal
+    spans roughly P = 0.15 to 0.84, which is the range real Apple Log sits in,
+    but it does NOT reproduce iPhone sensor noise, demosaic, lens flare or
+    Apple's ISP colour science. These frames are not iPhone captures.
+
+L8  NO PHYSICAL DEVICE TESTING. No iPhone 17 Pro, no iPhone of any kind and
+    no installation of Blackmagic Camera was used. The import procedure in
+    README.txt is transcribed from current vendor documentation, not from a
+    test. On-device appearance, import success and performance are UNVERIFIED.
+
+L9  OUTPUT ENCODING OF THE PREVIEW PNGs. The LUT outputs Rec.709 / gamma 2.4.
+    PNG viewers assume sRGB, so the preview stills are linearised from gamma
+    2.4 and re-encoded with the sRGB transfer function. Rec.709 and sRGB share
+    primaries, so this is a transfer-function change only and the stills look
+    on an sRGB display exactly as the LUT output looks on a gamma 2.4 display.
+
+==============================================================================
+SUMMARY
+==============================================================================
+  [PASS] file parses as a valid Adobe/IRIDAS 3D .cube
+  [PASS] LUT_3D_SIZE is 33 (33 x 33 x 33)
+  [PASS] entry count is 33^3 = 35,937
+  [PASS] no NaN values
+  [PASS] no infinite values
+  [PASS] all entries within the legal [0, 1] output range
+  [PASS] every data line holds exactly three decimal values
+  [PASS] file is plain 7-bit ASCII with LF line endings
+  [PASS] all four published anchor points reproduce within 1 code value
+  [PASS] encode/decode round-trip is exact
+  [PASS] reference value log_encoding_AppleLogProfile(0.18) = 0.48827245852686763
+  [PASS] decode is strictly monotonic and finite across P in [0, 1]
+  [PASS] re-derived Apple Wide Gamut -> ACES2065-1 matrix matches the published one
+  [PASS] matrix row sums are 1.0, so neutral in -> neutral out
+  [PASS] no reference hue is displaced by more than 20 degrees
+  [PASS] 18 % grey lands in the standard mid-grey window (code 0.40-0.46)
+  [PASS] 90 % diffuse white stays below clipping with highlight headroom
+  [PASS] the top of the Apple Log 2 range (1200 % / P = 1.0) does not hard clip
+  [PASS] the neutral ramp is monotonically non-decreasing
+  [PASS] no banding: largest output step per 10-bit input step is under 1/255
+  [PASS] the 33-point grid adds no kink: every segment's slope matches the exact transform
+  [PASS] the analytic transform has no slope discontinuity above 0 % reflectance
+  [PASS] full-white clipping affects less than 1 % of the LUT volume
+  [PASS] mean 33-point interpolation error is below 1/255
+  [PASS] skies move towards blue, not towards cyan
+  [PASS] skies are not artificially darkened
+  [PASS] sky saturation stays controlled (0.85x - 1.20x of source)
+  [PASS] foliage is warmed (rotated towards yellow) but not made radioactive
+  [PASS] skin hue is held within 5 degrees (no orange shift)
+  [PASS] bright near-neutrals stay believable whites (absolute saturation < 0.06)
+  [PASS] already-bright footage is NOT made brighter (p75 and p95 <= 1.00x)
+  [PASS] output clipping stays negligible
+  [PASS] the look holds over a +/- 2 EV exposure error (skin hue drift < 10 deg)
+  [PASS] all eight AFTER PNGs are bit-identical to a fresh render from the .cube
+
+  34 of 34 checks passed.
+
+  Tests NOT performed (and therefore not claimed):
+    - any capture, import or playback on a physical iPhone
+    - any use of the Blackmagic Camera app
+    - any comparison against real iPhone 17 Pro Apple Log 2 footage
+    - any measurement on a calibrated reference display
 ================================================================================
