@@ -99,6 +99,11 @@
   @media(min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
 
   .card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--ink-2)}
+  /* On a phone a 16:9 frame is only ~195 px tall, which is too little to judge
+     a grade. A 4:3 crop gives ~30% more pixels per detail; object-fit:cover
+     handles the crop, and the full 16:9 frame is always available in the
+     lightbox and at ../PREVIEWS/. */
+  @media(max-width:600px){ .cmp{aspect-ratio:4/3} }
   .cmp{position:relative;aspect-ratio:1408/768;overflow:hidden;touch-action:pan-y;
        cursor:ew-resize;user-select:none;-webkit-user-select:none;background:#000}
   .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
@@ -123,8 +128,9 @@
   .tag.l{left:10px}.tag.r{right:10px;color:var(--accent)}
   .card .meta{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
               padding:.9rem 1rem;border-top:1px solid var(--line)}
+  .card .meta > div{min-width:0}
   .card .meta h3{margin:0;font-size:.92rem;font-weight:600;letter-spacing:.01em}
-  .card .meta span{font-size:.7rem;color:var(--dimmer);letter-spacing:.08em;white-space:nowrap}
+  .card .meta .note{margin:.15rem 0 0;font-size:.76rem;color:var(--dimmer);line-height:1.4}
   .expand{
     border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--dim);
     border-radius:9px;min-height:36px;padding:0 .7rem;font-size:.72rem;font-weight:600;
@@ -132,6 +138,19 @@
   }
   .expand:active{background:rgba(255,255,255,.1)}
   .hint{color:var(--dimmer);font-size:.78rem;margin:.9rem 0 0;text-align:center}
+
+  /* one-time nudge on the first card so the interaction is discovered */
+  @keyframes nudge{
+    0%,100%{opacity:0} 12%,60%{opacity:1}
+  }
+  .card:first-child .handle::after{
+    content:""; position:absolute; inset:-9px; border-radius:50%;
+    border:1px solid rgba(226,185,110,.9);
+    animation:nudge 2.6s ease-in-out .7s 2 both;
+  }
+  @media(prefers-reduced-motion:reduce){
+    .card:first-child .handle::after{animation:none;opacity:0}
+  }
 
   /* ---------- contact sheet ---------- */
   .sheet{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#000}
@@ -489,7 +508,7 @@
         '<div class="divider"></div>' +
         '<div class="handle"><svg viewBox="0 0 24 24"><path d="M9 6 4 12l5 6M15 6l5 6-5 6"/></svg></div>' +
       '</div>' +
-      '<div class="meta"><h3>'+title+'</h3>' +
+      '<div class="meta"><div><h3>'+title+'</h3><p class="note">'+note+'</p></div>' +
         '<button class="expand" type="button">EXPAND</button></div>';
     grid.appendChild(card);
 
@@ -565,18 +584,36 @@
     lbNext.disabled = cur === SCENES.length - 1;
   }
 
+  var lockedScrollY = 0;
+  function lockScroll(){
+    /* position:fixed is the only reliable body-scroll lock in iOS Safari;
+       plain overflow:hidden on body is ignored while the page is mid-scroll. */
+    lockedScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = "fixed";
+    document.body.style.top = (-lockedScrollY) + "px";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+  }
+  function unlockScroll(){
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
+    window.scrollTo(0, lockedScrollY);
+  }
+
   function openLightbox(i){
     lastFocus = document.activeElement;
     cur = i; mode = "compare"; lbRange.value = 50;
     lb.setAttribute("open","");
-    document.body.style.overflow = "hidden";
+    lockScroll();
     render();
     document.getElementById("lb-close").focus();
   }
 
   function closeLightbox(){
     lb.removeAttribute("open");
-    document.body.style.overflow = "";
+    unlockScroll();
     lbBody.innerHTML = "";
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
@@ -592,6 +629,11 @@
   lbPrev.addEventListener("click", function(){ if (cur > 0){ cur--; render(); } });
   lbNext.addEventListener("click", function(){ if (cur < SCENES.length - 1){ cur++; render(); } });
   document.getElementById("lb-close").addEventListener("click", closeLightbox);
+  /* Tap the empty backdrop to close - expected on a phone. Taps that land on
+     the image or a control are ignored, so nothing closes by accident. */
+  lbBody.addEventListener("click", function(e){
+    if (e.target === lbBody) closeLightbox();
+  });
   document.getElementById("sheet-btn").addEventListener("click", function(){
     openSheet();
   });
@@ -599,7 +641,7 @@
   function openSheet(){
     lastFocus = document.activeElement;
     lb.setAttribute("open","");
-    document.body.style.overflow = "hidden";
+    lockScroll();
     lbTitle.textContent = "Contact sheet";
     lbBody.innerHTML = '<a href="img/contact_sheet.jpg" target="_blank" rel="noopener" ' +
       'style="display:grid;place-items:center;width:100%;height:100%;overflow:auto">' +
