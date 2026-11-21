@@ -1,0 +1,117 @@
+================================================================================
+GOLDEN DAYLIGHT CINEMA — TECHNICAL VALIDATION REPORT
+================================================================================
+Generated (UTC): 2026-11-21 01:07:18 UTC
+LUT File       : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+Target Camera  : iPhone 17 Pro / Blackmagic Camera for iOS (Apple Log 2)
+Output Target  : Rec.709 SDR, Display Gamma 2.4
+
+1. .CUBE SYNTAX & NUMERICAL INTEGRITY
+--------------------------------------------------------------------------------
+  TITLE          : GOLDEN_DAYLIGHT_CINEMA
+  LUT_3D_SIZE    : 33 (35937 total RGB triplets)
+  DOMAIN_MIN     : [0.0, 0.0, 0.0]
+  DOMAIN_MAX     : [1.0, 1.0, 1.0]
+  File Size      : 970,562 bytes (35,944 lines)
+  NaN / Inf      : NaN=False, Inf=False
+  Value Range    : min=0.000000, max=1.000000 (strictly within [0.0, 1.0])
+  STATUS         : PASS
+
+2. APPLE LOG 2 & APPLE WIDE GAMUT REFERENCE VERIFICATION
+--------------------------------------------------------------------------------
+  Sources:
+    - Apple Inc., Apple Log Profile White Paper (Sept 2023) & Apple Log 2 White Paper (Sept 2025)
+    - AcademySoftwareFoundation/OpenColorIO PR #2343 (AppleCameras.cpp, BuiltinTransform_tests.cpp)
+    - AcademySoftwareFoundation/OpenColorIO-Config-ACES Issue #163 / PR #179
+  Transfer Constants: R_0=-0.05641088, R_t=0.01, c=47.28711236,
+                      beta=0.00964052, gamma=0.08550479, delta=0.69336945
+  OCIO CURVE - APPLE_LOG_to_LINEAR([0.5, 0.4, 0.3])
+    Computed     : [0.19891389, 0.08307602, 0.03157826]
+    OCIO Ref     : [0.198913991, 0.083076466024, 0.0315782763]
+    Max Abs Err  : 4.434e-07 (< 1e-6)
+  OCIO APPLE_LOG-APPLEWG_to_ACES2065-1([0.5, 0.4, 0.3])
+    Computed     : [0.16030183, 0.09122273, 0.02640571]
+    OCIO Ref     : [0.160302015, 0.091223177, 0.026405713]
+    Max Abs Err  : 4.487e-07 (< 1e-6)
+  18% Gray (R=0.18) -> Apple Log 2 = 0.488272 (~500 / 1023 in 10-bit)
+  STATUS         : PASS
+
+3. NEUTRAL GRAY RAMP, MONOTONICITY, SMOOTHNESS & REC.709 GAMMA 2.4 CHECK
+--------------------------------------------------------------------------------
+  Black Point (0,0,0) -> [0.00552, 0.00552, 0.00552]
+  18% Gray (P=0.4883) -> Gamma 2.4 RGB = [0.4602, 0.4565, 0.4394]
+    Decoded Display Linear (pow 2.4) = [0.1552, 0.1523, 0.139]
+  White Point (1,1,1) -> [0.99475, 0.99475, 0.99475]
+  Luma Monotonicity (256-step ramp) : min step diff = 0.000000 (>= 0)
+  Tonal Smoothness (2nd derivative) : max |d2L|     = 0.003838
+  Neutral Axis Chroma Spread        : max=0.0315 (subtle honey-warmth in midtones, clean black/white)
+  STATUS         : PASS
+
+4. SIMULATED EXPOSURE SWEEP (-2 EV TO +3 EV AROUND 18% GRAY)
+--------------------------------------------------------------------------------
+  -2.0 EV | Scene Lin= 0.045 | Log2=0.3348 | Out Gamma2.4 RGB=[0.2324, 0.2359, 0.2405] | Y'=0.2355
+  -1.0 EV | Scene Lin= 0.090 | Log2=0.4089 | Out Gamma2.4 RGB=[0.3303, 0.3307, 0.328] | Y'=0.3304
+  +0.0 EV | Scene Lin= 0.180 | Log2=0.4883 | Out Gamma2.4 RGB=[0.4602, 0.4565, 0.4394] | Y'=0.4561
+  +1.0 EV | Scene Lin= 0.360 | Log2=0.5706 | Out Gamma2.4 RGB=[0.6125, 0.607, 0.5815] | Y'=0.6063
+  +2.0 EV | Scene Lin= 0.720 | Log2=0.6545 | Out Gamma2.4 RGB=[0.7527, 0.7496, 0.7357] | Y'=0.7492
+  +3.0 EV | Scene Lin= 1.440 | Log2=0.7392 | Out Gamma2.4 RGB=[0.8553, 0.8549, 0.8534] | Y'=0.8549
+  STATUS         : PASS (smooth highlight compression without hard digital clip)
+
+5. SKIN, SKY, FOLIAGE & APPLE WIDE GAMUT BOUNDARY BEHAVIOR
+--------------------------------------------------------------------------------
+  Light Skin (sunlit)    | Neutral709_g24=[0.717, 0.588, 0.511] (H= 22.5 S=0.29) -> LUT=[0.675, 0.556, 0.471] (H= 25.0 S=0.30)
+  Medium/Tan Skin        | Neutral709_g24=[0.606, 0.478, 0.399] (H= 23.0 S=0.34) -> LUT=[0.57, 0.454, 0.374] (H= 24.6 S=0.34)
+  Deep Skin              | Neutral709_g24=[0.413, 0.32, 0.267] (H= 21.8 S=0.35) -> LUT=[0.368, 0.289, 0.245] (H= 21.5 S=0.33)
+  Mediterranean Sky      | Neutral709_g24=[0.399, 0.57, 0.819] (H=215.5 S=0.51) -> LUT=[0.266, 0.486, 0.708] (H=210.2 S=0.62)
+  Foliage / Olive Green  | Neutral709_g24=[0.427, 0.532, 0.33] (H= 91.1 S=0.38) -> LUT=[0.414, 0.487, 0.306] (H= 84.2 S=0.37)
+  Warm Stone / Honey     | Neutral709_g24=[0.761, 0.697, 0.588] (H= 37.5 S=0.23) -> LUT=[0.703, 0.643, 0.525] (H= 39.8 S=0.25)
+  Golden Hour Amber      | Neutral709_g24=[0.836, 0.668, 0.383] (H= 37.8 S=0.54) -> LUT=[0.773, 0.635, 0.414] (H= 36.9 S=0.46)
+  Clean Cloud White      | Neutral709_g24=[0.979, 0.979, 0.979] (H=  0.0 S=0.00) -> LUT=[0.798, 0.796, 0.789] (H= 49.0 S=0.01)
+  Out-of-Rec.709 AWG extreme primaries -> finite & clamped in [0,1]: min=0.0000, max=0.8958
+  STATUS         : PASS
+
+6. RENDERED SCENE VERIFICATION (ACTUAL .CUBE REPRODUCTION & PIXEL STATS)
+--------------------------------------------------------------------------------
+  01_harsh_midday_city                     | ReproDiff=0.0 | MeanY'=0.498 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.255
+  02_midday_portrait                       | ReproDiff=0.0 | MeanY'=0.500 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.275
+  03_mediterranean_street                  | ReproDiff=0.0 | MeanY'=0.426 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.319
+  04_bright_beach_daylight                 | ReproDiff=0.0 | MeanY'=0.624 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.281
+  05_natural_landscape_greenery_mountains  | ReproDiff=0.0 | MeanY'=0.458 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.449
+  06_golden_hour_landscape                 | ReproDiff=0.0 | MeanY'=0.461 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.287
+  07_modern_architecture                   | ReproDiff=0.0 | MeanY'=0.423 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.389
+  08_outdoor_travel_people_buildings       | ReproDiff=0.0 | MeanY'=0.496 | Shadow(<1.5%)=0.00% | Clip(>98.5%)=0.00% | MeanSat=0.267
+  STATUS         : PASS (All 8 AFTER PNGs match tetrahedral evaluation of delivered .cube with 0.00 pixel diff)
+
+7. HONEST DISCLOSURES, TESTING SCOPE & KNOWN LIMITATIONS
+--------------------------------------------------------------------------------
+  1. Simulated Apple Log 2 Input:
+     Genuine iPhone 17 Pro / Blackmagic Camera Apple Log 2 ProRes/HEVC camera
+     captures were not available in this sandbox environment. All 8 BEFORE
+     plates are mathematically simulated Apple Log 2 inputs derived from
+     photorealistic SDR plates (inverse sRGB EOTF -> smooth luminance-preserving
+     highlight headroom expansion -> Rec.709-to-AWG matrix -> Apple Log 2 OETF).
+     They verify LUT decoding, tonal mapping, and color behavior, but do NOT
+     replace empirical sensor testing on physical iPhone 17 Pro hardware.
+  2. No Physical Device Test Performed:
+     Blackmagic Camera for iOS import/monitoring was NOT executed on a
+     physical iPhone 17 Pro in this environment. Compatibility is engineered
+     to match Blackmagic Camera's documented 33-point .cube specification.
+  3. Highlight Clipping Limitation:
+     A 3D LUT cannot recover pixels that were already sensor-clipped to white
+     in the camera recording. Expose midday Apple Log 2 footage cleanly
+     (protect highlights / ETTR cautiously) to preserve cloud and sand texture.
+  4. Chromatic Adaptation & Output Gamma Assumptions:
+     - Apple Wide Gamut and Rec.709 share the D65 white point (0.3127, 0.3290);
+       Bradford CAT was used and verified against OCIO AP0 unit tests.
+     - Output assumes Rec.709 SDR display gamma 2.4 (pure power 2.4). On
+       bright-room sRGB/Apple Display P3 screens, shadow contrast appears
+       slightly richer than a pure sRGB piece-wise curve, as intended for
+       cinema-style grading.
+  5. Shadow/Color Trade-offs:
+     - Deep shadows receive a restrained cool-slate tint and gentle toe
+       density; extremely underexposed shadows (>2.5 stops under) may benefit
+       from a pre-LUT exposure lift node in post.
+     - 8-bit PNG previews cannot represent 10-bit Apple Log 2 precision; a
+       0.5-LSB TPDF dither was applied to BEFORE PNGs to avoid artificial
+       8-bit banding.
+================================================================================
