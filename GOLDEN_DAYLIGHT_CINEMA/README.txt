@@ -1,33 +1,16 @@
-GOLDEN DAYLIGHT CINEMA — 3D LUT for iPhone 17 Pro (Apple Log 2)
-=================================================================
+GOLDEN DAYLIGHT CINEMA
+======================
+One 33x33x33 creative conversion LUT: Apple Log 2 / Apple Wide Gamut input to Rec.709 SDR, display gamma 2.4 output. Not for original Apple Log/Rec.2020 or already-converted Rec.709. Do not stack another Log-to-709 conversion on it. Standard normalized 0–1 code values are expected; allow the editing app to correctly interpret full/video range first. A LUT cannot fix clipped highlights, white balance, or exposure, and extreme colours may be compressed.
 
-OVERVIEW
---------
-GOLDEN_DAYLIGHT_CINEMA.cube is a standalone 33x33x33 3D LUT designed for
-iPhone 17 Pro footage recorded in Apple Log 2 (Apple Wide Gamut) using
-Blackmagic Camera for iOS.
+BLACKMAGIC CAMERA FOR IPHONE
+1. Save the .cube to Files (or unzip the full package in Files).
+2. In Blackmagic Camera select Apple Log 2 in recording colour space if offered on your device. Names and availability depend on app/iOS version.
+3. In LUT settings / LUT manager choose Import and select the .cube in Files. Select the imported LUT for monitoring and set its colour space tag to Rec.709 if offered.
+4. Use display-only monitoring for clean Log recording; leave Record LUT to Clip off unless a baked-in look is specifically desired. Apply the same LUT ONCE to the clean Log in an editor with colour management/conversions disabled for that clip. Adjust exposure and white balance before the LUT when necessary.
 
-It decodes Apple Log 2, converts Apple Wide Gamut to Rec.709, applies a
-cinematic Mediterranean daylight grade, and outputs Rec.709 SDR (Gamma 2.4).
-Do NOT stack a separate Apple Log 2 -> Rec.709 conversion LUT in front of it.
+These are guidance based on published third-party instructions, not tested on a physical iPhone or Blackmagic Camera. Menu names may change. Verify monitoring versus recording behaviour in your version before an important shoot. Reference: https://absoluts-store.com/blogs/blog/blackmagic-camera-iphone-settings-luts
 
-INSTALLATION IN BLACKMAGIC CAMERA (iOS)
----------------------------------------
-1. Download GOLDEN_DAYLIGHT_CINEMA.cube to your iPhone (Files app -> Downloads
-   or iCloud Drive).
-2. Open Blackmagic Camera on your iPhone 17 Pro.
-3. Tap Settings (gear icon) -> LUTs.
-4. Tap "Import LUT" and select GOLDEN_DAYLIGHT_CINEMA.cube from Files.
-5. Enable "Display LUT" to preview the grade while shooting, or "Record LUT"
-   only if you want the look baked into the recorded file (recommended: leave
-   Record LUT OFF and shoot Apple Log 2, using Display LUT for monitoring).
+PREVIEWS
+Open GALLERY/index.html, or see PREVIEWS and CONTACT_SHEET. The images are AI-generated simulated scenes, not photographs from a phone. BEFORE is a neutral SDR reference derived from the same source and simulated exposure; AFTER comes from the actual .cube. The images are 8-bit PNG for viewing and do not demonstrate captured dynamic range or sensor colour. See VALIDATION_REPORT.txt for methodology and limitations.
 
-CAMERA SETTINGS RECOMMENDATION
-------------------------------
-- Color Space: Apple Log 2 (Apple Wide Gamut)
-- Codec: Apple ProRes 422 HQ / 422 or HEVC 10-bit
-- Exposure: Expose for highlights (zebras at 90-95%) to preserve sky and
-  sunlit stone detail.
-
-NOTE: Physical iPhone 17 Pro / Blackmagic Camera testing was not performed
-in this sandbox environment.
+GALLERY uses relative local links and requires JavaScript for sliders and modal viewing. Safari downloads/embedded preview behaviour was not tested on iPhone. If the embedded preview blocks downloads, use the GitHub direct file links instead.
