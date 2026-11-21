@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>GOLDEN DAYLIGHT CINEMA — Apple Log 2 LUT</title>
+<style>
+  :root{
+    --bg:#0c0e11; --bg2:#14171c; --panel:#1a1e24; --line:#2a2f38;
+    --ink:#ece7dd; --muted:#9aa0a8; --gold:#d8ab5e; --gold2:#efce8c;
+    --accent:#c98f4e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;}
+  a{color:var(--gold2)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header.hero{padding:64px 0 36px;text-align:center;
+    background:radial-gradient(120% 90% at 50% -10%, #23201a 0%, var(--bg) 60%);}
+  .kicker{letter-spacing:.34em;font-size:12px;color:var(--gold);text-transform:uppercase;margin-bottom:14px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(30px,7vw,54px);
+    margin:0 0 10px;letter-spacing:.01em}
+  .sub{color:var(--muted);max-width:640px;margin:0 auto;font-size:16px}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+  .badge{border:1px solid var(--line);background:var(--panel);color:var(--muted);
+    padding:6px 12px;border-radius:999px;font-size:12px}
+  .badge b{color:var(--gold2);font-weight:600}
+
+  section{padding:44px 0;border-top:1px solid var(--line)}
+  h2{font-family:Georgia,serif;font-size:24px;margin:0 0 16px}
+  .look{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:720px){.look{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .card h3{margin:0 0 8px;font-size:15px;color:var(--gold2);letter-spacing:.04em;text-transform:uppercase}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  ul.clean{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+  ul.clean li{margin:5px 0}
+
+  .download{text-align:center;padding:18px;border:1px dashed var(--accent);border-radius:14px;
+    background:linear-gradient(180deg, rgba(216,171,94,.06), rgba(216,171,94,0));margin-top:8px}
+  .btn{display:inline-block;background:linear-gradient(180deg,var(--gold2),var(--accent));
+    color:#1a1206;font-weight:700;padding:13px 26px;border-radius:10px;text-decoration:none;
+    font-size:15px;box-shadow:0 6px 20px rgba(216,171,94,.18)}
+  .btn small{display:block;font-weight:500;color:#4a3a1e;font-size:12px;margin-top:2px}
+
+  .scene-grid{display:grid;grid-template-columns:1fr;gap:30px}
+  .scene h3.scene-title{font-family:Georgia,serif;font-size:19px;margin:0 0 4px}
+  .scene p.scene-desc{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+
+  .compare{position:relative;width:100%;aspect-ratio:16/10;border-radius:12px;overflow:hidden;
+    border:1px solid var(--line);background:#000;touch-action:none;user-select:none;cursor:ew-resize}
+  .compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .cmp-base{z-index:1}
+  .cmp-top{z-index:2;clip-path:inset(0 50% 0 0)}
+  .cmp-handle{position:absolute;z-index:3;top:0;bottom:0;left:50%;width:2px;
+    background:linear-gradient(180deg,var(--gold2),var(--accent));transform:translateX(-1px);
+    box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+  .cmp-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:42px;height:42px;border-radius:50%;background:rgba(20,22,26,.85);
+    border:2px solid var(--gold2);display:flex;align-items:center;justify-content:center;
+    color:var(--gold2);font-size:18px;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+  .lbl{position:absolute;z-index:4;top:10px;padding:3px 10px;border-radius:6px;font-size:11px;
+    font-weight:700;letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
+  .lbl.before{left:10px;background:rgba(0,0,0,.55);color:#cfd3d8}
+  .lbl.after{right:10px;background:rgba(216,171,94,.85);color:#1a1206}
+  .fs-btn{margin-top:10px;background:var(--bg2);border:1px solid var(--line);color:var(--muted);
+    padding:7px 14px;border-radius:8px;font-size:12.5px;cursor:pointer}
+  .fs-btn:active{background:var(--line)}
+
+  .contact img{width:100%;border-radius:12px;border:1px solid var(--line)}
+
+  /* lightbox */
+  .lightbox{position:fixed;inset:0;z-index:50;background:rgba(6,7,9,.94);display:none;
+    align-items:center;justify-content:center;padding:24px;flex-direction:column}
+  .lightbox.open{display:flex}
+  .lightbox .compare{max-width:1100px;width:100%;aspect-ratio:16/10}
+  .lightbox .lb-title{color:var(--ink);font-family:Georgia,serif;font-size:18px;margin:16px 0 4px}
+  .lightbox .lb-close{position:absolute;top:18px;right:22px;background:var(--bg2);
+    border:1px solid var(--line);color:var(--ink);width:42px;height:42px;border-radius:50%;
+    font-size:20px;cursor:pointer}
+  footer{padding:40px 0 60px;color:var(--muted);font-size:12.5px;text-align:center}
+  footer a{color:var(--gold2)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Apple Log 2 · Apple Wide Gamut → Rec.709 · 33³</div>
+    <h1>GOLDEN DAYLIGHT CINEMA</h1>
+    <p class="sub">A standalone cinematic LUT that turns harsh midday Apple Log 2
+    footage into warm, rich, atmospheric, dimensional colour — like a luxury
+    Mediterranean travel film or high-end lifestyle commercial.</p>
+    <div class="badges">
+      <span class="badge"><b>Input</b> Apple Log 2 / Apple Wide Gamut</span>
+      <span class="badge"><b>Output</b> Rec.709 SDR · gamma 2.4</span>
+      <span class="badge"><b>Format</b> 33 × 33 × 33 .cube</span>
+      <span class="badge"><b>App</b> Blackmagic Camera (iOS)</span>
+    </div>
+    <div class="download" style="margin-top:26px">
+      <a class="btn" href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube" download>
+        Download GOLDEN_DAYLIGHT_CINEMA.cube
+        <small>Standalone LUT — decodes Apple Log 2, grades, outputs Rec.709</small>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="wrap">
+  <h2>The Look</h2>
+  <div class="look">
+    <div class="card">
+      <h3>Warmth without the filter</h3>
+      <p>Honey and subtle amber warmth in sunlit surfaces and midtones, carried
+      by a luminance-weighted split tone rather than a flat orange overlay.
+      Warmth tapers near the top, so whites and bright highlights stay
+      believable — never a generic yellow cast.</p>
+    </div>
+    <div class="card">
+      <h3>Rich, dimensional contrast</h3>
+      <p>A filmic tone curve with deep but detailed shadows, clear sun/shade
+      separation and a smooth highlight roll-off. No crushed blacks, no flat
+      shadows, no harsh digital transitions. Midday footage is enriched, not
+      brightened, and highlight texture is preserved.</p>
+    </div>
+    <div class="card">
+      <h3>Natural colour</h3>
+      <ul class="clean">
+        <li><b>Skies</b> — rich natural blue, controlled cyan, natural cloud whites.</li>
+        <li><b>Foliage</b> — natural, slightly warm greens with controlled saturation.</li>
+        <li><b>Skin</b> — natural, subtly warm; no orange, no beauty smoothing.</li>
+        <li><b>Architecture</b> — warm stone and concrete, earthy, detailed shadows.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Compatibility</h3>
+      <p>One self-contained 33³ .cube. It decodes Apple Log 2, handles Apple
+      Wide Gamut, applies the grade and outputs Rec.709 gamma 2.4 — no separate
+      conversion LUT and no assumption that the footage is already Rec.709.
+      Drop it into Blackmagic Camera for iOS (Settings → LUTs / LUT Import, or
+      the Files app → Blackmagic Camera/LUTs) for live preview or burn-in.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Before / After — Eight Scenes</h2>
+  <p class="sub" style="margin-top:-8px">Drag the handle to compare. BEFORE is the
+  simulated Apple Log 2 decoded to Rec.709 with no grade; AFTER is the delivered
+  <b>.cube</b> applied to the same source.</p>
+  <div class="scene-grid" id="scenes"></div>
+</section>
+
+<section class="wrap">
+  <h2>Contact Sheet</h2>
+  <div class="contact">
+    <img src="../CONTACT_SHEET/contact_sheet.png" alt="Contact sheet of all eight scenes">
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <div class="compare" id="lbCompare"></div>
+  <div class="lb-title" id="lbTitle"></div>
+  <p class="sub" style="max-width:680px">Drag to compare. Source is simulated Apple Log 2.</p>
+</div>
+
+<footer class="wrap">
+  <p>GOLDEN DAYLIGHT CINEMA · standalone Apple Log 2 → Rec.709 gamma 2.4 cinematic LUT.</p>
+  <p>Source scenes are a documented <b>simulation</b> of Apple Log 2 (not iPhone sensor
+  footage). No physical iPhone or Blackmagic Camera testing was performed — see
+  <code>VALIDATION_REPORT.txt</code> for full sources, tests and limitations.</p>
+</footer>
+
+<script>
+const SCENES = [
+  {id:"scene1_midday_city", title:"1 · Harsh Midday City",
+   desc:"Bright buildings, blue sky and hard architectural shadows."},
+  {id:"scene2_midday_portrait", title:"2 · Midday Portrait in Sunlight",
+   desc:"A subject in direct midday sun — skin tone and highlight behaviour."},
+  {id:"scene3_mediterranean_street", title:"3 · Mediterranean Street",
+   desc:"Warm stone, blue sky and foliage under harsh daylight."},
+  {id:"scene4_beach_daylight", title:"4 · Bright Beach Daylight",
+   desc:"High-key sky, sand, water and a sunlit figure."},
+  {id:"scene5_landscape", title:"5 · Landscape with Greenery",
+   desc:"Greenery, atmospheric mountains and sky."},
+  {id:"scene6_golden_hour", title:"6 · Golden-Hour Landscape",
+   desc:"Warm golden sky and long shadows — must not over-warm."},
+  {id:"scene7_modern_architecture", title:"7 · Modern Architecture",
+   desc:"Concrete, glass and geometry under midday light."},
+  {id:"scene8_travel", title:"8 · Outdoor Travel Scene",
+   desc:"People and buildings in mixed daylight."}
+];
+const P = "../PREVIEWS/";
+
+function buildCompare(host, scene){
+  host.innerHTML = "";
+  host.classList.add("compare");
+  const after = document.createElement("img");
+  after.className = "cmp-base";
+  after.src = P + scene.id + "_after.png";
+  after.alt = scene.title + " after";
+  const before = document.createElement("img");
+  before.className = "cmp-top";
+  before.src = P + scene.id + "_before.png";
+  before.alt = scene.title + " before";
+  const handle = document.createElement("div");
+  handle.className = "cmp-handle";
+  const grip = document.createElement("div");
+  grip.className = "cmp-grip";
+  grip.textContent = "⇆";
+  handle.appendChild(grip);
+  const lb = document.createElement("span"); lb.className="lbl before"; lb.textContent="BEFORE";
+  const ra = document.createElement("span"); ra.className="lbl after"; ra.textContent="AFTER";
+  host.append(after, before, handle, lb, ra);
+  let pos = 50;
+  function set(p){
+    pos = Math.max(0, Math.min(100, p));
+    before.style.clipPath = `inset(0 ${100-pos}% 0 0)`;
+    handle.style.left = pos + "%";
+  }
+  set(50);
+  let dragging = false;
+  function fromEvent(e){
+    const r = host.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    set(100 * x / r.width);
+  }
+  host.addEventListener("pointerdown", e=>{dragging=true; host.setPointerCapture(e.pointerId); fromEvent(e);});
+  host.addEventListener("pointermove", e=>{ if(dragging) fromEvent(e); });
+  host.addEventListener("pointerup", ()=>{dragging=false;});
+  host.addEventListener("pointercancel", ()=>{dragging=false;});
+  return {set, host};
+}
+
+const grid = document.getElementById("scenes");
+SCENES.forEach(s=>{
+  const art = document.createElement("div");
+  art.className = "scene";
+  art.innerHTML = `<h3 class="scene-title">${s.title}</h3>
+    <p class="scene-desc">${s.desc}</p>`;
+  const host = document.createElement("div");
+  art.appendChild(host);
+  const btn = document.createElement("button");
+  btn.className = "fs-btn";
+  btn.textContent = "Full screen";
+  art.appendChild(btn);
+  grid.appendChild(art);
+  buildCompare(host, s);
+  btn.addEventListener("click", ()=>{
+    const lb = document.getElementById("lightbox");
+    const lbHost = document.getElementById("lbCompare");
+    const lbTitle = document.getElementById("lbTitle");
+    buildCompare(lbHost, s);
+    lbTitle.textContent = s.title + " — " + s.desc;
+    lb.classList.add("open");
+  });
+});
+
+const lb = document.getElementById("lightbox");
+document.getElementById("lbClose").addEventListener("click", ()=>lb.classList.remove("open"));
+lb.addEventListener("click", e=>{ if(e.target===lb) lb.classList.remove("open"); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") lb.classList.remove("open"); });
+</script>
+</body>
+</html>

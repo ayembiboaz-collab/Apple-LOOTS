@@ -66,24 +66,26 @@ GRADE_PARAMS = {
     "sat_high_protect": 0.62,       # luminance above which boost tapers
 
     # --- Tone curve control points (input linear luminance -> output) ----
-    # Lifted toe (deep, detailed shadows), filmic S in the midtones (rich),
-    # smooth asymptotic highlight roll-off (texture preserved, whites
-    # believable).  White (1.0) maps to ~0.85 linear -> ~0.93 encoded.
+    # Starts at 0 (pure black maps to black -- no dip or jump), filmic S in
+    # the midtones (rich), smooth asymptotic highlight roll-off (texture
+    # preserved, whites believable).  White (1.0) maps to ~0.85 linear ->
+    # ~0.93 encoded.  Below-black linear values are clipped to 0 upstream, so
+    # the curve is monotonic and continuous across the whole range.
     "tone_curve": [
-        (0.00, 0.0008),
-        (0.05, 0.0260),
-        (0.12, 0.0600),
-        (0.20, 0.1050),
-        (0.30, 0.1700),
-        (0.45, 0.2700),
-        (0.60, 0.3850),
-        (0.75, 0.5200),
-        (0.88, 0.6650),
-        (1.00, 0.8500),
-        (1.40, 0.9050),
-        (1.90, 0.9400),
-        (2.60, 0.9600),
-        (3.50, 0.9720),
+        (0.00, 0.0000),
+        (0.05, 0.0220),
+        (0.12, 0.0580),
+        (0.20, 0.1020),
+        (0.30, 0.1650),
+        (0.45, 0.2680),
+        (0.60, 0.3820),
+        (0.75, 0.5180),
+        (0.88, 0.6630),
+        (1.00, 0.8480),
+        (1.40, 0.9040),
+        (1.90, 0.9390),
+        (2.60, 0.9590),
+        (3.50, 0.9710),
         (5.00, 0.9800),
     ],
     "tone_asymptote": 0.982,   # clamp for luminance beyond the last point
@@ -250,6 +252,9 @@ def apple_log2_to_rec709_gamma24(encoded, params=None):
     linear_awg = cs.apple_log_to_linear(encoded)
     # 2) Apple Wide Gamut -> linear Rec.709.
     linear_709 = linear_awg @ _AWG_TO_709.T
+    # Below-black (the log curve's negative offset / sensor black level) is
+    # clipped to zero so the tone curve stays monotonic and continuous.
+    linear_709 = np.clip(linear_709, 0.0, None)
     # 3) Creative grade.
     graded = grade_linear(linear_709, params=params)
     # 4) Rec.709 gamma 2.4 output.
