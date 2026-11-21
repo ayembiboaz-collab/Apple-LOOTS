@@ -1,117 +1,103 @@
 ================================================================================
-GOLDEN DAYLIGHT CINEMA
-A standalone cinematic LUT for Apple Log 2 / Apple Wide Gamut
-Output: Rec.709 SDR, gamma 2.4  ·  Format: 33 x 33 x 33 .cube
+ GOLDEN DAYLIGHT CINEMA
+ A standalone cinematic LUT for Apple Log 2 (Apple Wide Gamut) footage
 ================================================================================
 
 WHAT THIS IS
 ------------
-GOLDEN DAYLIGHT_CINEMA.cube is a single, self-contained 3D LUT that takes
-Apple Log 2 footage (Apple Wide Gamut) and turns it into a warm, rich,
-atmospheric, dimensional cinematic look — like a luxury Mediterranean travel
-film or high-end lifestyle commercial.
+One 33 x 33 x 33 3D LUT (.cube) that turns harsh midday iPhone footage into a
+warm, rich, dimensional, luxury-travel-film look:
 
-It does everything in one file:
-  1. Decodes Apple Log 2 (Apple's published log transfer function).
-  2. Converts Apple Wide Gamut to Rec.709 (white-preserving primaries matrix).
-  3. Applies the creative grade (filmic tone curve, hue-aware honey/amber
-     split toning, luminance-weighted saturation).
-  4. Outputs Rec.709 SDR at gamma 2.4.
+  Input  : Apple Log 2, Apple Wide Gamut, D65, full range [0,1]
+           (as recorded by iPhone 17 Pro / iPhone 17 Pro Max, e.g. with the
+           Blackmagic Camera app or the Camera app's ProRes Log 2 encoding)
+  Output : Rec.709 SDR, gamma 2.4 (display-referred)
 
-No separate conversion LUT is needed, and the LUT does NOT assume the footage
-is already Rec.709. Just load it and the look is applied.
+The LUT is STANDALONE. It decodes Apple Log 2, converts Apple Wide Gamut to
+Rec.709, applies the GOLDEN DAYLIGHT CINEMA grade, and encodes gamma 2.4 in a
+single file. Do NOT stack it on top of another Log-to-Rec.709 conversion LUT,
+and do not use it on already-graded or Rec.709 footage.
 
-The look is noticeable but realistic and versatile: honey/amber warmth in
-sunlit midtones with believable whites (no yellow/orange cast), rich detailed
-shadows, smooth highlight roll-off, natural blue skies, natural warm greens,
-and natural subtly-warm skin. It also works on golden-hour footage without
-excessive warmth.
+It is NOT for original "Apple Log" (iPhone 15/16 Pro era) footage - that uses
+different primaries (BT.2020). Using this LUT on Apple Log (v1) files will
+produce incorrect colour.
 
+THE LOOK
+--------
+- Golden sunlight: honey/amber warmth in sunlit midtones; whites stay
+  believable, no overall yellow cast.
+- Filmic contrast: rich midtones, deep but detailed shadows, smooth highlight
+  roll-off. Already-bright footage is never made brighter.
+- Skies: richer, slightly deeper natural blue with controlled cyan; cloud
+  whites stay clean.
+- Greenery: natural, slightly warm greens with controlled saturation - never
+  radioactive or teal.
+- Skin: natural and subtly warm across lighting; sunlit skin rolls off creamy
+  rather than clipping. No beauty-filter effects (it is a colour LUT only).
+- A very slight cool shift in the deepest desaturated shadows gives
+  sun/shade separation and dimensionality.
 
-REQUIREMENTS
-------------
-- iPhone 17 Pro or iPhone 17 Pro Max (Apple Log 2 requires iPhone 17 Pro or
-  later) shooting in Apple Log 2.
-- Blackmagic Camera for iOS (supports .cube LUTs; Apple Log 2 supported from
-  Blackmagic Camera 3.1+).
-- Shoot in Apple Log 2 / Apple Wide Gamut (ProRes or HEVC).
+INSTALLATION - BLACKMAGIC CAMERA ON iPHONE
+------------------------------------------
+NOTE: these instructions follow Blackmagic Camera for iOS's documented LUT
+support (custom .cube LUTs can be imported and used as view/burn-in LUTs).
+This workflow was NOT tested on a physical iPhone in this project - see
+VALIDATION_REPORT.txt for exactly what was and was not tested.
 
+1. Copy GOLDEN_DAYLIGHT_CINEMA.cube to your iPhone (AirDrop, iCloud Drive or
+   the Files app). Keep the .cube filename unchanged.
+2. Open Blackmagic Camera and tap the settings (gear) button.
+3. Go to LUTs (under Monitoring / Color section).
+4. Choose "Import LUT" / the + button and pick
+   GOLDEN_DAYLIGHT_CINEMA.cube from Files.
+5. Select the imported LUT to preview it while recording.
+6. Record in Apple Log 2:
+     Settings > Formats & Capture > enable Apple Log, then set
+     "ProRes Log Video Encoding" (iOS Settings > Camera > Formats) to Log 2
+     where available, and shoot ProRes.
+   IMPORTANT: apply the LUT for MONITORING only (view LUT). Keep the recorded
+   files in Apple Log 2 so you keep full latitude for the final grade.
+7. In the edit, apply the same .cube to the Log 2 clips for the final render
+   (see below), or burn it in if you prefer straight-out-of-camera files.
 
-INSTALLING THE LUT IN BLACKMAGIC CAMERA (iOS)
---------------------------------------------
-Method A — Files app (simplest)
-  1. Download GOLDEN_DAYLIGHT_CINEMA.cube to your iPhone (AirDrop, iCloud, or
-     from the GitHub link / this ZIP).
-  2. Open the Files app, find the .cube file.
-  3. Tap "Share" → "Save to Files" if needed, then move/copy it to:
-         On My iPhone  >  Blackmagic Camera  >  LUTs
-     (Create the Blackmagic Camera/LUTs folder if it does not exist.)
-  4. Open Blackmagic Camera. The LUT should appear in its LUT list.
+Because the LUT is standalone, monitoring with it in Blackmagic Camera shows
+you the final look while the recording stays log.
 
-Method B — LUT Import
-  1. Open Blackmagic Camera → Settings → LUTs (or LUT Import).
-  2. Import / browse to the .cube file (from Files, iCloud Drive, etc.).
-  3. The LUT is now available in the LUT list.
+POST-PRODUCTION USE
+-------------------
+- DaVinci Resolve: clip > Color page > first node of each clip, right-click
+  the node > 3D LUT > "Select LUT File..." (or copy the .cube to
+  ~/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT and
+  reload). Resolve's tetrahedral interpolation matches the method used to
+  produce the preview images in this package.
+- Final Cut Pro: Effects > Color > Camera LUT > "Choose Custom LUT" and select
+  the .cube (place it in ~/Movies/Custom LUTs, then restart FCP to pick it up).
+- Do not add an additional Camera LUT / colour space conversion before it.
 
-If the LUT does not appear, confirm the file is a plain .cube (not renamed
-.txt), is inside the Blackmagic Camera/LUTs folder, and that Blackmagic
-Camera is up to date.
+RECOMMENDED SHOOTING SETTINGS
+-----------------------------
+- Apple Log 2 (not Log), ProRes, 10-bit.
+- Expose so highlights you care about are not clipped in-camera (log records
+  up to ~1200% reflectance at 100% signal, but clipped is clipped forever).
+- White balance as normal (the look is designed to sit on correctly
+  white-balanced Log 2 footage).
 
+PACKAGE CONTENTS
+----------------
+  LUT/GOLDEN_DAYLIGHT_CINEMA.cube            the LUT (the only required file)
+  PREVIEWS/SCENE_01..08_BEFORE.png           neutral conversion of each scene
+  PREVIEWS/SCENE_01..08_AFTER.png            the delivered LUT applied
+  GALLERY/index.html                         preview gallery (open in Safari)
+  CONTACT_SHEET/GOLDEN_DAYLIGHT_CINEMA_CONTACT_SHEET.png
+  CONTACT_SHEET/GOLDEN_DAYLIGHT_CINEMA_EXPOSURE_SWEEP.png
+  README.txt                                 this file
+  VALIDATION_REPORT.txt                      sources, tests, results, limits
 
-USING THE LUT
--------------
-  1. In Blackmagic Camera, set your recording format to Apple Log 2 (ProRes
-     or HEVC) so the camera records clean, un-graded log.
-  2. Open the LUT list and select GOLDEN DAYLIGHT CINEMA.
-  3. Choose how to apply it:
-       - Preview only ("Apply LUT to Output"): the monitor shows the graded
-         look while the file still records clean Apple Log 2. Recommended —
-         you keep full dynamic range for post.
-       - Burn-in ("Apply LUT to Recording"): the grade is baked into the
-         recorded file. Use only if you want a one-pass, no-post workflow.
-  4. Expose for your subject (not the sky). The LUT enriches and rolls off
-     highlights smoothly, but a LUT cannot recover highlights that were
-     clipped at capture — protect them in camera.
-
-TIPS
-----
-- For the best result, expose so highlights are not clipped; the LUT preserves
-  highlight texture that exists but cannot recover detail that is already gone.
-- The LUT is designed for Apple Log 2. Do not apply it to Apple Log (Rec.2020)
-  or non-log footage — the decode stage is specific to Apple Log 2.
-- If a specific shot needs more or less warmth, adjust white balance / exposure
-  in camera, or blend the LUT in post.
-
-
-FOLDER CONTENTS
----------------
-  LUT/GOLDEN_DAYLIGHT_CINEMA.cube      The deliverable LUT (33^3).
-  PREVIEWS/                            16 PNGs: 8 BEFORE + 8 AFTER (1600x1000).
-  GALLERY/index.html                   Interactive before/after gallery.
-  CONTACT_SHEET/contact_sheet.png      Visual overview of all eight scenes.
-  README.txt                           This file.
-  VALIDATION_REPORT.txt                Sources, tests, results and limitations.
-  assets/                              The 8 source scene images (simulated).
-  scripts/                             Reproducible build/render/validate code.
-
-
-CREDITS & SOURCES (summary)
----------------------------
-Technical specifications implemented and cross-checked:
-  - Apple Log / Apple Log 2 transfer function — Apple Inc. "Apple Log Profile
-    White Paper" (2023) and "Apple Log 2 White Paper" (2025); constants
-    cross-checked against colour-science and the ACES IDT transform.
-  - Apple Wide Gamut primaries — Apple Log 2 White Paper; cross-checked against
-    ASWF OpenColorIO PR #2343 and OpenColorIO-Config-ACES PR #179.
-  - Apple developer docs, AVCaptureColorSpace (appleLog / appleLog2).
-  - Rec.709 primaries and gamma 2.4 (standard).
-  - .cube format — Adobe "Cube LUT Specification 1.0" (red-fastest ordering).
-  - Blackmagic Camera iOS .cube support — App Store / Apple support docs.
-
-The preview source images are PROCEDURALLY GENERATED and the Apple Log 2 input
-is a DOCUMENTED SIMULATION (the exact inverse of the LUT decode stage). They
-are NOT iPhone sensor footage. See VALIDATION_REPORT.txt for full detail.
-
-No physical iPhone or Blackmagic Camera testing was performed in building this
-LUT. See VALIDATION_REPORT.txt for all tests performed and limitations.
-================================================================================
+KNOWN LIMITATIONS (short version - see VALIDATION_REPORT.txt)
+-------------------------------------------------------------
+- A LUT cannot recover highlights that were clipped in-camera.
+- The test footage is SIMULATED Apple Log 2 derived from AI-generated stills,
+  not real iPhone 17 Pro sensor captures.
+- No physical iPhone / Blackmagic Camera testing was performed.
+- 33^3 grids slightly smooth the steep log toe; sensor black renders at a
+  designed film floor of ~9/255 rather than absolute 0.
