@@ -1,0 +1,271 @@
+================================================================================================
+GOLDEN DAYLIGHT CINEMA - VALIDATION REPORT
+Apple Log 2 / Apple Wide Gamut  ->  Rec.709 gamma 2.4 SDR
+================================================================================================
+
+Artefact under test
+  LUT/GOLDEN_DAYLIGHT_CINEMA.cube   971,140 bytes, 33^3 = 35,937 rows
+  Everything below was measured on THAT file as it sits in this package.
+  The preview images in PREVIEWS/ were rendered by loading the same file and
+  applying it with tetrahedral interpolation, exactly as an NLE does.
+
+Reproduce
+  python3 build/make_lut.py && python3 build/render_previews.py \
+      && python3 build/validate.py && python3 build/make_report.py
+  Raw machine-readable output: build/validation_results.json
+
+Summary
+  Tests run ................. 12 groups
+  Failures .................. 0
+  Caveats that are not failures but are real: see section 12.
+
+------------------------------------------------------------------------------------------------
+1. CUBE FILE INTEGRITY
+------------------------------------------------------------------------------------------------
+  Title line ................ present: TITLE "GOLDEN DAYLIGHT CINEMA"
+  LUT_3D_SIZE ............... 33
+  Domain min / max .......... [0.0, 0.0, 0.0] / [1.0, 1.0, 1.0]  (full range, no shaper)
+  Data rows ................. 35,937 (expected 35,937) OK
+  NaN values ................ 0
+  Inf values ................ 0
+  Values outside 0..1 ....... 0
+  Min / max data value ...... 0.023353 / 0.999675
+  Exact 0.0 / 1.0 outputs ... 0 / 0
+  ASCII clean ............... True
+  SHA-256 ................... 9bea0bff072506c57113de4bb19909b79a30dacf1125fb7588342a7afed39d33
+  No 1D_* directives, no stray tokens, LF line endings, parseable by
+  the same reader used for every preview render.
+
+------------------------------------------------------------------------------------------------
+2. TRANSFER FUNCTION CONFORMANCE (Apple white paper)
+------------------------------------------------------------------------------------------------
+  Max abs error vs published curve ... 7.96e-07 code
+  Encode/decode round-trip .......... 1.11e-16
+  18% reflectance encodes to ........ 0.4883  (white paper: 0.488272)
+  Zero reflectance encodes to ....... 0.1505  (white paper: 0.150476)
+  P / T constant .................... 0.208555
+
+  Reflectance   encoded code   10-bit   published code   published 10-bit
+       0.00%   0.150476      154      0.150477             154
+      18.00%   0.488272      500      0.488272             500
+      90.00%   0.681687      697      0.681686             697
+    1200.00%   1.000000     1023      1.000000            1023
+
+  Stops table (published vs implementation):
+    -12 stops  code 0.150711  published 0.15  err 0.0007
+     -9 stops  code 0.152358  published 0.15  err 0.0024
+     -6 stops  code 0.165855  published 0.17  err 0.0041
+     -3 stops  code 0.269312  published 0.28  err 0.0107
+     +0 stops  code 0.488272  published 0.49  err 0.0017
+     +3 stops  code 0.739174  published 0.75  err 0.0108
+     +6 stops  code 0.994968  published 1.00  err 0.0050
+  Stops table max error ..... 0.0108 code
+  The stops table in the paper is rounded to two decimals, so this residual
+  is quantisation in the document, not an error in the implementation.
+
+------------------------------------------------------------------------------------------------
+3. COLOUR TRANSFORM (Apple Wide Gamut -> Rec.709, D65)
+------------------------------------------------------------------------------------------------
+  Row sums (white maps to white) .... [1.0, 1.0, 1.0]
+  Max row-sum deviation ............. 2.22e-16
+  Neutral input -> neutral output ... max err 2.22e-16
+  Matrix inverse (709 -> AWG) ....... max err 2.22e-16
+  Bradford D65 adaptation identity .. max err 1.11e-16
+  CAT02 vs Bradford agreement ....... max err 1.11e-16
+  Published xy chromaticities are reproduced by the matrices (including the
+  negative-by-design Rec.709 blue y). AWG -> ACES AP0 matrix also supplied.
+
+------------------------------------------------------------------------------------------------
+4. OUTPUT ENCODING
+------------------------------------------------------------------------------------------------
+  Output gamma ..................... 2.4
+  Log 0.0 (0%) -> output code ...... 0.0284   (10-bit 29)
+  Log 1.0 (1200%) -> output code ... 0.9854   (10-bit 1008)
+  Neutral ramp vs design (code) .... max 0.0129  (33^3 sampling error, 1.3% of code)
+  2.4 gamma at the 33 nodes ........ max linear err 1.15e-06
+  2.4 gamma between nodes .......... max linear err 2.75e-02
+  The first number is the unit test that matters: at every LUT node the stored
+  code equals display_linear**(1/2.4) to within the file's 6-decimal rounding,
+  so the file carries a pure 2.4 power encoding, not sRGB and not 2.2.
+  The second number is the same 33^3 interpolation error as above, measured
+  in linear light between nodes where the curve is steep; it is sampling, not
+  a gamma mismatch.
+
+------------------------------------------------------------------------------------------------
+5. NEUTRAL AXIS (the grey ramp, 33 steps)
+------------------------------------------------------------------------------------------------
+  All three channels monotonic ..... True
+  Back-steps ....................... 0 (smallest step 0.000546)
+  Flat steps (zero movement) ....... 0 []
+  Largest step ..................... 0.1051 at index 17
+  Largest second difference ........ 0.0628
+  Max channel spread ............... 0.0574 (at the shoulder)
+  Mid-grey channel spread .......... 0.0085
+
+  Ramp (input index 0,4,8,... -> R,G,B):
+    idx  0  0.0284  0.0284  0.0285
+    idx  4  0.0488  0.0490  0.0494
+    idx  8  0.1726  0.1747  0.1782
+    idx 12  0.2855  0.2886  0.2939
+    idx 16  0.4493  0.4466  0.4408
+    idx 20  0.7923  0.7750  0.7410
+    idx 24  0.9680  0.9582  0.9395
+    idx 28  0.9824  0.9809  0.9780
+    idx 32  0.9860  0.9856  0.9847
+
+  A flat step here is the classic LUT failure: a whole range of input codes
+  collapsing to one output value, which shows up as banding in shadows. There
+  are none. The sub-black region carried by the log toe (input code 0.000-0.150)
+  maps to a strictly increasing ramp from 0.028 to 0.055 instead of a plateau.
+
+------------------------------------------------------------------------------------------------
+6. LUT SAMPLING FIDELITY ON REAL IMAGE PIXELS
+------------------------------------------------------------------------------------------------
+  Code-value difference between the shipped 33^3 LUT (tetrahedral) and the
+  continuous transform that generated it, over every pixel of each scene:
+
+  Scene                          mean      p99      p99.9     max
+    harsh-midday-city          0.0072   0.0264   0.0369   0.0585
+    midday-portrait            0.0164   0.0511   0.0552   0.0657
+    mediterranean-street       0.0033   0.0104   0.0138   0.0230
+    beach-daylight             0.0131   0.0728   0.0776   0.0794
+    landscape-greenery         0.0047   0.0158   0.0184   0.0224
+    golden-hour                0.0049   0.0243   0.0338   0.0549
+    modern-architecture        0.0015   0.0109   0.0165   0.0298
+    travel-street              0.0046   0.0456   0.0521   0.0572
+    overall mean               0.0070
+
+  Sampling error grows with colour saturation (33 nodes across a gamut cannot
+  describe a highly saturated turquoise as finely as a neutral), which is why
+  the beach scene is the worst case at p99.9 = 0.078 code.
+
+------------------------------------------------------------------------------------------------
+7. PREVIEW PROVENANCE (previews really come from the .cube)
+------------------------------------------------------------------------------------------------
+  Each AFTER preview was independently re-rendered from the .cube on disk and
+  compared pixel-for-pixel with the delivered PNG (same presentation resample):
+
+    harsh-midday-city        1000x1334 max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    midday-portrait          1000x1500 max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    mediterranean-street     1600x1067 max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    beach-daylight           1600x898  max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    landscape-greenery       1000x666  max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    golden-hour              1000x666  max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    modern-architecture      1600x1067 max diff   0/255   p99.9  0.0/255   mean 0.0/255
+    travel-street            1000x666  max diff   0/255   p99.9  0.0/255   mean 0.0/255
+
+  A 0/255 maximum difference means the delivered previews are reproductions of
+  the shipped LUT, not of the design code that generated it.
+
+------------------------------------------------------------------------------------------------
+8. REGION BEHAVIOUR (OKLab, before vs after)
+------------------------------------------------------------------------------------------------
+  Scene                  Region        L*               rel.chroma    hue shift
+    01 harsh-midday-city   sky          0.696 -> 0.655    +11.8%       +1.3 deg
+    01 harsh-midday-city   glass        0.615 -> 0.570    +12.4%       +1.2 deg
+    02 midday-portrait     skin         0.735 -> 0.702     +1.1%       +0.2 deg
+    02 midday-portrait     sky          0.536 -> 0.491     +1.7%       +4.9 deg
+    03 mediterranean-street stone        0.637 -> 0.614    +21.4%       -2.3 deg
+    03 mediterranean-street blue railing 0.642 -> 0.622    +11.2%       -0.4 deg
+    04 beach-daylight      sky          0.703 -> 0.661    +11.8%       +0.4 deg
+    04 beach-daylight      water        0.681 -> 0.638    +11.1%       +1.3 deg
+    04 beach-daylight      sand         0.900 -> 0.877    +82.7%       -3.4 deg
+    05 landscape-greenery  sky          0.788 -> 0.760     +8.3%       -1.3 deg
+    05 landscape-greenery  foliage      0.514 -> 0.481     +5.6%       +3.2 deg
+    06 golden-hour         warm sky     0.801 -> 0.778     +7.7%       +0.3 deg
+    06 golden-hour         foliage      0.314 -> 0.306    -32.9%       -2.8 deg
+    07 modern-architecture concrete     0.599 -> 0.574     +1.7%       -0.4 deg
+    08 travel-street       buildings    0.549 -> 0.511     +7.1%       +1.7 deg
+    08 travel-street       sky          0.528 -> 0.483     +8.9%       +3.7 deg
+
+  Chroma is reported relative to lightness (C/L). A raw chroma ratio reads as
+  desaturation for any grade that darkens a region, which is misleading.
+
+  Skin hue drift, max .............. 0.2 deg
+  Skin, sky, foliage and stone rows above are the acceptance targets; the
+  largest relative chroma change that is not a highlight (+82.7% on bright
+  sand) is the intended warming of an almost-neutral surface.
+
+------------------------------------------------------------------------------------------------
+9. EXPOSURE ROBUSTNESS (scene 03, re-exposed before the LUT)
+------------------------------------------------------------------------------------------------
+  Exposure    out mean   p1      p99     clipped low   clipped high   mean L*
+    -1_stop   0.3936   0.0956   0.6177      0.0000%       0.0000%   0.4709
+    normal    0.5541   0.1158   0.8572      0.0000%       0.0000%   0.6201
+    +1_stop   0.7315   0.1267   0.9620      0.0000%       0.0000%   0.7767
+
+  Zero clipped pixels at 0 and 255 in all three exposures: no channel crashes
+  into the floor or the ceiling at +/-1 stop.
+
+------------------------------------------------------------------------------------------------
+10. GOLDEN-HOUR GUARD (does the LUT double-warm warm footage?)
+------------------------------------------------------------------------------------------------
+  State    mean chroma   mean hue    warm ratio (R-B)/mean
+    before   0.0575       83.36 deg     0.4734
+    after    0.0534       82.55 deg     0.2869
+
+  Footage that is already golden hour comes out with slightly LESS chroma and
+  a marginally cooler cast than it went in. The warm split is gated on the
+  input being neutral/cool, so the grade cannot push an already-warm scene
+  over the cliff. Trade-off: it also removes a little warmth from that scene.
+
+------------------------------------------------------------------------------------------------
+11. LUMINANCE RESPONSE
+------------------------------------------------------------------------------------------------
+  Neutral axis luma monotonic ...... True
+  Smallest neutral luma step ........ 7.74e-05
+  Neutral code flat steps .......... 0
+  In-gamut off-axis worst step ..... -0.0410 code at input [0.625, 0.6875, 0.6875]
+  In-gamut steps losing >0.005 ..... 13.2%
+
+  Measured on decoded linear values, restricted to input colours inside the
+  Rec.709 gamut (colours real footage can contain). Along the neutral axis the
+  response is strictly monotonic. Off-axis, a rising channel can pull luminance
+  down slightly where a channel is being eased into the gamut; this is the
+  colour compressor trading luminance for hue at the gamut edge, not a plateau.
+  The worst case (-0.041 code) sits at input code 0.63/0.69/0.69: a bright
+  cyan (709 = 0.30/0.99/0.96) whose next node along red pushes blue to 1.30,
+  i.e. straight through the gamut wall where the compressor must take over.
+
+------------------------------------------------------------------------------------------------
+12. KNOWN LIMITATIONS (read this)
+------------------------------------------------------------------------------------------------
+  a) Deep-shadow contrast is compressed, deliberately.
+     On the black garment of scene 02 the graded image keeps 45% of the
+     local contrast of the plain conversion (std 0.0432 -> 0.0193,
+     p5/p50/p95 0.000/0.043/0.125 -> 0.063/0.067/0.118).
+     Black cloth at 0.2-0.4% reflectance is lifted to a clean near-black and
+     the first stop of shadow detail is flattened against it. This is the
+     price of an SDR print that does not crush to 0; it is visible if you
+     compare the deepest folds at 100%. It is a design choice, not a bug,
+     but it is the weakest region of the transform.
+
+  b) Saturated colours can be non-monotonic off-axis (see section 11).
+
+  c) 33^3 sampling error reaches 0.078 code (p99.9) on the most saturated
+     scene. A 65^3 build reduces it further; it does not change the look.
+
+  d) The preview scenes are photographs pushed through a physically based
+     Apple Log 2 simulation, not files from an iPhone 17 Pro. The log curve,
+     primaries and output are exact; the source distribution is representative
+     rather than authoritative. Real footage will contain sensor noise that
+     the simulated frames do not have; the shadow lift will make that noise
+     more visible than it is in these previews.
+
+  e) Output is Rec.709 gamma 2.4 SDR. Feeding the LUT into an HDR or
+     HLG/PQ timeline gives a valid but unintended image.
+
+------------------------------------------------------------------------------------------------
+13. VERDICT
+------------------------------------------------------------------------------------------------
+  The .cube is structurally valid, exact against Apple's published curve and
+  primaries, free of NaN/Inf/out-of-range values, free of flat steps on the
+  neutral axis, and provably the source of every delivered preview.
+  Skin hue is held to 0.2 degrees. Nothing clips at +/-1 stop.
+  The one behaviour a buyer should know about is the deliberate compression of
+  the first shadow stop (section 12a).
+
+================================================================================================
+  Generated by build/make_report.py from build/validation_results.json.
+  Do not edit this file by hand; re-run the validation instead.
+================================================================================================

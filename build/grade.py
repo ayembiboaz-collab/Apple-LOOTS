@@ -38,6 +38,11 @@ TONE_CODE = np.array([0.0080, 0.0100, 0.0125, 0.0140, 0.0260, 0.0480, 0.0790, 0.
 # ---------------------------------------------------------------------------
 # Grade constants (single place to tune).
 # ---------------------------------------------------------------------------
+# Black offset used by the tone map's sub-black handling (scene-linear units).
+# 0.0009 is about 0.007 stops above 18% grey — a black lift, not an exposure change.
+TOE_FLOOR = 0.0009
+TOE_SCALE = 0.02
+
 P = dict(
     # 1. warmth
     warm_r=0.066, warm_g=0.020, warm_b=-0.072,   # linear gains at full strength
@@ -167,10 +172,17 @@ def soft_desaturate_to_gamut(rgb, eps=2.2e-3):
 
 def tone_map(scene, p=P):
     """Luminance-driven filmic tone map with a highlight white convergence."""
-    Y = np.maximum(scene @ LUMA_REC709, 0.0)
-    y_out = rec709_gamma24_decode(tone_code(Y))
-    scale = np.where(Y > 1e-7, y_out / np.maximum(Y, 1e-7), 0.0)
-    out = soft_floor(scene) * scale[..., None]
+    Y = scene @ LUMA_REC709
+    # Below-black signal (negative scene values, i.e. the noise floor carried by
+    # the parabolic toe) is mapped to a small positive offset instead of being
+    # clipped.  Without this the first ~12% of the input code would collapse to
+    # a single value, which is exactly the shadow clipping a LUT must avoid.
+    neg = np.maximum(-Y, 0.0)
+    floor_lin = TOE_FLOOR * np.exp(-neg / TOE_SCALE)
+    scene_eff = soft_floor(scene) + floor_lin[..., None]
+    Y_eff = np.maximum(scene_eff @ LUMA_REC709, 1e-9)
+    y_out = rec709_gamma24_decode(tone_code(Y_eff))
+    out = scene_eff * (y_out / Y_eff)[..., None]
 
     # Smooth per-channel shoulder: a very bright channel is eased to white
     # instead of being hard clipped, which keeps hue direction (a saturated
@@ -287,7 +299,7 @@ def transform(code_in, params=P, return_stages=False):
     scene_awg = al.decode(code_in)                 # 1. Apple Log 2 decode
     scene_709 = scene_awg @ AWG_TO_709.T           # 2. gamut conversion
     scene_709 = soft_desaturate_to_gamut(scene_709)  # 3. in-gamut safety
-    display = tone_map(np.clip(scene_709, 0.0, None), params)  # 4./5.
+    display = tone_map(scene_709, params)          # 4./5. (handles sub-black)
     display = adaptive_warmth(display, params)     # 6. the look
     display = shadow_separation(display, params)
     display = hue_selective(display, params)

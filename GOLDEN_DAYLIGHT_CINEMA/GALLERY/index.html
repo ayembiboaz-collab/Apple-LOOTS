@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOLDEN DAYLIGHT CINEMA &mdash; Apple Log 2 LUT</title>
+<style>
+  :root {
+    --bg:#0c0c0e; --panel:#141417; --line:#26262b; --fg:#ece8e0; --dim:#9c988f; --gold:#d6a85c;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; background:var(--bg); color:var(--fg);
+    font:16px/1.6 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 28px; }
+  header.hero { padding:76px 0 40px; border-bottom:1px solid var(--line); }
+  .eyebrow { color:var(--gold); letter-spacing:.28em; font-size:12px; text-transform:uppercase; }
+  h1 { font-size:clamp(34px,6vw,64px); line-height:1.02; margin:14px 0 10px; letter-spacing:-.02em; font-weight:300; }
+  h1 b { font-weight:700; }
+  .sub { color:var(--dim); max-width:64ch; font-size:17px; }
+  .chips { display:flex; flex-wrap:wrap; gap:10px; margin:26px 0 0; padding:0; list-style:none; }
+  .chips li {
+    border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:13px; color:var(--dim);
+    background:var(--panel);
+  }
+  .chips b { color:var(--fg); font-weight:600; }
+  .scene { padding:56px 0 8px; border-bottom:1px solid var(--line); }
+  .scene-head { display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .idx { color:var(--gold); font-size:13px; letter-spacing:.16em; }
+  .scene h2 { font-size:24px; margin:0; font-weight:600; letter-spacing:-.01em; }
+  .tag { color:var(--dim); font-size:14px; }
+  .compare {
+    position:relative; overflow:hidden; border-radius:8px; background:#000; line-height:0;
+    touch-action:pan-y; user-select:none;
+  }
+  .compare img { width:100%; height:auto; display:block; }
+  .clip { position:absolute; inset:0; overflow:hidden; clip-path:inset(0 50% 0 0); }
+  .clip img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; }
+  .handle {
+    position:absolute; top:0; bottom:0; left:50%; width:2px; background:rgba(255,255,255,.85);
+    box-shadow:0 0 0 1px rgba(0,0,0,.35); pointer-events:none;
+  }
+  .handle::after {
+    content:""; position:absolute; top:50%; left:50%; width:38px; height:38px; margin:-19px 0 0 -19px;
+    border-radius:50%; border:1px solid rgba(255,255,255,.9); background:rgba(12,12,14,.45);
+    backdrop-filter:blur(2px);
+  }
+  .slider { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; margin:0; }
+  .lbl {
+    position:absolute; top:14px; font-size:11px; letter-spacing:.2em; color:#fff; text-shadow:0 1px 3px #000;
+    pointer-events:none;
+  }
+  .before-lbl { left:14px; } .after-lbl { right:14px; color:var(--gold); }
+  .scene-foot { display:flex; gap:22px; align-items:flex-start; padding:18px 0 26px; }
+  .log { width:150px; border-radius:5px; display:block; filter:saturate(.55) contrast(.85); opacity:.9; }
+  .note p { margin:0 0 8px; color:var(--dim); font-size:15px; max-width:76ch; }
+  .note b { color:var(--fg); }
+  .altsmall { font-size:13px !important; opacity:.7; }
+  h3.sec { font-size:13px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold);
+            margin:64px 0 18px; font-weight:600; }
+  .exp { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+  .exp figure { margin:0; }
+  .exp img { width:100%; border-radius:6px; display:block; }
+  .exp figcaption { font-size:12.5px; color:var(--dim); padding-top:8px; line-height:1.5; }
+  .exp b { color:var(--fg); display:block; font-size:13px; margin-bottom:2px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:500; font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
+  td:nth-child(n+2), th:nth-child(n+2) { text-align:right; font-variant-numeric:tabular-nums; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:34px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:22px 24px; }
+  .kpi { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin:22px 0 0; }
+  .kpi div { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+  .kpi span { display:block; color:var(--dim); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; }
+  .kpi b { font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; }
+  footer { padding:56px 0 80px; color:var(--dim); font-size:13.5px; }
+  footer a { color:var(--gold); text-decoration:none; }
+  .fine { font-size:12.5px; color:var(--dim); }
+  @media (max-width:640px) {
+    .scene-foot { flex-direction:column; } .log { width:100%; max-width:240px; }
+    header.hero { padding-top:48px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Apple Log 2 &middot; Apple Wide Gamut &rarr; Rec.709</div>
+  <h1>GOLDEN<br><b>DAYLIGHT CINEMA</b></h1>
+  <p class="sub">A daylight transform for iPhone 17 Pro log footage, built to keep skin and foliage
+  natural while giving harsh sun a filmic shoulder, warm highlights and shadows that stay clean.
+  Not a look pack: one LUT, eight scenes, measured.</p>
+  <ul class="chips">
+    <li><b>33&sup3;</b> tetrahedral &middot; .cube</li>
+    <li><b>Output</b> Rec.709 gamma 2.4</li>
+    <li><b>Curve</b> Apple white paper, 8e-7 max error</li>
+    <li><b>Gamut</b> Bradford D65, exact white</li>
+    <li><b>Skin drift</b> &le; 0.2&deg;</li>
+    <li><b>Clipping</b> 0.00% at &plusmn;1 stop</li>
+  </ul>
+</header>
+
+<main>
+  <div class="kpi">
+    <div><span>LUT rows</span><b>35,937</b></div>
+    <div><span>NaN / Inf</span><b>0</b></div>
+    <div><span>Out of range</span><b>0</b></div>
+    <div><span>Preview vs LUT</span><b>0 / 255</b></div>
+    <div><span>Neutral axis flat steps</span><b>0</b></div>
+    <div><span>Overall fidelity</span><b>0.0070</b></div>
+  </div>
+  <p class="fine" style="margin-top:14px">Drag any divider. Left is a plain Rec.709 conversion of the same
+  Apple Log 2 frame, right is the finished LUT. Every graded frame in this page was rendered by applying the
+  shipped .cube with tetrahedral interpolation &mdash; not by re-running the design code.</p>
+
+  
+    <section class="scene" id="harsh-midday-city">
+      <div class="scene-head">
+        <span class="idx">01</span>
+        <h2>Harsh midday city</h2>
+        <span class="tag">Deep daylight blue</span>
+      </div>
+      <div class="compare" data-slug="harsh-midday-city">
+        <img class="after" src="img/after/harsh-midday-city.jpg" alt="Harsh midday city graded">
+        <div class="clip"><img src="img/before/harsh-midday-city.jpg" alt="Harsh midday city ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/harsh-midday-city.jpg" alt="Harsh midday city Apple Log 2 source">
+        <div class="note">
+          <p>The sky keeps its saturation while the shaded facade gains density instead of going grey. Glass reflections stay specular, not blown.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="midday-portrait">
+      <div class="scene-head">
+        <span class="idx">02</span>
+        <h2>Midday portrait in direct sun</h2>
+        <span class="tag">Skin held, shadows clean</span>
+      </div>
+      <div class="compare" data-slug="midday-portrait">
+        <img class="after" src="img/after/midday-portrait.jpg" alt="Midday portrait in direct sun graded">
+        <div class="clip"><img src="img/before/midday-portrait.jpg" alt="Midday portrait in direct sun ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/midday-portrait.jpg" alt="Midday portrait in direct sun Apple Log 2 source">
+        <div class="note">
+          <p>Direct-sun skin keeps its hue (measured drift +0.2 degrees) while the black garment reads as black cloth rather than lifted grey. Solar flare stays warm, not pink.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="mediterranean-street">
+      <div class="scene-head">
+        <span class="idx">03</span>
+        <h2>Mediterranean street</h2>
+        <span class="tag">Warm stone, cool shadows</span>
+      </div>
+      <div class="compare" data-slug="mediterranean-street">
+        <img class="after" src="img/after/mediterranean-street.jpg" alt="Mediterranean street graded">
+        <div class="clip"><img src="img/before/mediterranean-street.jpg" alt="Mediterranean street ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/mediterranean-street.jpg" alt="Mediterranean street Apple Log 2 source">
+        <div class="note">
+          <p>Cycladic white walls pick up warmth in the sunlit planes (+21% relative chroma) and the blue railing stays deep. Contrast is built into the stone, not added as a global contrast bump.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="beach-daylight">
+      <div class="scene-head">
+        <span class="idx">04</span>
+        <h2>Bright beach daylight</h2>
+        <span class="tag">Turquoise, not cyan</span>
+      </div>
+      <div class="compare" data-slug="beach-daylight">
+        <img class="after" src="img/after/beach-daylight.jpg" alt="Bright beach daylight graded">
+        <div class="clip"><img src="img/before/beach-daylight.jpg" alt="Bright beach daylight ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/beach-daylight.jpg" alt="Bright beach daylight Apple Log 2 source">
+        <div class="note">
+          <p>The lagoon gradient survives (+11% relative chroma, hue +1.3 degrees) and the sand warms without going orange. Cloud tops are eased off, never clipped.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="landscape-greenery">
+      <div class="scene-head">
+        <span class="idx">05</span>
+        <h2>Landscape with greenery and mountains</h2>
+        <span class="tag">Natural foliage</span>
+      </div>
+      <div class="compare" data-slug="landscape-greenery">
+        <img class="after" src="img/after/landscape-greenery.jpg" alt="Landscape with greenery and mountains graded">
+        <div class="clip"><img src="img/before/landscape-greenery.jpg" alt="Landscape with greenery and mountains ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/landscape-greenery.jpg" alt="Landscape with greenery and mountains Apple Log 2 source">
+        <div class="note">
+          <p>Forest greens stay green. Haze in the distance is preserved so the valley reads deep rather than crushed.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="golden-hour">
+      <div class="scene-head">
+        <span class="idx">06</span>
+        <h2>Golden-hour landscape</h2>
+        <span class="tag">Golden hour, not orange hour</span>
+      </div>
+      <div class="compare" data-slug="golden-hour">
+        <img class="after" src="img/after/golden-hour.jpg" alt="Golden-hour landscape graded">
+        <div class="clip"><img src="img/before/golden-hour.jpg" alt="Golden-hour landscape ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/golden-hour.jpg" alt="Golden-hour landscape Apple Log 2 source">
+        <div class="note">
+          <p>Warm light is left as the camera found it (chroma measured slightly down, not up) while the cloud sea keeps separation and the foreground trees keep detail.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="modern-architecture">
+      <div class="scene-head">
+        <span class="idx">07</span>
+        <h2>Modern architecture</h2>
+        <span class="tag">Neutral concrete, deep shade</span>
+      </div>
+      <div class="compare" data-slug="modern-architecture">
+        <img class="after" src="img/after/modern-architecture.jpg" alt="Modern architecture graded">
+        <div class="clip"><img src="img/before/modern-architecture.jpg" alt="Modern architecture ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/modern-architecture.jpg" alt="Modern architecture Apple Log 2 source">
+        <div class="note">
+          <p>Concrete and stone stay neutral, so the only colour in frame is real colour. Shade under the colonnade holds shape.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scene" id="travel-street">
+      <div class="scene-head">
+        <span class="idx">08</span>
+        <h2>Outdoor travel scene with people</h2>
+        <span class="tag">Street realism</span>
+      </div>
+      <div class="compare" data-slug="travel-street">
+        <img class="after" src="img/after/travel-street.jpg" alt="Outdoor travel scene with people graded">
+        <div class="clip"><img src="img/before/travel-street.jpg" alt="Outdoor travel scene with people ungraded reference"></div>
+        <div class="handle" aria-hidden="true"></div>
+        <input class="slider" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="lbl before-lbl">BEFORE</span>
+        <span class="lbl after-lbl">AFTER</span>
+      </div>
+      <div class="scene-foot">
+        <img class="log" src="img/log/travel-street.jpg" alt="Outdoor travel scene with people Apple Log 2 source">
+        <div class="note">
+          <p>People keep skin tone at a distance, and the sunlit facades roll off instead of clipping.</p>
+          <p class="altsmall">Small log thumbnail at left is the untouched Apple Log 2 frame this preview was made from.</p>
+        </div>
+      </div>
+    </section>
+
+  <h3 class="sec">Exposure robustness &mdash; scene 03 at &plusmn;1 stop</h3>
+  <div class="exp">
+        <figure>
+          <img src="../PREVIEWS/EXPOSURE_TESTS/AFTER_03_mediterranean_-1_stop.jpg" alt="Scene 03 at -1 stop">
+          <figcaption><b>-1 stop</b><span>mean 0.394 &middot; p1 0.096 &middot;
+          p99 0.618 &middot; clipped 0.00% low / 0.00% high</span></figcaption>
+        </figure>
+        <figure>
+          <img src="../PREVIEWS/EXPOSURE_TESTS/AFTER_03_mediterranean_normal.jpg" alt="Scene 03 at Normal">
+          <figcaption><b>Normal</b><span>mean 0.554 &middot; p1 0.116 &middot;
+          p99 0.857 &middot; clipped 0.00% low / 0.00% high</span></figcaption>
+        </figure>
+        <figure>
+          <img src="../PREVIEWS/EXPOSURE_TESTS/AFTER_03_mediterranean_%2B1_stop.jpg" alt="Scene 03 at +1 stop">
+          <figcaption><b>+1 stop</b><span>mean 0.732 &middot; p1 0.127 &middot;
+          p99 0.962 &middot; clipped 0.00% low / 0.00% high</span></figcaption>
+        </figure></div>
+
+  <h3 class="sec">Measured behaviour</h3>
+  <div class="grid2">
+    <div class="panel">
+      <h4 style="margin:0 0 10px;font-size:14px;letter-spacing:.06em">Region response (OKLab)</h4>
+      <table>
+        <thead><tr><th>Scene</th><th>Region</th><th>L*</th><th>&Delta;chroma</th><th>&Delta;hue</th></tr></thead>
+        <tbody><tr><td>harsh midday city</td><td>sky</td><td>0.696 &rarr; 0.655</td><td>+11.8%</td><td>+1.3&deg;</td></tr><tr><td>harsh midday city</td><td>glass</td><td>0.615 &rarr; 0.570</td><td>+12.4%</td><td>+1.2&deg;</td></tr><tr><td>midday portrait</td><td>skin</td><td>0.735 &rarr; 0.702</td><td>+1.1%</td><td>+0.2&deg;</td></tr><tr><td>midday portrait</td><td>sky</td><td>0.536 &rarr; 0.491</td><td>+1.7%</td><td>+4.9&deg;</td></tr><tr><td>mediterranean street</td><td>stone</td><td>0.637 &rarr; 0.614</td><td>+21.4%</td><td>-2.3&deg;</td></tr><tr><td>mediterranean street</td><td>blue railing</td><td>0.642 &rarr; 0.622</td><td>+11.2%</td><td>-0.4&deg;</td></tr><tr><td>beach daylight</td><td>sky</td><td>0.703 &rarr; 0.661</td><td>+11.8%</td><td>+0.4&deg;</td></tr><tr><td>beach daylight</td><td>water</td><td>0.681 &rarr; 0.638</td><td>+11.1%</td><td>+1.3&deg;</td></tr><tr><td>beach daylight</td><td>sand</td><td>0.900 &rarr; 0.877</td><td>+82.7%</td><td>-3.4&deg;</td></tr><tr><td>landscape greenery</td><td>sky</td><td>0.788 &rarr; 0.760</td><td>+8.3%</td><td>-1.3&deg;</td></tr><tr><td>landscape greenery</td><td>foliage</td><td>0.514 &rarr; 0.481</td><td>+5.6%</td><td>+3.2&deg;</td></tr><tr><td>golden hour</td><td>warm sky</td><td>0.801 &rarr; 0.778</td><td>+7.7%</td><td>+0.3&deg;</td></tr><tr><td>golden hour</td><td>foliage</td><td>0.314 &rarr; 0.306</td><td>-32.9%</td><td>-2.8&deg;</td></tr><tr><td>modern architecture</td><td>concrete</td><td>0.599 &rarr; 0.574</td><td>+1.7%</td><td>-0.4&deg;</td></tr><tr><td>travel street</td><td>buildings</td><td>0.549 &rarr; 0.511</td><td>+7.1%</td><td>+1.7&deg;</td></tr><tr><td>travel street</td><td>sky</td><td>0.528 &rarr; 0.483</td><td>+8.9%</td><td>+3.7&deg;</td></tr></tbody>
+      </table>
+      <p class="fine" style="margin-top:10px">&Delta;chroma is relative (chroma / lightness), so it stays
+      meaningful when a region darkens. A pure chroma ratio would read as desaturation for any darkening grade.</p>
+    </div>
+    <div class="panel">
+      <h4 style="margin:0 0 10px;font-size:14px;letter-spacing:.06em">LUT fidelity on real pixels</h4>
+      <table>
+        <thead><tr><th>Scene</th><th>mean</th><th>p99.9</th><th>max</th></tr></thead>
+        <tbody><tr><td>harsh midday city</td><td>0.0072</td><td>0.0369</td><td>0.0585</td></tr><tr><td>midday portrait</td><td>0.0164</td><td>0.0552</td><td>0.0657</td></tr><tr><td>mediterranean street</td><td>0.0033</td><td>0.0138</td><td>0.0230</td></tr><tr><td>beach daylight</td><td>0.0131</td><td>0.0776</td><td>0.0794</td></tr><tr><td>landscape greenery</td><td>0.0047</td><td>0.0184</td><td>0.0224</td></tr><tr><td>golden hour</td><td>0.0049</td><td>0.0338</td><td>0.0549</td></tr><tr><td>modern architecture</td><td>0.0015</td><td>0.0165</td><td>0.0298</td></tr><tr><td>travel street</td><td>0.0046</td><td>0.0521</td><td>0.0572</td></tr></tbody>
+      </table>
+      <p class="fine" style="margin-top:10px">Code-value difference between the 33&sup3; tetrahedral
+      interpolation and the continuous transform that generated it. The shipped LUT is the reference;
+      the previews are rendered from it.</p>
+    </div>
+  </div>
+
+  <h3 class="sec">Files</h3>
+  <div class="panel">
+    <table>
+      <tbody>
+        <tr><td><b>LUT</b></td><td style="text-align:left">../LUT/GOLDEN_DAYLIGHT_CINEMA.cube &mdash; 33&sup3;, 971,140 bytes</td></tr>
+        <tr><td><b>Previews</b></td><td style="text-align:left">../PREVIEWS/BEFORE &amp; ../PREVIEWS/AFTER &mdash; full-size PNG pairs</td></tr>
+        <tr><td><b>Contact sheets</b></td><td style="text-align:left">../CONTACT_SHEET/*.jpg</td></tr>
+        <tr><td><b>Validation</b></td><td style="text-align:left">../VALIDATION_REPORT.txt &mdash; every number on this page</td></tr>
+        <tr><td><b>Install</b></td><td style="text-align:left">../README.txt</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  <p><b style="color:var(--fg)">GOLDEN DAYLIGHT CINEMA</b> &middot; built from Apple's published
+  Apple Log 2 transfer function and Apple Wide Gamut primaries. Curve error
+  8.0e-07, round-trip 1.1e-16,
+  white point error 2.2e-16.</p>
+  <p class="fine">Preview sources are royalty-free photographs graded through a physically based
+  Apple Log 2 simulation; they are demonstrations, not camera test charts.</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll('.compare').forEach(function (box) {
+    var slider = box.querySelector('.slider');
+    var clip = box.querySelector('.clip');
+    var handle = box.querySelector('.handle');
+    function set(v) {
+      clip.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
+      handle.style.left = v + '%';
+    }
+    slider.addEventListener('input', function () { set(parseFloat(slider.value)); });
+    set(parseFloat(slider.value));
+    box.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'mouse' && e.buttons === 0) return;
+      var r = box.getBoundingClientRect();
+      var v = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+      slider.value = v; set(v);
+    });
+  });
+})();
+</script>
+</body>
+</html>
