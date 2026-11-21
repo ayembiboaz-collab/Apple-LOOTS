@@ -19,6 +19,7 @@ Section 6  Measured look behaviour per scene
 Section 7  Defence of the design decisions that came out of testing
 Section 8  Limitations - what this LUT cannot do, and what was not tested
 Section 9  Reproduction
+Section 10 Provenance: the superseded earlier attempt
 
 
 ------------------------------------------------------------------------------
@@ -453,6 +454,57 @@ Files: BUILD/apple_log2.py (colour science, citations), BUILD/grade.py (the
 look, all parameters in one dict), BUILD/simulate.py (the documented
 simulation), BUILD/cube.py (strict .cube reader/writer), BUILD/validate.py
 (the checks), BUILD/banding.py (smoothness metric).
+
+
+------------------------------------------------------------------------------
+10. PROVENANCE: THE SUPERSEDED EARLIER ATTEMPT
+------------------------------------------------------------------------------
+
+An independent implementation of this same brief was previously merged into
+main. The brief asks for exactly ONE final LUT, so the choice between the two
+was made on measurement rather than preference. The earlier file was read out
+of git history (not from this working tree) and measured on identical criteria
+by BUILD/compare_superseded.py:
+
+Neutral-grey behaviour of a 2001-point ramp through each file.
+'cast' is the largest channel spread on a pure grey pixel:
+
+  file                             cast    black    white   max back     mono
+  superseded attempt             0.0447   0.0000   0.9967    0.00000     True
+  this delivery                  0.0120   0.0570   0.9841    0.00031    False
+  plain conversion (reference)   0.0150   0.0000   1.0000    0.00099    False
+
+  18% grey through this delivery: R 0.4754  G 0.4723  B 0.4730
+  18% grey through the superseded attempt: R 0.4463  G 0.4230  B 0.4026 (spread 0.0436)
+
+  Reading it: the superseded file renders a pure 18% grey
+  with a channel spread of 0.0436 (11/255), i.e. visibly warm,
+  and pins black at 0.0000. Against the brief - 'keeping whites
+  believable and avoiding an overall yellow cast', 'deep but
+  detailed shadows', 'avoid crushed blacks' - those are the two
+  things this delivery was specifically built to avoid.
+
+  This delivery's residual cast (0.0120) is smaller than the plain,
+  ungraded Apple Log 2 -> Rec.709 conversion's own residual
+  (0.0150) on the same 33-point grid, and its largest backward
+  step (0.00031 code = 0.08/255) is smaller than that conversion's
+  (0.00099 code = 0.25/255). Both numbers are the intrinsic
+  interpolation cost of a 33-cube near the ends of the Apple Log
+  curve, not a property of the grade; at 8-bit output they are
+  sub-LSB and are not visible.
+
+  The superseded attempt is not badly built - it is carefully
+  engineered and documents its own assumptions honestly. It is
+  superseded because it fails the two visual targets above on
+  measurement, not because it is less thorough.
+
+Both attempts share the same verified colour-science foundation: the same
+Apple Log constants, the same Apple Wide Gamut primaries and a matrix that
+agrees with OpenColorIO. The difference is in the grade. The earlier file
+places a visible warm cast on pure greys and pins display black to zero; this
+delivery keeps a grey card grey and lifts black slightly so shadow detail
+survives, which is what the brief asks for. The earlier scripts are retained
+under BUILD/superseded_attempt/ for provenance rather than deleted.
 
 
 ==============================================================================
