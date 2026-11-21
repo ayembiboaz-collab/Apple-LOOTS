@@ -111,58 +111,69 @@ LOOK = dict(
     exposure_ev=0.0,
     # Gentle scene-linear warmth ("the light itself is warm"), energy
     # normalised so the operation does not change exposure.
-    sunlight_gain=(1.0180, 0.9995, 0.9640),
+    sunlight_gain=(1.0280, 0.9990, 0.9530),
     # Pre-tonescale chroma taming of very bright saturated values, so the
     # per-channel shoulder cannot twist hues in the sun.
     bright_chroma_start=0.60,  # scene-linear luma where taming begins
     bright_chroma_end=7.00,
     bright_chroma_amount=0.26,
     # ---- tonescale ----------------------------------------------------------
-    ts_y_pivot=0.4050,  # 18 % grey -> this gamma-2.4 code value
-    ts_slope=0.2520,  # code value per stop at the pivot (contrast)
+    ts_y_pivot=0.4250,  # 18 % grey -> this gamma-2.4 code value
+    ts_slope=0.2320,  # code value per stop at the pivot (contrast)
     ts_x_max=6.30,  # stops above grey that reach display white
     ts_power_shoulder=1.72,
-    ts_x_min=-10.50,  # stops below grey that reach display black
-    ts_power_toe=1.14,
-    hue_restore=0.46,  # how much of the pre-tonescale hue to restore
+    ts_x_min=-13.50,  # stops below grey that reach display black
+    ts_power_toe=0.98,
+    hue_restore=0.58,  # how much of the pre-tonescale hue to restore
     hue_restore_hi_falloff=(0.80, 1.00),  # taper so the sun still blooms white
     # ---- display-referred stage --------------------------------------------
     # Honey / amber warmth, luminance windowed: strong in midtones, weak in
     # deep shadow, released in the highlights so whites stay believable.
-    honey_tint=(1.0620, 1.0140, 0.9330),
-    honey_amount=0.72,
-    honey_window=(0.055, 0.260, 0.600, 0.940),  # in0, in1, out0, out1
-    honey_shadow_floor=0.16,  # residual warmth below the window
-    honey_highlight_floor=0.17,  # residual warmth above the window
+    honey_tint=(1.0520, 1.0105, 0.9430),
+    honey_amount=0.58,
+    honey_window=(0.040, 0.200, 0.840, 0.995),  # luma window: in0, in1, out0, out1
+    honey_shadow_floor=0.30,  # residual warmth below the window
+    honey_highlight_floor=0.30,  # residual warmth above the window
+    # The honey is chroma-aware: surfaces that already carry warm colour
+    # (stone, sand, skin, timber) are enriched, while near-neutrals (white
+    # walls, clouds, concrete) receive only `honey_neutral_floor` of it. This
+    # is what keeps the look from becoming an overall yellow cast.
+    honey_sat_range=(0.020, 0.150),
+    honey_neutral_floor=0.40,
+    # ...and hue-aware: blues and cyans are excluded so skies and water do
+    # not get dragged towards grey-green by the warmth.
+    honey_cool_centre=238.0,
+    honey_cool_width=96.0,
+    honey_cool_reject=0.90,
     # Shadows: deep, slightly cool, never crushed. Returns to neutral at the
     # very bottom so blacks do not go blue.
-    shade_tint=(0.9840, 0.9975, 1.0260),
-    shade_amount=0.40,
+    shade_tint=(0.9780, 0.9970, 1.0320),
+    shade_amount=0.55,
     shade_window=(0.012, 0.055, 0.150, 0.360),
     # Explicit white protection: anything that reads as a bright neutral is
     # pulled back towards neutral.
-    white_protect_start=0.840,
+    white_protect_start=0.700,
     white_protect_end=0.995,
-    white_protect_amount=0.62,
+    white_protect_amount=0.55,
     white_protect_sat_limit=0.26,
     # ---- hue-selective shaping ---------------------------------------------
     # (centre_deg, width_deg, hue_rotation_deg, saturation_scale, luma_scale)
     hue_ops=(
         ("red", 12.0, 30.0, +2.0, 0.945, 1.000),
-        ("skin", 44.0, 30.0, -2.5, 0.910, 1.000),
-        ("stone_yellow", 78.0, 34.0, -3.0, 0.955, 1.000),
-        ("foliage", 122.0, 40.0, -7.5, 0.880, 0.985),
-        ("cyan", 192.0, 34.0, +12.0, 0.760, 1.000),
-        ("sky", 243.0, 42.0, +3.5, 1.060, 1.000),
+        ("skin", 44.0, 32.0, -2.0, 0.850, 1.000),
+        ("stone_yellow", 72.0, 30.0, -3.0, 1.000, 1.000),
+        ("foliage", 112.0, 44.0, -3.0, 0.900, 0.990),
+        ("cyan", 192.0, 34.0, +12.0, 0.740, 1.000),
+        ("sky", 240.0, 50.0, +4.0, 1.320, 1.000),
         ("magenta", 318.0, 30.0, -3.0, 0.930, 1.000),
     ),
     # ---- global saturation shaping -----------------------------------------
-    sat_global=1.045,
+    sat_global=1.03,
     sat_shadow=(0.00, 0.14, 0.86),  # below lo -> scale, smooth to 1.0 at hi
-    sat_highlight=(0.78, 1.00, 0.70),  # above lo -> scale toward this at hi
+    sat_highlight=(0.86, 1.00, 0.84),  # above lo -> scale toward this at hi
     # ---- final tonal polish (code space) ------------------------------------
-    micro_contrast=0.055,  # small extra S about the pivot
-    micro_pivot=0.4050,
+    micro_contrast=0.090,  # small extra S about the pivot
+    micro_pivot=0.4250,
     black_point=0.0000,
     white_point=1.0000,
 )
@@ -233,20 +244,40 @@ def _weighted_tint(code, tint, weight):
 
 
 def warmth_stage(code, p):
-    """Honey midtones, cool-neutral shade, protected whites."""
-    Y = luma(code)
+    """Honey on sunlit, already-warm surfaces; cool-neutral shade; neutral whites.
+
+    The weight is the product of three terms:
+      luma  — a broad window peaking across midtones and sunlit values,
+              with a floor so deep shadow and bright highlight keep a trace;
+      chroma— near-neutrals receive only `honey_neutral_floor` of the tint,
+              so white walls, clouds and concrete stay believable;
+      hue   — blues/cyans are rejected, so skies and water are untouched.
+    """
+    Y, cb, cr = to_ych(code)
+    chroma = np.sqrt(cb * cb + cr * cr)
+    sat = chroma / np.maximum(Y, EPS)
+    h = hue_angle(cb, cr)
 
     i0, i1, o0, o1 = p["honey_window"]
-    w = smoothstep(i0, i1, Y) * (1.0 - smoothstep(o0, o1, Y))
-    w = np.maximum(w, p["honey_shadow_floor"] * smoothstep(0.004, i1, Y) * (1.0 - smoothstep(o0, o1, Y)))
-    w = np.maximum(w, p["honey_highlight_floor"] * smoothstep(o0, o1, Y))
-    w = np.maximum(w, p["honey_shadow_floor"] * smoothstep(0.004, i0, Y))
-    code = _weighted_tint(code, p["honey_tint"], w * p["honey_amount"])
+    w_luma = smoothstep(i0, i1, Y) * (1.0 - smoothstep(o0, o1, Y))
+    w_luma = np.maximum(w_luma, p["honey_shadow_floor"] * smoothstep(0.004, i0, Y))
+    w_luma = np.maximum(w_luma, p["honey_highlight_floor"] * smoothstep(o0, o1, Y))
 
+    s0, s1 = p["honey_sat_range"]
+    nf = p["honey_neutral_floor"]
+    w_sat = nf + (1.0 - nf) * smoothstep(s0, s1, sat)
+
+    w_hue = 1.0 - p["honey_cool_reject"] * hue_bump(
+        h, p["honey_cool_centre"], p["honey_cool_width"]
+    )
+
+    w = w_luma * w_sat * w_hue * p["honey_amount"]
+    code = _weighted_tint(code, p["honey_tint"], w)
+
+    Y2 = luma(code)
     s0, s1, s2, s3 = p["shade_window"]
-    ws = smoothstep(s0, s1, Y) * (1.0 - smoothstep(s2, s3, Y))
-    code = _weighted_tint(code, p["shade_tint"], ws * p["shade_amount"])
-    return code
+    ws = smoothstep(s0, s1, Y2) * (1.0 - smoothstep(s2, s3, Y2))
+    return _weighted_tint(code, p["shade_tint"], ws * p["shade_amount"])
 
 
 def white_protect_stage(code, p):
