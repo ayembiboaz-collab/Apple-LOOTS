@@ -1,0 +1,44 @@
+=================================================================
+GOLDEN DAYLIGHT CINEMA — VALIDATION REPORT
+=================================================================
+
+1. CUBE SYNTAX & NUMERICAL INTEGRITY
+   - File: GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+   - LUT_3D_SIZE: 33 (expected 33) -> PASS
+   - Entry count: 35937 (expected 35937) -> PASS
+   - NaN values: False -> PASS
+   - Inf values: False -> PASS
+   - Value range: [0.088879, 0.992822] (within [0, 1]) -> PASS
+
+2. APPLE LOG 2 & APPLE WIDE GAMUT VERIFICATION
+   - Transfer function: Apple Log Profile White Paper (Sept 2023) / Apple Log 2 White Paper (Sept 2025)
+   - 18% middle grey (0.18 linear) -> Apple Log 2 code: 0.488272 (10-bit: 499.5)
+   - Round-trip decode of 18% grey: 0.180000 (error: 5.55e-17)
+   - Apple Wide Gamut primaries (OCIO PR #2343 / Apple Log 2 White Paper): R(0.725,0.301), G(0.221,0.814), B(0.068,-0.076), D65
+   - AWG->Rec.709 matrix row sums: [1.000000, 1.000000, 1.000000] (D65 neutral preservation)
+
+3. NEUTRAL RAMP & TONAL SMOOTHNESS
+   - Monotonicity across 256-step neutral ramp: FAIL (min step: -0.000510)
+   - Black point output luma (input 0.0): 0.104458 (detail-preserving toe > 0)
+   - White point output luma (input 1.0): 0.973676
+
+4. SIMULATED EXPOSURE SWEEP (18% GREY ANCHOR)
+   - -1 EV (linear 0.090, Log2 0.4089) -> Rec.709 RGB: (0.3555, 0.3565, 0.3523)
+   - +0 EV (linear 0.180, Log2 0.4883) -> Rec.709 RGB: (0.4690, 0.4654, 0.4535)
+   - +1 EV (linear 0.360, Log2 0.5706) -> Rec.709 RGB: (0.6021, 0.5945, 0.5747)
+
+5. SCENE-BY-SCENE RENDERING & CLIPPING CHECK (ACTUAL .CUBE APPLIED)
+   - 01_harsh_midday_city: mean_luma=0.375, near_black=0.00%, near_white=0.00%
+   - 02_midday_portrait: mean_luma=0.569, near_black=0.00%, near_white=0.00%
+   - 03_mediterranean_street: mean_luma=0.502, near_black=0.00%, near_white=0.00%
+   - 04_bright_beach_daylight: mean_luma=0.476, near_black=0.00%, near_white=0.00%
+   - 05_natural_landscape: mean_luma=0.466, near_black=0.00%, near_white=0.00%
+   - 06_golden_hour_landscape: mean_luma=0.415, near_black=0.00%, near_white=0.00%
+   - 07_modern_architecture: mean_luma=0.397, near_black=0.00%, near_white=0.00%
+   - 08_outdoor_travel_scene: mean_luma=0.433, near_black=0.00%, near_white=0.00%
+
+6. LIMITATIONS & TESTING SCOPE
+   - Physical iPhone 17 Pro / Blackmagic Camera for iOS testing was NOT performed in this sandbox.
+   - Test scenes use documented simulated Apple Log 2 derived from sRGB/Rec.709 reference images (capped at 1.0 linear).
+   - A 3D LUT cannot recover highlights that were already clipped in the camera sensor or source file.
+   - Image sources: Pexels (scenes 01, 02), iStock/Stockcake/FabulousNaturePhotos/Dreamstime (scenes 03-08).
