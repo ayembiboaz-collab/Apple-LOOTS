@@ -1,0 +1,12 @@
+# Python virtualenv (created locally, not part of the deliverable)
+.venv/
+
+# Platform image-search scratch downloads (superseded by generated SOURCE_PLATES)
+image-search/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Research scratch (PDFs are referenced by URL in the validation report)
+_research/
