@@ -171,18 +171,27 @@ class PCHIP:
 # 4. The GOLDEN DAYLIGHT CINEMA grade
 # ----------------------------------------------------------------------------
 # Filmic tone curve: scene-linear Rec.709 -> display-linear Rec.709 (per channel).
-# Knots are placed at whole stops around 18% grey. Anchored so that nothing above
-# mid grey becomes brighter than the neutral conversion (highlight protection),
-# shadows deepen smoothly with no crush, highlights roll off with a long shoulder.
-TONE_X = [0.0, 0.00035, 0.0007, 0.00141, 0.0028, 0.005625, 0.01125, 0.0225,
-          0.045, 0.09, 0.18, 0.36, 0.72, 1.44, 2.88, 5.76, 11.52, 23.04,
-          46.1, 92.2, 368.6, 1000.0]
-TONE_Y = [0.0, 0.000012, 0.00003, 0.00007, 0.00017, 0.00042, 0.0011, 0.0032,
-          0.011, 0.040, 0.128, 0.300, 0.475, 0.625, 0.752, 0.845, 0.915, 0.955,
-          0.978, 0.990, 0.9985, 1.0]
+# Designed stop by stop around 18% grey so that:
+#   * nothing at or above mid grey is rendered brighter than the neutral
+#     conversion (highlight protection for harsh midday footage);
+#   * shadows sit deep but detailed, following the placement used by
+#     camera-manufacturer Rec.709 conversions;
+#   * highlights roll off along a long, smooth shoulder (no digital clip);
+#   * the per-channel ratio T(x)/x falls monotonically above mid grey, giving
+#     natural highlight desaturation without midtone colour inversions.
+TONE_STOPS = [-np.inf, -12, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+              1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
+TONE_CODE = [0.0, 0.003, 0.012, 0.025, 0.045, 0.070, 0.095, 0.130, 0.165,
+             0.210, 0.265, 0.330, 0.420, 0.570, 0.695, 0.775, 0.835, 0.878,
+             0.908, 0.930, 0.946, 0.973, 0.990]
+TONE_X = [0.18 * (2.0 ** u) for u in TONE_STOPS]
+TONE_X[0] = 0.0
+TONE_Y = [c ** GAMMA_OUT for c in TONE_CODE]
+TONE_X.append(1000.0)   # safety tail: asymptote at display white
+TONE_Y.append(1.0)
 
 _TONE = PCHIP(TONE_X, TONE_Y)
-_TONE_SLOPE0 = _TONE.eval(0.001) / 0.001  # toe slope for negative extension
+_TONE_SLOPE0 = _TONE.eval(1e-4) / 1e-4  # toe slope for negative extension
 
 
 def tone_curve(x):
@@ -199,25 +208,26 @@ def tone_curve(x):
 PARAMS = dict(
     # saturation multiplier vs display luma (rich mids, protected whites & blacks)
     sat_l=[0.0, 0.02, 0.06, 0.15, 0.35, 0.7, 1.0],
-    sat_m=[1.00, 1.03, 1.10, 1.14, 1.11, 1.04, 1.00],
+    sat_m=[0.94, 0.97, 1.08, 1.18, 1.14, 1.05, 1.00],
     # vibrance damping: already-saturated colours receive less boost
-    vib_k=1.1,
+    vib_k=1.3,
     # sky: rich natural blue, controlled cyan, cloud whites protected
-    sky_hue=224.0, sky_sigma=33.0, sky_sat=1.17, sky_deepen=0.035,
-    sky_s_lo=0.10, sky_s_hi=0.28,          # only colours at least this saturated
+    sky_hue=224.0, sky_sigma=33.0, sky_sat=1.10, sky_deepen=0.020, sky_shift=5.0,
+    sky_s_lo=0.09, sky_s_hi=0.36,          # only colours at least this saturated
     sky_l_hi=0.75, sky_l_max=0.98,         # do not touch near-white cloud luminance
     # foliage: natural, slightly warm greens; never radioactive or teal
-    fol_hue=105.0, fol_sigma=34.0, fol_sat=0.93, fol_shift=6.0,
+    fol_hue=105.0, fol_sigma=34.0, fol_sat=0.94, fol_shift=6.0,
     # cyan control (water/sky edge): pull toward blue, hold saturation
-    cy_hue=196.0, cy_sigma=20.0, cy_sat=0.99, cy_shift=5.0,
+    cy_hue=196.0, cy_sigma=20.0, cy_sat=0.97, cy_shift=5.0,
     # skin: natural, subtly warm; no orange/red/yellow drift, no extra saturation
-    skin_hue=28.0, skin_sigma=17.0, skin_sat=0.965,
+    skin_hue=28.0, skin_sigma=19.0, skin_sat=1.05, skin_shift=-3.5, skin_hi_boost=0.06,
     skin_s_lo=0.06, skin_s_hi=0.16, skin_s_top=0.55, skin_s_max=0.80,
     # golden warmth: honey/amber in sunlit mids, whites stay believable
-    warm_r=0.085, warm_g=0.024, warm_b=-0.075, warm_lum_comp=0.013,
-    warm_gate_k=0.055,                     # saturation gate (neutrals barely shift)
+    warm_r=0.098, warm_g=0.028, warm_b=-0.088, warm_lum_comp=0.015,
+    warm_gate_k=0.085,                     # saturation gate (neutrals barely shift)
+    warm_sky_protect=0.60,                 # keep skies blue, not turquoise
     warm_l=[0.0, 0.03, 0.10, 0.28, 0.55, 0.80, 1.0],
-    warm_w=[0.00, 0.35, 0.90, 1.00, 0.90, 0.55, 0.35],
+    warm_w=[0.00, 0.35, 0.90, 1.00, 0.88, 0.50, 0.28],
     # already-warm colours (golden hour) receive attenuated warmth
     warm_att_hue=45.0, warm_att_sigma=26.0,
     warm_att_s_lo=0.32, warm_att_s_hi=0.60, warm_att_amt=0.50,
@@ -225,7 +235,7 @@ PARAMS = dict(
     cool_r=-0.028, cool_g=-0.010, cool_b=0.032,
     cool_l_lo=0.015, cool_l_hi=0.09, cool_gate_k=0.12,
     # final highlight desaturation for clean whites
-    hi_desat_l=0.85, hi_desat_amt=0.08,
+    hi_desat_l=0.80, hi_desat_amt=0.10,
 )
 
 _SATM = None
@@ -322,12 +332,19 @@ def grade(lin709):
     m = m * (1.0 + (PARAMS['fol_sat'] - 1.0) * w_fol)
     m = m * (1.0 + (PARAMS['cy_sat'] - 1.0) * w_cy)
     m = m * (1.0 + (PARAMS['skin_sat'] - 1.0) * w_skin * g_skin)
+    # sunlit skin sits in the shoulder: counter its per-channel desaturation so
+    # highlights on skin stay creamy rather than pale
+    m = m * (1.0 + PARAMS['skin_hi_boost'] * w_skin * g_skin
+             * smoothstep(V, 0.5, 0.8) * (1.0 - smoothstep(V, 0.85, 1.0)))
     # clean whites: gentle desaturation near the top end
     m = m * (1.0 - PARAMS['hi_desat_amt'] * smoothstep(L, PARAMS['hi_desat_l'], 1.05))
     S = np.clip(S * m, 0.0, 1.0)
 
     # --- hue shifts ---
-    H = H + PARAMS['fol_shift'] * w_fol + PARAMS['cy_shift'] * w_cy * g_sky
+    H = H + (PARAMS['fol_shift'] * w_fol
+             + PARAMS['cy_shift'] * w_cy * g_sky
+             + PARAMS['sky_shift'] * w_sky * g_sky
+             + PARAMS['skin_shift'] * w_skin * g_skin)
 
     disp = hsv_to_rgb(H, S, V)
 
@@ -335,7 +352,8 @@ def grade(lin709):
     gate = S / (S + PARAMS['warm_gate_k'])
     wL = WARMW.eval(np.clip(L, 0.0, 1.0))
     atten = 1.0 - PARAMS['warm_att_amt'] * w_att * g_att
-    w = wL * gate * atten
+    skyprot = 1.0 - PARAMS['warm_sky_protect'] * w_sky  # keep skies blue, not turquoise
+    w = wL * gate * atten * skyprot
     disp = disp * np.stack([1.0 + PARAMS['warm_r'] * w,
                             1.0 + PARAMS['warm_g'] * w,
                             1.0 + PARAMS['warm_b'] * w], axis=-1)
@@ -449,7 +467,7 @@ def self_test():
     ys = tone_curve(xs)
     check("monotonic", np.all(np.diff(ys) >= -1e-12))
     check("never brightens above midgrey", np.all(ys[xs >= 0.18] <= xs[xs >= 0.18] + 1e-9))
-    check("18% grey mapped", abs(_TONE.eval(0.18) - 0.128) < 1e-9)
+    check("18% grey mapped to code ~0.42", abs(_TONE.eval(0.18) - 0.42 ** GAMMA_OUT) < 1e-9)
 
     print("Neutrality / sanity:")
     g = np.linspace(0, 1, 101)
