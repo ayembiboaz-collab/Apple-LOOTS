@@ -49,6 +49,9 @@ HEADER = [
     "A LUT cannot recover clipped highlights. See VALIDATION_REPORT.txt.",
 ]
 
+    r1 = r0 + 1
+    g1 = g0 + 1
+    b1 = b0 + 1
 
 def build(size=SIZE, look=None):
     look = grade.LOOK if look is None else look

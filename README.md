@@ -30,13 +30,12 @@ table. It must **not** be stacked on a separate conversion LUT.
 | `GOLDEN_DAYLIGHT_CINEMA/VALIDATION_REPORT.txt` | sources, tests, results, limitations |
 | `scripts/` | the complete, reproducible build pipeline |
 | `sources/` | the eight source stills + `CREDITS.md` |
-| `SOURCES.md` | technical and visual source research |
-| `legacy/` | superseded material from earlier sessions — **not** part of the deliverable |
+| `index.html` | redirect to the gallery, for GitHub Pages |
 
-This repository was built over several separate sessions. Earlier sessions each
-produced their own pipeline and their own LUT. Exactly **one** LUT ships; the
-earlier material was moved into [`legacy/`](legacy/) rather than deleted. See
-[`legacy/README.md`](legacy/README.md).
+This repository was built over several separate sessions, each of which
+produced its own pipeline and its own candidate LUT. Exactly **one** LUT ships:
+the file above. The superseded material was removed from the tip of `main`
+during the final merge and remains in the git history.
 
 ## Reproducing the build
 
