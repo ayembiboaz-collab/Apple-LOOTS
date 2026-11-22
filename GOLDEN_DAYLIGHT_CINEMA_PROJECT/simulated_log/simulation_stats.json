@@ -1,0 +1,122 @@
+{
+  "midday_city": {
+    "source": "source_images/01_midday_city.jpg",
+    "simulated_log": "simulated_log/01_midday_city_applelog2.png",
+    "size": [
+      1024,
+      768
+    ],
+    "log_code_min": 0.15047645230091253,
+    "log_code_max": 0.6945529830703835,
+    "log_code_mean": 0.542019212375432,
+    "linear_y_mean": 0.4183304395431744,
+    "quantisation_max_err_code": 7.629491730165583e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "midday_portrait": {
+    "source": "source_images/02_midday_portrait.jpg",
+    "simulated_log": "simulated_log/02_midday_portrait_applelog2.png",
+    "size": [
+      1024,
+      683
+    ],
+    "log_code_min": 0.15057729658970273,
+    "log_code_max": 0.6826757377857127,
+    "log_code_mean": 0.42489329462796743,
+    "linear_y_mean": 0.1983515167352313,
+    "quantisation_max_err_code": 7.629508406437058e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "mediterranean_street": {
+    "source": "source_images/03_mediterranean_street.jpg",
+    "simulated_log": "simulated_log/03_mediterranean_street_applelog2.png",
+    "size": [
+      768,
+      1024
+    ],
+    "log_code_min": 0.15047645230091253,
+    "log_code_max": 0.6945529830703835,
+    "log_code_mean": 0.5091665002863824,
+    "linear_y_mean": 0.309285158984199,
+    "quantisation_max_err_code": 7.629487173033134e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "beach_daylight": {
+    "source": "source_images/04_beach_daylight.jpg",
+    "simulated_log": "simulated_log/04_beach_daylight_applelog2.png",
+    "size": [
+      1024,
+      683
+    ],
+    "log_code_min": 0.15158197968557496,
+    "log_code_max": 0.6837674987681244,
+    "log_code_mean": 0.5398592697294912,
+    "linear_y_mean": 0.2731234982485422,
+    "quantisation_max_err_code": 7.629504060968628e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "landscape_green": {
+    "source": "source_images/05_landscape_green.jpg",
+    "simulated_log": "simulated_log/05_landscape_green_applelog2.png",
+    "size": [
+      1024,
+      768
+    ],
+    "log_code_min": 0.15413626253375473,
+    "log_code_max": 0.6945529830703835,
+    "log_code_mean": 0.414508797029387,
+    "linear_y_mean": 0.16086489590073455,
+    "quantisation_max_err_code": 7.629486168614363e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "golden_hour": {
+    "source": "source_images/06_golden_hour.jpg",
+    "simulated_log": "simulated_log/06_golden_hour_applelog2.png",
+    "size": [
+      1024,
+      683
+    ],
+    "log_code_min": 0.15057729658970273,
+    "log_code_max": 0.6945529830703835,
+    "log_code_mean": 0.3933761670187231,
+    "linear_y_mean": 0.18700428310676426,
+    "quantisation_max_err_code": 7.62949830657167e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "modern_architecture": {
+    "source": "source_images/07_modern_architecture.jpg",
+    "simulated_log": "simulated_log/07_modern_architecture_applelog2.png",
+    "size": [
+      1024,
+      684
+    ],
+    "log_code_min": 0.15047645230091253,
+    "log_code_max": 0.6927114956231307,
+    "log_code_mean": 0.3860400438766849,
+    "linear_y_mean": 0.1750447708481367,
+    "quantisation_max_err_code": 7.629489651439503e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  },
+  "travel_people": {
+    "source": "source_images/08_travel_people.jpg",
+    "simulated_log": "simulated_log/08_travel_people_applelog2.png",
+    "size": [
+      1024,
+      576
+    ],
+    "log_code_min": 0.1507286263602338,
+    "log_code_max": 0.6945529830703835,
+    "log_code_mean": 0.4924567282258231,
+    "linear_y_mean": 0.2905926404251648,
+    "quantisation_max_err_code": 7.629487173033134e-06,
+    "below_black_fraction": 0.0,
+    "log_top_used_fraction": 0.0
+  }
+}

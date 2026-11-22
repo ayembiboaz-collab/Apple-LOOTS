@@ -1,0 +1,11 @@
+# local python environment (never committed)
+.venv/
+__pycache__/
+*.pyc
+
+# scratch downloads from image search (provenance only; the curated photos live
+# in GOLDEN_DAYLIGHT_CINEMA_PROJECT/source_images/)
+image-search/
+
+# OS noise
+.DS_Store
