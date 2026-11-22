@@ -1,0 +1,20 @@
+GOLDEN DAYLIGHT CINEMA — SOURCES & CREDITS
+==========================================
+
+TECHNICAL SPECIFICATIONS
+1. Apple Log 2 / Apple Wide Gamut Primaries & Transfer Function:
+   - ASWF OpenColorIO 2.6.0 (PR #2343, src/OpenColorIO/transforms/builtins/AppleCameras.cpp)
+   - Apple Wide Gamut CIE xy: R(0.725, 0.301), G(0.221, 0.814), B(0.068, -0.076), D65(0.3127, 0.3290)
+   - Transfer Function: Apple Log curve (R0=-0.05641088, Rt=0.01, c=47.28711236, beta=0.00964052, gamma=0.08550479, delta=0.69336945)
+2. Blackmagic Camera iOS LUT Support:
+   - Supports 17-point and 33-point 3D .cube LUTs.
+
+REAL-WORLD TEST IMAGES (UNSPLASH LICENSE)
+01. Harsh Midday City: https://unsplash.com/photos/low-angle-photography-of-high-rise-buildings-under-blue-sky-faoWIzifaWk
+02. Midday Portrait: https://unsplash.com/photos/young-woman-posing-outdoors-in-sunlight-E0ziD2Eaw_k
+03. Mediterranean Street: https://unsplash.com/photos/charming-european-street-with-stone-buildings-and-plants-KBg73gZF2Wo
+04. Bright Beach Daylight: https://unsplash.com/photos/a-sandy-beach-next-to-the-ocean-under-a-blue-sky-uBATUuwZC-I
+05. Natural Landscape: https://unsplash.com/photos/green-mountains-under-blue-sky-during-daytime-0tJ-tFrGJZY
+06. Golden-Hour Landscape: https://unsplash.com/photos/sY5llOA25Ck
+07. Modern Architecture: https://unsplash.com/photos/shadow-and-sunlight-cast-upon-a-concrete-staircase-xDV6YuFBkAo
+08. Outdoor Travel Scene: https://unsplash.com/photos/three-people-walking-on-a-sunny-street-with-historic-buildings-_ktV46ZChUI

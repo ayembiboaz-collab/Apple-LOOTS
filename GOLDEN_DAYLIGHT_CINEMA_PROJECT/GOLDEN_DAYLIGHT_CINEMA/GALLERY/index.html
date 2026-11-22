@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Golden Daylight Cinema — Flagship LUT Gallery</title>
+<style>
+  :root {
+    --bg: #0c0d10;
+    --card: #15171c;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #e5b869;
+    --border: #262932;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding: 20px 16px 64px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    padding: 24px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  h1 { font-size: 1.9rem; font-weight: 600; letter-spacing: 0.04em; color: var(--accent); }
+  .subtitle { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
+  .actions { margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    background: var(--accent);
+    color: #0c0d10;
+  }
+  .btn.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-title { font-size: 0.95rem; font-weight: 500; }
+  .fs-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .compare {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
+    background: #000;
+  }
+  .compare img { display: block; width: 100%; height: auto; pointer-events: none; }
+  .compare .after-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    width: 50%;
+  }
+  .compare .after-wrap img { width: 100%; max-width: none; height: 100%; object-fit: cover; }
+  .slider-line {
+    position: absolute;
+    top: 0; bottom: 0; left: 50%;
+    width: 2px;
+    background: var(--accent);
+    pointer-events: none;
+  }
+  .slider-handle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0c0d10;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  .label {
+    position: absolute; top: 10px;
+    padding: 3px 8px; border-radius: 4px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(12,13,16,0.72); color: #fff;
+    pointer-events: none;
+  }
+  .label.left { left: 10px; }
+  .label.right { right: 10px; color: var(--accent); }
+  section { margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+  h2 { font-size: 1.25rem; margin-bottom: 14px; color: var(--accent); }
+  .credits-list { list-style: none; display: grid; gap: 8px; font-size: 0.88rem; color: var(--muted); }
+  .credits-list a { color: var(--text); }
+  .modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.94); z-index: 100;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal.open { display: flex; }
+  .modal img { max-width: 100%; max-height: 92vh; border-radius: 8px; }
+  .modal-close {
+    position: fixed; top: 16px; right: 20px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; font-size: 0.9rem; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>GOLDEN DAYLIGHT CINEMA</h1>
+  <p class="subtitle">Standalone 33×33×33 3D LUT · Apple Log 2 (Apple Wide Gamut) → Rec.709 Gamma 2.4</p>
+  <div class="actions">
+    <a class="btn" href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube" download>Download .cube LUT</a>
+    <a class="btn secondary" href="../CONTACT_SHEET/contact_sheet.png" target="_blank">View Contact Sheet</a>
+    <a class="btn secondary" href="#credits">Credits &amp; Sources</a>
+  </div>
+</header>
+
+<div class="grid" id="gallery"></div>
+
+<section id="credits">
+  <h2>Look &amp; Compatibility</h2>
+  <p style="color:var(--muted); font-size:0.92rem; margin-bottom:18px;">
+    Designed for iPhone 17 Pro Apple Log 2 footage in Blackmagic Camera for iOS.
+    Built with a scene-referred float64 pipeline (Apple Log 2 decode → CIE XYZ / OKLCh perceptual grading →
+    luminance-weighted split-tone → skin-line protection → filmic shoulder/toe → hue-preserving Rec.709 gamut compression → Gamma 2.4).
+    All previews below use simulated Apple Log 2 derived from real-world Unsplash photographs.
+  </p>
+  <h2>Image Credits (Unsplash License)</h2>
+  <ul class="credits-list">
+    <li>01. Harsh Midday City — <a href="https://unsplash.com/photos/low-angle-photography-of-high-rise-buildings-under-blue-sky-faoWIzifaWk" target="_blank">Unsplash</a></li>
+    <li>02. Midday Portrait — <a href="https://unsplash.com/photos/young-woman-posing-outdoors-in-sunlight-E0ziD2Eaw_k" target="_blank">Unsplash</a></li>
+    <li>03. Mediterranean Street — <a href="https://unsplash.com/photos/charming-european-street-with-stone-buildings-and-plants-KBg73gZF2Wo" target="_blank">Unsplash</a></li>
+    <li>04. Bright Beach Daylight — <a href="https://unsplash.com/photos/a-sandy-beach-next-to-the-ocean-under-a-blue-sky-uBATUuwZC-I" target="_blank">Unsplash</a></li>
+    <li>05. Natural Landscape — <a href="https://unsplash.com/photos/green-mountains-under-blue-sky-during-daytime-0tJ-tFrGJZY" target="_blank">Unsplash</a></li>
+    <li>06. Golden-Hour Landscape — <a href="https://unsplash.com/photos/sY5llOA25Ck" target="_blank">Unsplash</a></li>
+    <li>07. Modern Architecture — <a href="https://unsplash.com/photos/shadow-and-sunlight-cast-upon-a-concrete-staircase-xDV6YuFBkAo" target="_blank">Unsplash</a></li>
+    <li>08. Outdoor Travel Scene — <a href="https://unsplash.com/photos/three-people-walking-on-a-sunny-street-with-historic-buildings-_ktV46ZChUI" target="_blank">Unsplash</a></li>
+  </ul>
+</section>
+
+<div class="modal" id="modal">
+  <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Close</button>
+  <img id="modal-img" src="" alt="Full screen preview">
+</div>
+
+<script>
+const SCENES = [
+  ["01_harsh_midday_city", "01. Harsh Midday City"],
+  ["02_midday_portrait", "02. Midday Portrait"],
+  ["03_mediterranean_street", "03. Mediterranean Street"],
+  ["04_bright_beach", "04. Bright Beach Daylight"],
+  ["05_natural_landscape", "05. Natural Landscape"],
+  ["06_golden_hour", "06. Golden-Hour Landscape"],
+  ["07_modern_architecture", "07. Modern Architecture"],
+  ["08_outdoor_travel", "08. Outdoor Travel Scene"]
+];
+
+const gallery = document.getElementById("gallery");
+SCENES.forEach(([slug, title]) => {
+  const beforeSrc = `../PREVIEWS/${slug}_BEFORE.png`;
+  const afterSrc = `../PREVIEWS/${slug}_AFTER.png`;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="card-header">
+      <span class="card-title">${title}</span>
+      <button class="fs-btn" onclick="openModal('${afterSrc}')">Full Screen</button>
+    </div>
+    <div class="compare">
+      <img src="${beforeSrc}" alt="${title} Before" loading="lazy">
+      <div class="after-wrap"><img src="${afterSrc}" alt="${title} After" loading="lazy"></div>
+      <div class="slider-line"></div>
+      <div class="slider-handle">↔</div>
+      <span class="label left">BEFORE</span>
+      <span class="label right">AFTER</span>
+    </div>
+  `;
+  const cmp = card.querySelector(".compare");
+  const wrap = card.querySelector(".after-wrap");
+  const line = card.querySelector(".slider-line");
+  const handle = card.querySelector(".slider-handle");
+  const update = (clientX) => {
+    const rect = cmp.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    wrap.style.width = pct + "%";
+    line.style.left = pct + "%";
+    handle.style.left = pct + "%";
+  };
+  cmp.addEventListener("pointerdown", (e) => { cmp.setPointerCapture(e.pointerId); update(e.clientX); });
+  cmp.addEventListener("pointermove", (e) => { if (e.buttons || e.pointerType === "touch") update(e.clientX); });
+  gallery.appendChild(card);
+});
+
+function openModal(src) {
+  document.getElementById("modal-img").src = src;
+  document.getElementById("modal").classList.add("open");
+}
+</script>
+</body>
+</html>

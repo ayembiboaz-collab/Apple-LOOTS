@@ -1,0 +1,29 @@
+GOLDEN DAYLIGHT CINEMA — VALIDATION REPORT
+==========================================
+Delivered LUT: GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+SHA-256:       16a64650a7b152b74d184ded645b32fa8eaabb3ca5294df852da63784de599df
+Dimensions:    33x33x33 (3D .cube, red-fastest ordering, domain 0.0-1.0)
+
+1. NUMERICAL INTEGRITY
+- NaN / Inf:   False / False
+- Value Range: [0.000000, 1.000000]
+
+2. 33x33x33 BAKE ACCURACY VS ANALYTIC FLOAT64 PIPELINE (10,000 samples)
+- Tetrahedral CIEDE2000: mean = 0.3426, max = 28.3292
+- Trilinear   CIEDE2000: mean = 0.4476, max = 28.3684
+
+3. NEUTRAL AXIS, MONOTONICITY & NOISE ROBUSTNESS
+- Neutral Ramp Monotonic: True (no reversals or kinks)
+- Neutral Axis Chroma (deliberate warm midtone split-tone): mean C* = 0.38, max C* = 1.32
+- Shadow Noise Gain (sigma=0.005 at 0.15 log): 1.964x
+
+4. SKIN EXPOSURE LADDER (Rec.709 Gamma 2.4 output)
+- -2 stops: [0.4011, 0.3125, 0.2587]
+- -1 stop:  [0.535, 0.4169, 0.3447]
+-  0 stops: [0.7089, 0.5588, 0.4708]
+- +1 stop:  [0.9168, 0.7562, 0.6648]
+
+5. HONEST LIMITATIONS & TESTING SCOPE
+- A 3D LUT is a fixed per-pixel colour transform: it cannot add film grain, halation, bloom, sharpening, noise reduction, depth-aware edits, or recover clipped highlights.
+- All 8 BEFORE/AFTER previews were generated from simulated Apple Log 2 derived from real-world Unsplash sRGB photographs; dynamic range is bounded by the source JPEGs.
+- No physical iPhone 17 Pro or Blackmagic Camera iOS device test was performed in this environment.

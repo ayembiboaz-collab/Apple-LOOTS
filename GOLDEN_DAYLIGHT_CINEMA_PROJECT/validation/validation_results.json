@@ -1,0 +1,39 @@
+{
+  "lut_path": "GOLDEN_DAYLIGHT_CINEMA_PROJECT/GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube",
+  "lut_sha256": "16a64650a7b152b74d184ded645b32fa8eaabb3ca5294df852da63784de599df",
+  "lut_size": 33,
+  "has_nan": false,
+  "has_inf": false,
+  "min_val": 0.0,
+  "max_val": 1.0,
+  "trilinear_de2000_mean": 0.4476031221031657,
+  "trilinear_de2000_max": 28.368395694697146,
+  "tetrahedral_de2000_mean": 0.34256099930666367,
+  "tetrahedral_de2000_max": 28.32915485288581,
+  "neutral_ramp_monotonic": true,
+  "neutral_ramp_chroma_mean": 0.3831309971997434,
+  "neutral_ramp_chroma_max": 1.3160754129580408,
+  "shadow_noise_gain": 1.9640902913013727,
+  "skin_exposure_ladder": {
+    "-2_stops": [
+      0.4011,
+      0.3125,
+      0.2587
+    ],
+    "-1_stops": [
+      0.535,
+      0.4169,
+      0.3447
+    ],
+    "+0_stops": [
+      0.7089,
+      0.5588,
+      0.4708
+    ],
+    "+1_stops": [
+      0.9168,
+      0.7562,
+      0.6648
+    ]
+  }
+}
