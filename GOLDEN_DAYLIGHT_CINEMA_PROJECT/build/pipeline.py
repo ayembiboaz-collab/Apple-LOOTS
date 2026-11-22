@@ -161,29 +161,41 @@ def grade_oklab(ok, p=DEFAULTS):
     L = L * (1.0 - p['whites_soft_depth'] * white_w)
 
     # ---- 2. Density-style saturation --------------------------------------
+    # Rich in mids, thins toward whites and deep shadows.
+    # Saturated blue skies are protected: richness is kept for sky hue so the
+    # look is golden-warm rather than grey-hazy.
+    white_w = 1.0 - smoothstep(C_orig, 0.02, 0.06)
+    sky_protect0 = smoothstep(np.arctan2(b, a) % (2 * np.pi), p['sky_lo'], p['sky_lo'] + 0.22) * (1.0 - smoothstep(np.arctan2(b, a) % (2 * np.pi), p['sky_hi'] - 0.18, p['sky_hi'] + 0.18))
+    sky_protect0 = np.clip(sky_protect0, 0.0, 1.0) * smoothstep(C_orig, 0.06, 0.12)
     mid_w = gauss(L, p['sat_mid_mu'], p['sat_mid_sigma'])
-    hi_w = smoothstep(L, p['sat_hi_knee'], p['sat_hi_knee'] + 0.20)
+    hi_w = smoothstep(L, p['sat_hi_knee'], p['sat_hi_knee'] + 0.20) * white_w * (1.0 - 0.85 * sky_protect0)
     lo_w = 1.0 - smoothstep(L, 0.02, p['sat_lo_knee'])
     C = C_orig * (1.0 + p['sat_mid'] * mid_w + p['sat_hi'] * hi_w + p['sat_lo'] * lo_w)
 
-    # ---- 3. Luminance-weighted split-tone balance -------------------------
+    # ---- 3. Sky protection weight (hue-based, computed BEFORE warm shifts)
+    sky_w0 = smoothstep(h, p['sky_lo'], p['sky_lo'] + 0.22) * (1.0 - smoothstep(h, p['sky_hi'] - 0.18, p['sky_hi'] + 0.18))
+    sky_w0 = np.clip(sky_w0, 0.0, 1.0)
+    not_sky = 1.0 - 0.82 * sky_w0
+
+    # ---- 4. Luminance-weighted split-tone balance -------------------------
+    # Warm amber shift in midtones/highlights, damped for sky hue so blues
+    # stay natural (this is what makes the warmth look golden, not orange).
     warm_mid_w = gauss(L, p['warm_mid_mu'], p['warm_mid_sigma'])
     warm_high_w = smoothstep(L, p['warm_high_knee'], p['warm_high_knee'] + 0.24)
     neutral_damp = 0.35 + 0.65 * smoothstep(C_orig, 0.0, 0.08)
-    C = C + (p['warm_mid_chroma'] * warm_mid_w + p['warm_high_chroma'] * warm_high_w) * neutral_damp
-    h = lerp_angle(h, p['warm_mid_hue'], warm_mid_w * p['warm_mid_hue_strength'])
-    h = lerp_angle(h, p['warm_high_hue'], warm_high_w * p['warm_high_strength'])
+    C = C + (p['warm_mid_chroma'] * warm_mid_w + p['warm_high_chroma'] * warm_high_w) * neutral_damp * not_sky
+    h = lerp_angle(h, p['warm_mid_hue'], warm_mid_w * p['warm_mid_hue_strength'] * not_sky)
+    h = lerp_angle(h, p['warm_high_hue'], warm_high_w * p['warm_high_strength'] * not_sky)
 
     shadow_w = 1.0 - smoothstep(L, 0.04, p['cool_shadow_knee'])
     h = lerp_angle(h, 4.6, shadow_w * p['cool_shadow_strength'] * 0.6)
     C = C * (1.0 - p['cool_shadow_chroma'] * shadow_w * 0.5)
 
-    # ---- 4. Hue-selective chroma shaping ----------------------------------
+    # ---- 5. Hue-selective chroma shaping ----------------------------------
     # Sky / blue-cyan: natural blue, controlled cyan.
-    sky_w = smoothstep(h, p['sky_lo'], p['sky_lo'] + 0.22) * (1.0 - smoothstep(h, p['sky_hi'] - 0.18, p['sky_hi'] + 0.18))
-    sky_w = np.clip(sky_w, 0.0, 1.0)
+    sky_w = sky_w0
     C = C * (1.0 + (p['sky_sat_keep'] - 1.0) * sky_w)
-    h = lerp_angle(h, p['sky_hue_target'], sky_w * p['sky_hue_target_strength'])
+    h = lerp_angle(h, p['sky_hue_target'], sky_w * p['sky_hue_target_strength'] * 0.5)
 
     # Foliage greens: natural, slightly warm, controlled saturation.
     green_w = smoothstep(h, p['green_lo'], p['green_lo'] + 0.18) * (1.0 - smoothstep(h, p['green_hi'] - 0.18, p['green_hi'] + 0.18))
@@ -210,7 +222,8 @@ def grade_oklab(ok, p=DEFAULTS):
     C = C - excess * skin_w * p['skin_chroma_cap_strength'] * (excess / (p['skin_chroma_cap'] + excess + 1e-9))
 
     # ---- 5. Highlight desaturation -----------------------------------------
-    hi_desat_w = smoothstep(L, p['highlight_desat_knee'], p['highlight_desat_knee'] + 0.22)
+    sky_protect = np.clip(smoothstep(np.arctan2(b, a) % (2 * np.pi), p['sky_lo'], p['sky_lo'] + 0.22) * (1.0 - smoothstep(np.arctan2(b, a) % (2 * np.pi), p['sky_hi'] - 0.18, p['sky_hi'] + 0.18)), 0.0, 1.0) * smoothstep(C, 0.06, 0.12)
+    hi_desat_w = smoothstep(L, p['highlight_desat_knee'], p['highlight_desat_knee'] + 0.22) * white_w * (1.0 - sky_protect)
     C = C * (1.0 - p['highlight_desat_depth'] * hi_desat_w)
 
     # ---- 6. Rebuild ----------------------------------------------------------
