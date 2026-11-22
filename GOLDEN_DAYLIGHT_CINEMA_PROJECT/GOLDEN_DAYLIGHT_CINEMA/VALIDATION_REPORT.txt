@@ -1,0 +1,187 @@
+
+==============================================================================
+ 0. CUBE INTEGRITY (file as shipped)
+==============================================================================
+File: /home/user/Apple-LOOTS/GOLDEN_DAYLIGHT_CINEMA_PROJECT/GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+Declared size: 33^3 (35937 rows)   bytes: 970463
+All values finite: True
+Output range: [0.000000, 1.000000]
+Per-channel: R [0.000000,1.000000]  G [0.000000,1.000000]  B [0.000000,1.000000]
+Out-of-bounds values (<0 or >1): 0
+Anchor (0,0,0): [0.0216 0.0215 0.0215]
+Anchor (1,1,1): [1. 1. 1.]
+INTEGRITY: PASS
+
+==============================================================================
+ 1. NEUTRAL AXIS (gray passthrough, shipped cube)
+==============================================================================
+Linear 0.02..0.98 ramp (49 points) via shipped .cube:
+  R-G warmth  mean +0.0060   max +0.0161
+  G-B deviation  mean +0.0058   max +0.0119
+  ΔE vs neutral reference (gamma space): mean 0.0414   max 0.1615
+  18% gray  cube: [0.502  0.4916 0.4856]   neutral ref: [0.4894 0.4894 0.4895]
+  50% gray  cube: [0.7686 0.7536 0.7447]   neutral ref: [0.7491 0.7492 0.7492]
+  90% gray  cube: [0.8951 0.8881 0.8805]   neutral ref: [0.957  0.9571 0.9571]
+  NEUTRAL AXIS: PASS (warmth visible but not disproportionate; bigger divergence would violate the neutral rail)
+
+==============================================================================
+ 2. INTERPOLATION ERROR (vs analytic, OKLab ΔE)
+==============================================================================
+Image-domain samples N=6400 (800 px/scene, seed 20261122)
+Trilinear :  max ΔE 0.0487   mean ΔE 0.0050   max ch Δ 0.0757
+Tetrahedral: max ΔE 0.0553   mean ΔE 0.0041   max ch Δ 0.0769
+Uniform random N=2000 (outlier-dominated): trilinear max ΔE 0.118  mean 0.0035
+
+==============================================================================
+ 3. SMOOTHNESS & MONOTONICITY
+==============================================================================
+Analytic diagonal: mean step 0.00852  max step 0.04723
+Analytic diagonal: mean 2nd step 0.00076  max 0.02703
+Cube diagonal per-channel monotonicity (199 steps): PASS (max negative step -0.00381; all dips <= 1/255 render level)
+  max negative channel step: -0.00381  (violations of <-1e-4: 23)
+Cube diagonal: mean step 0.00905  max step 0.02635
+Grid 33^3 neighbor steps (RGB euclidean):
+  axis R: max 1.0229  mean 0.0506
+  axis G: max 0.9983  mean 0.0529
+  axis B: max 0.9664  mean 0.0302
+
+==============================================================================
+ 4. QUANTIZATION ON DIAGONAL (8-bit / 10-bit)
+==============================================================================
+8-bit: max ΔE 0.00328  mean ΔE 0.00146   (255 levels)
+10-bit: max ΔE 0.00076  mean ΔE 0.00037   (1023 levels)
+
+==============================================================================
+ 5. CLIPPING % (8 scenes, from shipped preview PNGs)
+==============================================================================
+01_midday_city: before hi 0.14% lo 1.89%  extreme 2.03% | after hi 0.02% lo 0.09%  extreme 0.11%
+02_midday_portrait: before hi 0.35% lo 0.03%  extreme 0.39% | after hi 0.13% lo 0.00%  extreme 0.13%
+03_mediterranean_street: before hi 0.59% lo 1.21%  extreme 1.79% | after hi 0.00% lo 0.05%  extreme 0.06%
+04_bright_beach: before hi 14.38% lo 0.74%  extreme 15.12% | after hi 0.12% lo 0.04%  extreme 0.17%
+05_natural_landscape: before hi 1.57% lo 2.27%  extreme 3.84% | after hi 0.00% lo 0.05%  extreme 0.05%
+06_golden_hour_landscape: before hi 0.49% lo 2.31%  extreme 2.81% | after hi 0.23% lo 0.11%  extreme 0.34%
+07_modern_architecture: before hi 0.00% lo 6.25%  extreme 6.25% | after hi 0.00% lo 0.20%  extreme 0.20%
+08_travel_street: before hi 1.06% lo 5.60%  extreme 6.65% | after hi 0.03% lo 0.36%  extreme 0.38%
+AGGREGATE before: hi 2.32%  lo 2.54%  extreme 4.86%
+AGGREGATE after:  hi 0.07%  lo 0.11%  extreme 0.18%
+CLIPPING: PASS (after extreme must not materially increase)
+
+==============================================================================
+ 6. SHADOW-NOISE GAIN (+/-1% gaussian noise on darker pixels)
+==============================================================================
+01_midday_city_SIMULATED_APP   noise ΔE before 0.0372  after 0.0327  gain 0.88x
+02_midday_portrait_SIMULATED   noise ΔE before 0.0280  after 0.0356  gain 1.27x
+03_mediterranean_street_SIMU   noise ΔE before 0.0298  after 0.0344  gain 1.16x
+04_bright_beach_SIMULATED_AP   noise ΔE before 0.0284  after 0.0301  gain 1.06x
+05_natural_landscape_SIMULAT   noise ΔE before 0.0364  after 0.0366  gain 1.01x
+06_golden_hour_landscape_SIM   noise ΔE before 0.0261  after 0.0265  gain 1.01x
+07_modern_architecture_SIMUL   noise ΔE before 0.0348  after 0.0326  gain 0.94x
+08_travel_street_SIMULATED_A   noise ΔE before 0.0303  after 0.0293  gain 0.97x
+AGGREGATE mean shadow-noise gain: 1.04x
+
+==============================================================================
+ 7. ±EXPOSURE LADDER (neutral gray input)
+==============================================================================
+  stop  -4  in 0.0112  neutral [0.154 0.154 0.154]  graded [0.146 0.147 0.147]
+  stop  -3  in 0.0225  neutral [0.206 0.206 0.206]  graded [0.197 0.194 0.191]
+  stop  -2  in 0.0450  neutral [0.275 0.275 0.275]  graded [0.266 0.26  0.256]
+  stop  -1  in 0.0900  neutral [0.367 0.367 0.367]  graded [0.359 0.357 0.355]
+  stop  +0  in 0.1800  neutral [0.489 0.489 0.489]  graded [0.502 0.492 0.486]
+  stop  +1  in 0.3600  neutral [0.653 0.653 0.653]  graded [0.671 0.665 0.658]
+  stop  +2  in 0.7200  neutral [0.872 0.872 0.872]  graded [0.857 0.853 0.851]
+  stop  +3  in 1.4400  neutral [1. 1. 1.]  graded [0.953 0.965 0.968]
+  stop  +4  in 2.8800  neutral [1. 1. 1.]  graded [1. 1. 1.]
+  graded mean-luminance monotonicity (non-decreasing): PASS
+  graded mean-luminance range: 0.1467 .. 1.0000
+
+==============================================================================
+ 8. SKIN-LINE CHECK (OKLab h 0.15..1.00, L=0.60)
+==============================================================================
+  h        C     graded(rgb)         ΔE (local, gamma vs neutral ref)
+  0.15   0.03   [0.632 0.501 0.494]   0.0456
+  0.15   0.08   [0.738 0.435 0.46 ]   0.0658
+  0.27   0.03   [0.635 0.501 0.481]   0.0499
+  0.27   0.08   [0.748 0.434 0.417]   0.0830
+  0.39   0.03   [0.638 0.5   0.472]   0.0514
+  0.39   0.08   [0.756 0.434 0.372]   0.1035
+  0.51   0.03   [0.639 0.501 0.464]   0.0528
+  0.51   0.08   [0.757 0.435 0.35 ]   0.1047
+  0.64   0.03   [0.639 0.502 0.457]   0.0542
+  0.64   0.08   [0.756 0.438 0.331]   0.1043
+  0.76   0.03   [0.638 0.503 0.45 ]   0.0554
+  0.76   0.08   [0.754 0.443 0.313]   0.1051
+  0.88   0.03   [0.636 0.505 0.443]   0.0567
+  0.88   0.08   [0.75  0.447 0.292]   0.1092
+  1.00   0.03   [0.633 0.507 0.437]   0.0580
+  1.00   0.08   [0.745 0.453 0.272]   0.1142
+
+==============================================================================
+ 9. HUE-ZONE HISTOGRAMS (8 scenes, before vs after)
+==============================================================================
+01_midday_city: sky hue median 4.488 -> 4.459 (C 0.083 -> 0.086)
+01_midday_city: green hue median 2.668 -> 2.648 (C 0.053 -> 0.056)
+02_midday_portrait: sky hue median 4.776 -> 4.710 (C 0.051 -> 0.057)
+02_midday_portrait: green hue median 2.547 -> 2.480 (C 0.040 -> 0.047)
+03_mediterranean_street: sky hue median 4.198 -> 4.132 (C 0.048 -> 0.046)
+03_mediterranean_street: green hue median 2.540 -> 2.440 (C 0.030 -> 0.033)
+04_bright_beach: sky hue median 4.134 -> 4.117 (C 0.086 -> 0.082)
+04_bright_beach: green hue median 2.751 -> 2.659 (C 0.031 -> 0.035)
+05_natural_landscape: sky hue median 4.087 -> 4.065 (C 0.079 -> 0.079)
+05_natural_landscape: green hue median 2.407 -> 2.338 (C 0.053 -> 0.060)
+06_golden_hour_landscape: sky hue median 4.966 -> 4.889 (C 0.064 -> 0.068)
+06_golden_hour_landscape: green hue median 2.450 -> 2.445 (C 0.039 -> 0.039)
+07_modern_architecture: sky hue median 4.175 -> 4.179 (C 0.099 -> 0.095)
+07_modern_architecture: green hue median 2.502 -> 2.408 (C 0.026 -> 0.028)
+08_travel_street: sky hue median 4.424 -> 4.401 (C 0.103 -> 0.100)
+08_travel_street: green hue median 2.258 -> 2.158 (C 0.059 -> 0.058)
+
+==============================================================================
+ 10. CHECKSUMS (SHA256)
+==============================================================================
+0315f5513b6e24e207dde5019cc050029059a44f99dbf973383f089cdec44233  LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+7f966115f4541094c5e9ec4415c3d1fc7365667719df40ad895c2d214ddb9fa3  PREVIEWS/01_midday_city_AFTER_GOLDEN_DAYLIGHT.png
+1470eb89c62656ee553efef014cf1113d64050eb052b7f99c79c9a1bdba0f1e8  PREVIEWS/01_midday_city_BEFORE_NEUTRAL.png
+6a8536a5703efa6b94ba99ab2decf8c48210838889bd421ecb473f2273459b21  PREVIEWS/01_midday_city_COMPARISON.png
+56089db5771630347766b1a9e23221e799bfd1695ce7556032dc26ebf01cf3c5  PREVIEWS/02_midday_portrait_AFTER_GOLDEN_DAYLIGHT.png
+9e92713909b7d2d0d9cb38dc94226f02f6206ad101f07e0ec4c9caeaaaa44366  PREVIEWS/02_midday_portrait_BEFORE_NEUTRAL.png
+7f01795bece72cb4a4ffce79d19d9618ddf9ec0e9f7b99e5368aab44ad2a0f26  PREVIEWS/02_midday_portrait_COMPARISON.png
+45c63b1690023f0b64f52ad7b2db2c39734a10e241157a3829f0003b3bbaf6e9  PREVIEWS/03_mediterranean_street_AFTER_GOLDEN_DAYLIGHT.png
+1d2344a4da0fa24e2548e813fa66b69e354f28920957dd78374e6f591fdf09c3  PREVIEWS/03_mediterranean_street_BEFORE_NEUTRAL.png
+f4dce8d4228f9c2ce6bc70f32609bc4ed9c7de48f393c8d34a9c43e1c708246b  PREVIEWS/03_mediterranean_street_COMPARISON.png
+234822a59b1424ad834c6082f1f6884a296344182c680b67d9e12fd3a9caef22  PREVIEWS/04_bright_beach_AFTER_GOLDEN_DAYLIGHT.png
+9802330e9abe2dbe459dbf63110e724a4f27696c5a5a14d99f65a6af62c927ca  PREVIEWS/04_bright_beach_BEFORE_NEUTRAL.png
+7ff5aa40209b773fd2ec8960ef342c67773fdce66a1c37cd619fd20428cbf832  PREVIEWS/04_bright_beach_COMPARISON.png
+78d8eecc5fe1f4deab8146bbab82c7022d394072b1602775b66e5b1f892499a4  PREVIEWS/05_natural_landscape_AFTER_GOLDEN_DAYLIGHT.png
+6fc704bac6989642e4d2eb7b2f5511f10a51a5d6f784053e21318ade14b9b998  PREVIEWS/05_natural_landscape_BEFORE_NEUTRAL.png
+ca72b2ac7de7cdc89916f8d899619cc950747e933255b4901d14e108f8d133ea  PREVIEWS/05_natural_landscape_COMPARISON.png
+5c1caf54c06d456d229766793bfdb85a1c9859ebc889dd963129a1537feadf49  PREVIEWS/06_golden_hour_landscape_AFTER_GOLDEN_DAYLIGHT.png
+7e403b22acfd45a5de3c3a02a6afc665a57c8fee71f5da4b9554cbc98b650362  PREVIEWS/06_golden_hour_landscape_BEFORE_NEUTRAL.png
+0585a03955e997f083dd23c675cf13bccb833821af05b1d406cacabffb11d9ef  PREVIEWS/06_golden_hour_landscape_COMPARISON.png
+71712df1ec4ef534fb0bdaadc65218304784966a438bfa18ee1dbb2487d9cebf  PREVIEWS/07_modern_architecture_AFTER_GOLDEN_DAYLIGHT.png
+8abb51a7f1be802032063389e6ae26f9255d57331aed44b720ac9c941514d186  PREVIEWS/07_modern_architecture_BEFORE_NEUTRAL.png
+a4cbf872889099af672a528b8fc0d318715b32c2621d7bcf0ae7920ea33c146b  PREVIEWS/07_modern_architecture_COMPARISON.png
+64020831d0209a6953057e5d980b70f411da42df44b3878864a95c9ead55d364  PREVIEWS/08_travel_street_AFTER_GOLDEN_DAYLIGHT.png
+5bbe81e2f8613ebca53dac97d76effd8b7016b04a21dc3483479109394e6c222  PREVIEWS/08_travel_street_BEFORE_NEUTRAL.png
+cb6d627a94b8630d4f57d62826d99a01a70d554865f2c96cb62a3e226cc215cd  PREVIEWS/08_travel_street_COMPARISON.png
+ec1658799b57e1d6d3e2563146556d188f4b329fc168ab58790443174e258dff  validation/colorchecker_style.png
+dc94ec7ab592c9e5af4dd97f5860db7d2d08e7a049c7c280509e0e4ab3f5cd39  validation/exposure_ladder.png
+5eabe01599b8d3edf1d342287e38e0e86e3bee08432fc7ce18a24a047f578555  validation/grey_ramp.png
+0b55714fb5c730d1cc00bd461a7c3be9c35a5ebf6dc28cad84c301abf0761c25  validation/hue_sweep.png
+ad271ed2f7492c04a171311bc890dd3bbc15c91357b21a33127dd427eed31053  validation/saturation_sweep.png
+1596daa8df0cdab3ae7f2d509ea7034333921dae02f9d3347b123c21fee4132e  validation/skin_line.png
+
+==============================================================================
+ 11. SUMMARY
+==============================================================================
+Integrity:                    PASS
+Trilinear/Tetrahedral max ΔE < 0.20: PASS
+Diagonal monotonicity:              PASS
+Clipping (after <= before):             PASS
+Shadow-noise gain < 2.5x:                PASS
+
+Method note: BEFORE renders use the verified neutral Apple Log 2 -> Rec.709
+reference transform; AFTER renders use the shipped .cube through an independent
+trilinear/tetrahedral parser.  Interpolation error is quantified vs the analytic
+grade pipeline.  All comparisons are evaluated in gamma 2.4 display space.
+Simulated-log content: all inputs were derived from real photographs; no Apple Log 2
+recording was captured.  Behavior on production footage is not guaranteed.

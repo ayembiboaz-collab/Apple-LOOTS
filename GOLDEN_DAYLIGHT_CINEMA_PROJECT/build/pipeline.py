@@ -146,10 +146,11 @@ def grade_oklab(ok, p=DEFAULTS):
     L = L * (1.0 - p['shadow_darken'] * shadow_darken_w)
 
     # Midtone pivot contrast: keeps the pivot point fixed, deepens shadows,
-    # lifts upper-mids — classic filmic slope.  Applied only below the
-    # highlight region so highlights stay intact for the shoulder.
+    # lifts upper-mids — classic filmic slope.  Applied only in the midtone
+    # region (gaussian gate around the pivot) so deep shadows and highlights
+    # are unaffected.
     c_mid = p['mid_pivot']
-    pivot_w = 1.0 - smoothstep(L, 0.68, 0.82)
+    pivot_w = gauss(L, c_mid, 0.16)
     L = (L - c_mid) * (1.0 + (p['mid_slope'] - 1.0) * pivot_w) + c_mid
 
     # Highlight shoulder: smooth compression above knee.
@@ -175,21 +176,28 @@ def grade_oklab(ok, p=DEFAULTS):
     # ---- 3. Sky protection weight (hue-based, computed BEFORE warm shifts)
     sky_w0 = smoothstep(h, p['sky_lo'], p['sky_lo'] + 0.22) * (1.0 - smoothstep(h, p['sky_hi'] - 0.18, p['sky_hi'] + 0.18))
     sky_w0 = np.clip(sky_w0, 0.0, 1.0)
-    not_sky = 1.0 - 0.82 * sky_w0
+    not_sky = 1.0 - 0.96 * sky_w0  # saturated blue skies stay natural
+
+    # Warm-family hue mask: warm hue rotation is applied ONLY to the warm half
+    # of the hue wheel (amber/stone/skin).  Applying a rotation toward 0.80 to
+    # blue/cyan/green hues would sweep through the green/blue wheel and turn
+    # sky into mustard — so blue/cyan/green are excluded entirely.
+    warm_hue_mask = smoothstep(h, 0.02, 0.30) * (1.0 - smoothstep(h, 2.00, 2.45))
 
     # ---- 4. Luminance-weighted split-tone balance -------------------------
     # Warm amber shift in midtones/highlights, damped for sky hue so blues
     # stay natural (this is what makes the warmth look golden, not orange).
-    warm_mid_w = gauss(L, p['warm_mid_mu'], p['warm_mid_sigma'])
+    warm_mid_w = gauss(L, p['warm_mid_mu'], p['warm_mid_sigma']) * smoothstep(L, 0.12, 0.34)
     warm_high_w = smoothstep(L, p['warm_high_knee'], p['warm_high_knee'] + 0.24)
     neutral_damp = 0.35 + 0.65 * smoothstep(C_orig, 0.0, 0.08)
-    C = C + (p['warm_mid_chroma'] * warm_mid_w + p['warm_high_chroma'] * warm_high_w) * neutral_damp * not_sky
-    h = lerp_angle(h, p['warm_mid_hue'], warm_mid_w * p['warm_mid_hue_strength'] * not_sky)
-    h = lerp_angle(h, p['warm_high_hue'], warm_high_w * p['warm_high_strength'] * not_sky)
+    C = C + (p['warm_mid_chroma'] * warm_mid_w + p['warm_high_chroma'] * warm_high_w) * neutral_damp * not_sky * (0.35 + 0.65 * warm_hue_mask)
+    h = lerp_angle(h, p['warm_mid_hue'], warm_mid_w * p['warm_mid_hue_strength'] * not_sky * warm_hue_mask)
+    h = lerp_angle(h, p['warm_high_hue'], warm_high_w * p['warm_high_strength'] * not_sky * warm_hue_mask)
 
+    # Cool shadows only slightly for the warm half; full damp for sky.
     shadow_w = 1.0 - smoothstep(L, 0.04, p['cool_shadow_knee'])
-    h = lerp_angle(h, 4.6, shadow_w * p['cool_shadow_strength'] * 0.6)
-    C = C * (1.0 - p['cool_shadow_chroma'] * shadow_w * 0.5)
+    h = lerp_angle(h, 4.6, shadow_w * p['cool_shadow_strength'] * 0.6 * (1.0 - 0.8 * sky_w0))
+    C = C * (1.0 - p['cool_shadow_chroma'] * shadow_w * 0.5 * (1.0 - 0.85 * sky_w0))
 
     # ---- 5. Hue-selective chroma shaping ----------------------------------
     # Sky / blue-cyan: natural blue, controlled cyan.
@@ -241,7 +249,11 @@ def gamut_map_rec709(rgb_709, p=DEFAULTS, niter=34):
     At each pixel's (L, h), the maximum in-gamut chroma C_max is found by
     binary search; chroma beyond 0.85*C_max is then smoothly compressed.
     """
-    ok = cs.rec709_linear_to_oklab(rgb_709)
+    rgb_709 = np.asarray(rgb_709, dtype=np.float64)
+    flat_in = rgb_709.reshape(-1, 3)
+    ok = cs.rec709_linear_to_oklab(flat_in)
+    out_shape = ok.shape[:-1] + (3,)
+    ok = ok.reshape(out_shape)
     L = ok[..., 0]
     C = np.sqrt(ok[..., 1] ** 2 + ok[..., 2] ** 2)
     h = np.arctan2(ok[..., 2], ok[..., 1]) % (2 * np.pi)
@@ -262,14 +274,21 @@ def gamut_map_rec709(rgb_709, p=DEFAULTS, niter=34):
         hi = np.where(in_gamut, hi, mid)
     C_max = np.maximum(lo, 1e-6).reshape(C.shape)
 
-    excess = np.maximum(C - 0.85 * C_max, 0.0)
-    C = C - excess * 0.85 / (1.0 + 1.0 * excess / (0.05 * C_max + 1e-6))
+    # Soft-limit above 0.85*C_max: smoothly approach but never exceed C_max.
+    threshold = 0.85 * C_max
+    above = C > threshold
+    if np.any(above):
+        ratio = C[above] / threshold[above]
+        soft = np.minimum(1.0 + np.log2(ratio), 2.0)  # 1 at 0.85, 2 at 1.7
+        new_C = C.copy()
+        new_C[above] = C_max[above] * (0.85 + 0.15 * np.maximum(soft - 1.0, 0.0))
+        C = new_C
     C = np.maximum(C, 0.0)
 
     out = cs.oklab_to_rec709_linear(
         np.stack([L, C * np.cos(h), C * np.sin(h)], axis=-1)
     )
-    return np.clip(out, 0.0, 1.0)
+    return np.clip(out, 0.0, 1.0).reshape(rgb_709.shape)
 
 
 def decode_and_grade(encoded_log2, p=DEFAULTS):
