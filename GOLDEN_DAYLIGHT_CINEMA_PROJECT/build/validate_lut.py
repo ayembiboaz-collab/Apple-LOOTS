@@ -374,6 +374,9 @@ def main():
 
     # ---------------- 10. Checksums ----------------
     sec('10. CHECKSUMS (SHA256)')
+    line('Note: checksums for LUT/, PREVIEWS/ and GALLERY/ below are relative to')
+    line('the deliverable folder (this file lives there; charts below are in the')
+    line('project-root validation/ folder and are NOT part of the .zip).')
     line(f'{sha256_file(CUBE)}  LUT/GOLDEN_DAYLIGHT_CINEMA.cube')
     for png in sorted(PREVIEWS.glob('*.png')):
         line(f'{sha256_file(png)}  PREVIEWS/{png.name}')

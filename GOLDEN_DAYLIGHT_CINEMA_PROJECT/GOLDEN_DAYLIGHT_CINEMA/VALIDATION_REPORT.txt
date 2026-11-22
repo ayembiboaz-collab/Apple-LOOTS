@@ -138,6 +138,9 @@ AGGREGATE mean shadow-noise gain: 1.04x
 ==============================================================================
  10. CHECKSUMS (SHA256)
 ==============================================================================
+Note: checksums for LUT/, PREVIEWS/ and GALLERY/ below are relative to
+the deliverable folder (this file lives there; charts below are in the
+project-root validation/ folder and are NOT part of the .zip).
 0315f5513b6e24e207dde5019cc050029059a44f99dbf973383f089cdec44233  LUT/GOLDEN_DAYLIGHT_CINEMA.cube
 7f966115f4541094c5e9ec4415c3d1fc7365667719df40ad895c2d214ddb9fa3  PREVIEWS/01_midday_city_AFTER_GOLDEN_DAYLIGHT.png
 1470eb89c62656ee553efef014cf1113d64050eb052b7f99c79c9a1bdba0f1e8  PREVIEWS/01_midday_city_BEFORE_NEUTRAL.png
