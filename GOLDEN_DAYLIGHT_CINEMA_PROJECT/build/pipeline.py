@@ -42,6 +42,20 @@ def gaussian_hue(h, center, width):
 def grade(log_rgb):
     """Candidate: analytic bake, no claims of validated professional suitability."""
     linear = decode(log_rgb) @ AWG_TO_709.T
+    # Smoothly compress negative Rec.709 components toward scene luminance before
+    # OKLab. This stabilises its cube roots for very wide-gamut/negative inputs.
+    # Y below zero is not displayable and maps to black. This is not a claim
+    # that every mathematical Apple Wide Gamut triple is physically plausible.
+    Y = np.maximum(linear @ np.array([.2126,.7152,.0722]), 0)
+    diff = linear - Y[...,None]
+    with np.errstate(divide='ignore', invalid='ignore'):
+        limits = np.where(diff < 0, Y[...,None] / np.maximum(-diff, 1e-20), np.inf)
+    boundary = np.min(limits, axis=-1)
+    knee = .8 * boundary
+    span = np.maximum(.2 * boundary, 1e-20)
+    with np.errstate(invalid='ignore'):
+        scale = np.where(knee >= 1, 1, knee + span * (-np.expm1(-np.maximum(1-knee,0)/span)))
+    linear = Y[...,None] + np.where(np.isfinite(scale), scale, 1)[...,None] * diff
     ok = lab(linear)
     l, a, b = np.moveaxis(ok, -1, 0)
     # Nonnegative scalar intensity; normalised soft shoulder, never raises linear luminance.
@@ -53,6 +67,7 @@ def grade(log_rgb):
     hue = np.arctan2(b,a)
     # Smooth relative-density shaping; low chroma neutrals remain neutral.
     sat = 1.0 + .07*np.exp(-((L-.58)/.24)**2) - .08*np.exp(-((L-.95)/.18)**2)
+    sat *= 1-.60*np.clip((L-.72)/.24,0,1)**2*(3-2*np.clip((L-.72)/.24,0,1))  # highlight thinning
     sat *= 1-.12*gaussian_hue(hue, 2.15, .35) # foliage
     sat *= 1-.06*gaussian_hue(hue, .85, .28) # conservative skin/stone
     sat *= 1+.035*gaussian_hue(hue, -1.8, .40) # blue sky
