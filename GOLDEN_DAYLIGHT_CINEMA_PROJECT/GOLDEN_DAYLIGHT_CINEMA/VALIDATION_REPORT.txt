@@ -1,8 +1,8 @@
 GOLDEN DAYLIGHT CINEMA - VALIDATION REPORT
 ==========================================
 LUT         : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
-sha256      : bf4d18465bc42c731c53ff62cd490f0f7613ad4184ee9ce7bb252a5b020f2520
-size        : 970,782 bytes, 33 x 33 x 33, 35,937 table lines
+sha256      : c960f3bc082a54c501bd7f21032de3dc9290e80aded121d72d8bf9171e6abe34
+size        : 970,925 bytes, 33 x 33 x 33, 35,937 table lines
 generated   : 2026-11-22
 software    : Python 3.11.2, numpy 2.4.6, scipy 1.17.1, colour-science 0.4.7,
               Pillow 13.0.0, matplotlib 3.11.2 (all float64)

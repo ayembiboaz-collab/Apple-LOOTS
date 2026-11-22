@@ -1,7 +1,7 @@
 
 == 1. DELIVERED .cube FILE INTEGRITY ==
-  file            : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube  (970782 bytes)
-  sha256          : bf4d18465bc42c731c53ff62cd490f0f7613ad4184ee9ce7bb252a5b020f2520
+  file            : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube  (970925 bytes)
+  sha256          : c960f3bc082a54c501bd7f21032de3dc9290e80aded121d72d8bf9171e6abe34
   LUT_3D_SIZE     : 33  -> 35937 body lines, found 35937
   DOMAIN_MIN/MAX  : [ 0.  0.  0.] / [ 1.  1.  1.]
   value range     : 0.000000 .. 1.000000

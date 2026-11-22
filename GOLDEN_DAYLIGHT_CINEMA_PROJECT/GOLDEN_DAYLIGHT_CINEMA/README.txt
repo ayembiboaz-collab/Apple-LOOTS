@@ -28,7 +28,7 @@ were only ever used as experiments and are not shipped).
 
 2. FILES IN THIS FOLDER
 -----------------------
-  LUT/GOLDEN_DAYLIGHT_CINEMA.cube        the deliverable (33^3, 970,782 bytes)
+  LUT/GOLDEN_DAYLIGHT_CINEMA.cube        the deliverable (33^3, 970,925 bytes)
   PREVIEWS/                              8 x BEFORE and 8 x AFTER PNGs
                                           (1280 px long edge, display-encoded)
   GALLERY/index.html                     interactive before/after sliders,

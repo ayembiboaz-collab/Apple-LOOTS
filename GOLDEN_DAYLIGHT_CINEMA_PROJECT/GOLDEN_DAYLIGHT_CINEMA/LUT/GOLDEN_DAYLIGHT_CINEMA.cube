@@ -1,8 +1,10 @@
 # GOLDEN_DAYLIGHT_CINEMA
 # Version 1.0.0
-# Input:  Apple Log 2, Apple Wide Gamut (scene linear, 18% grey = code 0.4883)
-# Output: Rec.709 SDR, pure gamma 2.4, legal 0..1
+# Input:  Apple Log 2 code, Apple Wide Gamut primaries, D65
+#         (18% scene grey sits at code 0.4883, video black at 0.150476)
+# Output: Rec.709 SDR, pure gamma 2.4 (full range 0..1, E = V^(1/2.4))
 # Size:   33x33x33, red channel varies fastest (standard .cube ordering)
+# Fitted for tetrahedral interpolation (trilinear also constrained).
 # Built by GOLDEN_DAYLIGHT_CINEMA_PROJECT/build/gdc_bake.py -- float64 pipeline,
 # error-minimising least-squares bake (see VALIDATION_REPORT.txt).
 TITLE "GOLDEN_DAYLIGHT_CINEMA"
