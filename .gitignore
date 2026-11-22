@@ -1,0 +1,11 @@
+# Python venv
+.venv/
+__pycache__/
+*.pyc
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+
+# Temporary workspace scratch
+image-search/
