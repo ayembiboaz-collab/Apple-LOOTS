@@ -388,11 +388,44 @@ class GoldenDaylightCinema:
         return codes, clipped
 
     # -- public API -------------------------------------------------------
+    @staticmethod
+    def sanitise_nonphysical(rgb_awg: np.ndarray, xyz: np.ndarray,
+                             width: float = 0.02):
+        """Bring colours with non-physical (negative) luminance into the positive
+        octant of Rec.709, smoothly.
+
+        Apple Wide Gamut is much wider than Rec.709, so a large part of the
+        *code cube* (about 18 % of it) decodes to colours whose Rec.709
+        luminance Y is negative.  No such colour can come out of a camera, but a
+        LUT still has to define them, and naive handling (clipping the tristimulus
+        at zero) destroys the luminance and dumps that whole corner at black.
+
+        Here the colour is blended towards its positively-clipped version with a
+        smoothstep weight driven by how far Y has gone below zero, so the
+        transition at Y = 0 is C1: physics-valid colours are untouched, and
+        impossible ones resolve to the nearest saturated colour instead of to
+        black.
+
+        Returns the (possibly corrected) AWG linear RGB and XYZ.
+        """
+        Y = xyz[..., 1]
+        if not np.any(Y < 0.0):
+            return rgb_awg, xyz
+        rec = rgb_awg @ C.AWG_TO_REC709.T
+        mx = np.maximum(rec.max(axis=-1), 1e-9)
+        neg = np.clip(-Y / (width * mx), 0.0, 1.0)
+        w = (neg * neg * (3.0 - 2.0 * neg))[..., None]
+        if not np.any(w > 0.0):
+            return rgb_awg, xyz
+        fixed = (1.0 - w) * rec + w * np.maximum(rec, 0.0)
+        rgb_awg = fixed @ C.REC709_TO_AWG.T
+        return rgb_awg, rgb_awg @ C.AWG_TO_XYZ.T
+
     def apply_codes(self, p: np.ndarray) -> np.ndarray:
         """Full pipeline: Apple Log 2 code -> Rec.709 gamma 2.4 code."""
         p = np.asarray(p, dtype=np.float64)
         r = np.maximum(C.apple_log2_decode(p), 0.0)
-        xyz = r @ C.AWG_TO_XYZ.T
+        r, xyz = self.sanitise_nonphysical(r, r @ C.AWG_TO_XYZ.T)
         xyz = self.apply_tone(xyz, r)
         xyz = self.grade_oklab(xyz)
         codes, _ = self.to_rec709_codes(xyz)

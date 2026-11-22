@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GOLDEN DAYLIGHT CINEMA — 33³ LUT for Apple Log 2</title>
+<meta name="description" content="Golden Daylight Cinema: a 33³ .cube LUT that turns Apple Log 2 / Apple Wide Gamut into warm, filmic Rec.709 SDR.">
+<style>
+:root{
+  --ink:#f2ece0; --dim:#a9a49a; --bg:#0e0e10; --panel:#16161a; --line:#2a2a30;
+  --gold:#e2b877; --gold-deep:#8a6a3a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 96px}
+header.hero{padding:56px 0 26px;border-bottom:1px solid var(--line);margin-bottom:34px}
+h1{font-size:clamp(27px,5vw,46px);letter-spacing:.14em;font-weight:700;margin:0 0 10px;
+  background:linear-gradient(180deg,#f6e7c8,#d8ae6e 65%,#a97f45);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:clamp(13px,1.6vw,16px);line-height:1.6;max-width:70ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:18px}
+.chip{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
+  color:#d9cfbc;background:#191a1f;border:1px solid var(--line);border-radius:999px;
+  padding:5px 11px;letter-spacing:.02em}
+h2{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+  margin:44px 0 14px;font-weight:600}
+p{color:#cfc9be;line-height:1.65;font-size:15px}
+a{color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
+figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden}
+.cmp{position:relative;width:100%;background:#000;touch-action:pan-y;
+  cursor:ew-resize;user-select:none;-webkit-user-select:none}
+.cmp img{display:block;width:100%;height:auto;pointer-events:none;
+  -webkit-user-drag:none;user-select:none}
+.cmp .after{position:absolute;inset:0;clip-path:inset(0 50% 0 0)}
+.cmp .bar{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--gold);
+  box-shadow:0 0 8px rgba(226,184,119,.55);pointer-events:none}
+.cmp .knob{position:absolute;top:50%;left:50%;width:42px;height:42px;margin:-21px 0 0 -21px;
+  border-radius:50%;background:rgba(20,20,24,.78);border:1.5px solid var(--gold);
+  color:var(--gold);display:flex;align-items:center;justify-content:center;
+  font-size:13px;letter-spacing:1px;pointer-events:none}
+.cmp .tag{position:absolute;top:10px;font-size:10.5px;letter-spacing:.14em;
+  padding:4px 8px;border-radius:6px;background:rgba(10,10,12,.66);
+  border:1px solid rgba(255,255,255,.09);color:#e8e2d6;pointer-events:none}
+.cmp .tag.b{left:10px} .cmp .tag.a{right:10px}
+figcaption{padding:13px 15px 15px;display:flex;justify-content:space-between;
+  gap:12px;align-items:baseline}
+figcaption b{font-size:14.5px;letter-spacing:.02em}
+figcaption span{font-size:11.5px;color:var(--dim);text-align:right}
+.expand{background:none;border:1px solid var(--line);color:var(--dim);border-radius:8px;
+  padding:5px 9px;font-size:11px;cursor:pointer;letter-spacing:.06em}
+.expand:hover{color:var(--gold);border-color:var(--gold-deep)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:6px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);color:#cfc9be}
+th{color:var(--dim);font-weight:600;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+td.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.lb{position:fixed;inset:0;background:rgba(6,6,8,.97);display:none;z-index:50;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:16px}
+.lb.on{display:flex}
+.lb .cmp{max-width:96vw;max-height:78vh}
+.lb .cmp img{max-width:96vw;max-height:78vh;width:auto;object-fit:contain}
+.lb .cap{color:#d8d2c6;font-size:13px;letter-spacing:.05em;text-align:center}
+.lb .nav{display:flex;gap:10px}
+.lb button{background:#1b1b20;border:1px solid var(--line);color:#ded7c9;border-radius:10px;
+  padding:9px 16px;font-size:13px;cursor:pointer}
+.lb button:hover{border-color:var(--gold-deep);color:var(--gold)}
+footer{margin-top:56px;border-top:1px solid var(--line);padding-top:22px;
+  color:#8d8981;font-size:12.5px;line-height:1.7}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:#e0d6c2}
+.note{border-left:2px solid var(--gold-deep);padding:2px 0 2px 14px;margin:16px 0;
+  color:#b8b2a7;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>GOLDEN DAYLIGHT CINEMA</h1>
+    <div class="sub">A warm, filmic Rec.709 SDR look for <b>Apple Log 2 / Apple Wide Gamut</b>
+      footage — 33³ .cube, one LUT, pure gamma 2.4. Drag any image to compare the plain
+      verified Apple&nbsp;Log&nbsp;2 → Rec.709 conversion against the graded result.</div>
+    <div class="meta">
+      <span class="chip">33 × 33 × 33</span>
+      <span class="chip">Rec.709 · gamma 2.4</span>
+      <span class="chip">Apple Log 2 → Apple Wide Gamut</span>
+      <span class="chip">948 KiB .cube</span>
+      <span class="chip">sha256 bf4d18465bc42c73…</span>
+    </div>
+  </header>
+
+  <h2>Eight scenes · before / after</h2>
+  <div class="grid">
+    <figure>
+      <div class="cmp" data-idx="0">
+        <img src="assets/01_midday_city_BEFORE_thumb.jpg" data-thumb="1" alt="Harsh midday city, before">
+        <div class="after"><img src="assets/01_midday_city_AFTER_thumb.jpg" alt="Harsh midday city, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>01 · Harsh midday city</b>
+        <span>Justin Prine · Unsplash<br>
+        <button class="expand" data-scene="0">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="1">
+        <img src="assets/02_midday_portrait_BEFORE_thumb.jpg" data-thumb="1" alt="Midday portrait in direct sun, before">
+        <div class="after"><img src="assets/02_midday_portrait_AFTER_thumb.jpg" alt="Midday portrait in direct sun, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>02 · Midday portrait in direct sun</b>
+        <span>Elle Cartier · Unsplash<br>
+        <button class="expand" data-scene="1">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="2">
+        <img src="assets/03_mediterranean_street_BEFORE_thumb.jpg" data-thumb="1" alt="Mediterranean street, before">
+        <div class="after"><img src="assets/03_mediterranean_street_AFTER_thumb.jpg" alt="Mediterranean street, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>03 · Mediterranean street</b>
+        <span>Julien Gaillard · Unsplash<br>
+        <button class="expand" data-scene="2">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="3">
+        <img src="assets/04_beach_daylight_BEFORE_thumb.jpg" data-thumb="1" alt="Bright beach daylight, before">
+        <div class="after"><img src="assets/04_beach_daylight_AFTER_thumb.jpg" alt="Bright beach daylight, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>04 · Bright beach daylight</b>
+        <span>Francesco Ungaro · Unsplash<br>
+        <button class="expand" data-scene="3">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="4">
+        <img src="assets/05_landscape_green_BEFORE_thumb.jpg" data-thumb="1" alt="Green valley and mountains, before">
+        <div class="after"><img src="assets/05_landscape_green_AFTER_thumb.jpg" alt="Green valley and mountains, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>05 · Green valley and mountains</b>
+        <span>Francesco Ungaro · Unsplash<br>
+        <button class="expand" data-scene="4">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="5">
+        <img src="assets/06_golden_hour_BEFORE_thumb.jpg" data-thumb="1" alt="Golden hour landscape, before">
+        <div class="after"><img src="assets/06_golden_hour_AFTER_thumb.jpg" alt="Golden hour landscape, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>06 · Golden hour landscape</b>
+        <span>Artem Sapegin · Unsplash<br>
+        <button class="expand" data-scene="5">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="6">
+        <img src="assets/07_modern_architecture_BEFORE_thumb.jpg" data-thumb="1" alt="Modern architecture, before">
+        <div class="after"><img src="assets/07_modern_architecture_AFTER_thumb.jpg" alt="Modern architecture, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>07 · Modern architecture</b>
+        <span>Aldo Vukaj · Unsplash<br>
+        <button class="expand" data-scene="6">full screen</button></span>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="cmp" data-idx="7">
+        <img src="assets/08_travel_people_BEFORE_thumb.jpg" data-thumb="1" alt="Travel street with people, before">
+        <div class="after"><img src="assets/08_travel_people_AFTER_thumb.jpg" alt="Travel street with people, after"></div>
+        <div class="bar"></div><div class="knob">◀ ▶</div>
+        <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+      </div>
+      <figcaption>
+        <b>08 · Travel street with people</b>
+        <span>Kevin Charit · Unsplash<br>
+        <button class="expand" data-scene="7">full screen</button></span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <h2>The LUT</h2>
+  <p><a href="../LUT/GOLDEN_DAYLIGHT_CINEMA.cube"><code>GOLDEN_DAYLIGHT_CINEMA.cube</code></a>
+  — 33³, red-fastest, <code>DOMAIN_MIN 0 0 0</code> / <code>DOMAIN_MAX 1 1 1</code>,
+  float written to 6 decimals, no NaN/Inf. It is fully self-contained: the file already
+  contains the Apple Log 2 decode, the Apple Wide Gamut → Rec.709 matrix, the grade and the
+  gamma 2.4 encode, so nothing else needs to be loaded.</p>
+  <table>
+    <tr><th>Input</th><td>Apple Log 2, Apple Wide Gamut, 0–1 code values (as recorded)</td></tr>
+    <tr><th>Output</th><td>Rec.709 primaries, D65, SDR, pure gamma 2.4 code values</td></tr>
+    <tr><th>Interpolation</th><td>tetrahedral (the fit also constrains trilinear)</td></tr>
+    <tr><th>Black point</th><td>Apple Log 2 video black sits at code 0.1505; everything below it maps to 0</td></tr>
+  </table>
+  <div class="note">Blackmagic Camera (iOS) accepts 17- and 33-point .cube 3D LUTs:
+  Settings → LUTs → LUTs Manager → Import LUT. Choose whether it is a display LUT or baked
+  into the recording. DaVinci Resolve: drop it into the LUT folder and apply on a clip node.
+  This LUT expects <b>Apple Log 2</b> (iPhone 17 Pro / 18 Pro and later); Apple Log footage
+  from iPhone 15/16 Pro uses Rec.2020 primaries and is <b>not</b> the intended input.</div>
+
+  <h2>Credits · photographs</h2>
+  <table>
+    <tr><th>#</th><th>Scene</th><th>Photographer</th><th>Source</th><th>Licence</th></tr>
+    <tr><td>01</td><td>Harsh midday city</td><td>Justin Prine</td><td class='mono'><a href='https://unsplash.com/photos/city-buildings-under-blue-sky-during-daytime-QGP7ncFD0LA'>https://unsplash.com/photos/city-buildings-under-blue-sky-during-daytime-QGP7ncFD0LA</a></td><td>Unsplash License</td></tr>
+<tr><td>02</td><td>Midday portrait in direct sun</td><td>Elle Cartier</td><td class='mono'><a href='https://unsplash.com/photos/a-woman-with-a-shadow-on-her-face-qSYohksKbiI'>https://unsplash.com/photos/a-woman-with-a-shadow-on-her-face-qSYohksKbiI</a></td><td>Unsplash License</td></tr>
+<tr><td>03</td><td>Mediterranean street</td><td>Julien Gaillard</td><td class='mono'><a href='https://unsplash.com/photos/a-narrow-street-with-white-buildings-and-blue-balconies-SvS4pQBjJKQ'>https://unsplash.com/photos/a-narrow-street-with-white-buildings-and-blue-balconies-SvS4pQBjJKQ</a></td><td>Unsplash License</td></tr>
+<tr><td>04</td><td>Bright beach daylight</td><td>Francesco Ungaro</td><td class='mono'><a href='https://unsplash.com/photos/a-sandy-beach-with-clear-blue-water-on-a-sunny-day-6BzelJ-qVe0'>https://unsplash.com/photos/a-sandy-beach-with-clear-blue-water-on-a-sunny-day-6BzelJ-qVe0</a></td><td>Unsplash License</td></tr>
+<tr><td>05</td><td>Green valley and mountains</td><td>Francesco Ungaro</td><td class='mono'><a href='https://unsplash.com/photos/a-green-valley-with-trees-and-mountains-in-the-background-S_kzomYltgo'>https://unsplash.com/photos/a-green-valley-with-trees-and-mountains-in-the-background-S_kzomYltgo</a></td><td>Unsplash License</td></tr>
+<tr><td>06</td><td>Golden hour landscape</td><td>Artem Sapegin</td><td class='mono'><a href='https://unsplash.com/photos/mountains-and-tree-range-during-golden-hour-8c6eS43iq1o'>https://unsplash.com/photos/mountains-and-tree-range-during-golden-hour-8c6eS43iq1o</a></td><td>Unsplash License</td></tr>
+<tr><td>07</td><td>Modern architecture</td><td>Aldo Vukaj</td><td class='mono'><a href='https://unsplash.com/photos/modern-building-with-geometric-facade-and-blue-windows-w-nBFVS928I'>https://unsplash.com/photos/modern-building-with-geometric-facade-and-blue-windows-w-nBFVS928I</a></td><td>Unsplash License</td></tr>
+<tr><td>08</td><td>Travel street with people</td><td>Kevin Charit</td><td class='mono'><a href='https://unsplash.com/photos/a-group-of-people-walking-down-a-street-next-to-tall-buildings-TZuigM9Cs9I'>https://unsplash.com/photos/a-group-of-people-walking-down-a-street-next-to-tall-buildings-TZuigM9Cs9I</a></td><td>Unsplash License</td></tr>
+  </table>
+  <p style="margin-top:14px;font-size:12.5px;color:#8d8981">All eight photographs are real,
+  unmodified camera images from Unsplash, used under the Unsplash License (free for
+  commercial and non-commercial use, no permission needed). No AI-generated imagery is used
+  anywhere in this project. Full provenance, including each file's original URL, resolution
+  and the modifications applied (resize only), is in <code>SOURCES.txt</code>.</p>
+
+  <h2>Honest limitations</h2>
+  <p>This is a stills-grade LUT, not a camera profile: it has no grain, halation, bloom,
+  sharpening, noise reduction or depth awareness, and it cannot recover clipped highlights
+  that the camera never recorded. The "after" images are produced by an independent
+  implementation that reads this exact .cube file, so what you see is what the LUT does.
+  The full measurements — bake error, monotonicity, clipping, skin hue, noise gain — are in
+  <code>VALIDATION_REPORT.txt</code>.</p>
+
+  <footer>
+    GOLDEN DAYLIGHT CINEMA · built as a scene-referred float64 pipeline and baked to one
+    33³ .cube · preview JPEGs are display-encoded copies of the Rec.709 gamma-2.4 renders
+    (sRGB transfer applied for browser viewing; the .cube itself is untouched).
+  </footer>
+</div>
+
+<div class="lb" id="lb">
+  <div class="cmp">
+    <img src="" alt="before">
+    <div class="after"><img src="" alt="after"></div>
+    <div class="bar"></div><div class="knob">◀ ▶</div>
+    <div class="tag b">BEFORE</div><div class="tag a">AFTER</div>
+  </div>
+  <div class="cap"></div>
+  <div class="nav">
+    <button class="prev">←</button>
+    <button class="close">close</button>
+    <button class="next">→</button>
+  </div>
+</div>
+
+<script>
+window.GDC_SCENES = [{"title":"Harsh midday city","before":"assets/01_midday_city_BEFORE.jpg","after":"assets/01_midday_city_AFTER.jpg","photo":"Justin Prine"},{"title":"Midday portrait in direct sun","before":"assets/02_midday_portrait_BEFORE.jpg","after":"assets/02_midday_portrait_AFTER.jpg","photo":"Elle Cartier"},{"title":"Mediterranean street","before":"assets/03_mediterranean_street_BEFORE.jpg","after":"assets/03_mediterranean_street_AFTER.jpg","photo":"Julien Gaillard"},{"title":"Bright beach daylight","before":"assets/04_beach_daylight_BEFORE.jpg","after":"assets/04_beach_daylight_AFTER.jpg","photo":"Francesco Ungaro"},{"title":"Green valley and mountains","before":"assets/05_landscape_green_BEFORE.jpg","after":"assets/05_landscape_green_AFTER.jpg","photo":"Francesco Ungaro"},{"title":"Golden hour landscape","before":"assets/06_golden_hour_BEFORE.jpg","after":"assets/06_golden_hour_AFTER.jpg","photo":"Artem Sapegin"},{"title":"Modern architecture","before":"assets/07_modern_architecture_BEFORE.jpg","after":"assets/07_modern_architecture_AFTER.jpg","photo":"Aldo Vukaj"},{"title":"Travel street with people","before":"assets/08_travel_people_BEFORE.jpg","after":"assets/08_travel_people_AFTER.jpg","photo":"Kevin Charit"}];
+
+(function(){
+  function initCmp(root){
+    var after = root.querySelector('.after'), bar = root.querySelector('.bar'),
+        knob = root.querySelector('.knob'), drag = false;
+    function set(fx){
+      var pct = Math.max(0, Math.min(100, fx * 100));
+      after.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+      bar.style.left = pct + '%'; knob.style.left = pct + '%';
+    }
+    set(0.5);
+    function fromEvent(e){
+      var r = root.getBoundingClientRect();
+      var x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+      set(x / r.width);
+    }
+    function down(e){ drag = true; fromEvent(e); if(e.cancelable) e.preventDefault(); }
+    function move(e){ if(!drag) return; fromEvent(e); if(e.cancelable) e.preventDefault(); }
+    function up(){ drag = false; }
+    root.addEventListener('mousedown', down);
+    root.addEventListener('touchstart', down, {passive:false});
+    window.addEventListener('mousemove', move);
+    window.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('mouseup', up);
+    window.addEventListener('touchend', up);
+    root._set = set;
+  }
+  var cmps = Array.prototype.slice.call(document.querySelectorAll('.cmp'));
+  cmps.forEach(initCmp);
+
+  // full screen viewer
+  var lb = document.getElementById('lb'),
+      lbRoot = lb ? lb.querySelector('.cmp') : null,
+      lbImgA = lbRoot ? lbRoot.querySelector('.after img') : null,
+      lbImgB = lbRoot ? lbRoot.querySelector('.cmp > img') : null,
+      lbCap = lb ? lb.querySelector('.cap') : null,
+      idx = 0, data = window.GDC_SCENES || [];
+
+  function show(i){
+    if(!data.length) return;
+    idx = (i + data.length) % data.length;
+    var d = data[idx];
+    lbImgB.src = d.before; lbImgA.src = d.after;
+    lbCap.textContent = d.title + ' — ' + d.photo + ' · drag to compare';
+    lbRoot._set(0.5);
+    lb.classList.add('on');
+  }
+  if(lb){
+    document.querySelectorAll('[data-scene]').forEach(function(b){
+      b.addEventListener('click', function(){ show(parseInt(b.getAttribute('data-scene'),10)); });
+    });
+    lb.querySelector('.close').addEventListener('click', function(){ lb.classList.remove('on'); });
+    lb.querySelector('.prev').addEventListener('click', function(){ show(idx-1); });
+    lb.querySelector('.next').addEventListener('click', function(){ show(idx+1); });
+    document.addEventListener('keydown', function(e){
+      if(!lb.classList.contains('on')) return;
+      if(e.key === 'Escape') lb.classList.remove('on');
+      if(e.key === 'ArrowLeft') show(idx-1);
+      if(e.key === 'ArrowRight') show(idx+1);
+    });
+    lb.addEventListener('click', function(e){ if(e.target === lb) lb.classList.remove('on'); });
+  }
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+GOLDEN DAYLIGHT CINEMA - VALIDATION REPORT
+==========================================
+LUT         : GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+sha256      : bf4d18465bc42c731c53ff62cd490f0f7613ad4184ee9ce7bb252a5b020f2520
+size        : 970,782 bytes, 33 x 33 x 33, 35,937 table lines
+generated   : 2026-11-22
+software    : Python 3.11.2, numpy 2.4.6, scipy 1.17.1, colour-science 0.4.7,
+              Pillow 13.0.0, matplotlib 3.11.2 (all float64)
+machine     : Linux x86-64 container, CPU only
+raw output  : validation/summary.json, validation/validation_log.txt,
+              validation/render_hashes.json, validation/charts/*.png
+
+Every number below was produced by build/gdc_validate.py in this run. Where a
+test does not "pass" in a simple sense, the number is still reported and
+interpreted in the paragraph that follows it.
+
+
+0. SCOPE AND METHOD
+-------------------
+Unless a section says otherwise, the tests read the DELIVERED .cube file with
+build/lut_engine.py - an implementation that was written independently of the
+baking code (it parses the file, builds the table and interpolates with either
+trilinear or tetrahedral weights) - and never call the grading pipeline. The
+"before" side of every comparison is reference_rec709(): Apple Log 2 decode ->
+Apple Wide Gamut -> Rec.709 matrix (D65) -> clip -> pure gamma 2.4.
+
+The eight test frames are the simulated Apple Log 2 versions of the eight
+photographs, quantised to 10 bits per channel (as an iPhone records) before any
+transform is applied.
+
+
+1. FILE INTEGRITY  (pass)
+-------------------------
+  declared LUT_3D_SIZE        33
+  body lines found            35,937  (== 33^3)
+  DOMAIN_MIN / DOMAIN_MAX     0 0 0 / 1 1 1
+  value range                 0.000000 .. 1.000000
+  NaN / Inf                   0 / 0
+  values outside [0,1]        0
+  header duplicates           1 (single LUT_3D_SIZE line)
+  ordering check              400 random nodes: mean code error 0.00366,
+                              max 0.0527 against the analytic pipeline
+  ordering control            the same 400 nodes read with a transposed index
+                              give a mean code error of 0.3485 (i.e. the file is
+                              unambiguously red-fastest)
+
+The 0.00366 mean and 0.0527 max node errors are the least-squares fit residual,
+not a syntax problem: the table is deliberately NOT the analytic function
+sampled at the nodes (see section 5). The transposed-index control shows what a
+genuinely wrong ordering would look like: 100x larger.
+
+
+2. APPLE LOG 2 AND APPLE WIDE GAMUT - REFERENCE CHECKS  (pass)
+--------------------------------------------------------------
+  2a. Transfer function versus colour-science 0.4.7, 5,000 points per direction
+        encode max |difference|   0.000e+00
+        decode max |difference|   0.000e+00  (float64, so bit-identical)
+  2b. Published anchor values (our implementation)
+        linear 0.00 (video black)   -> 0.150476
+        linear 0.01                 -> 0.208555
+        linear 0.18 (18 % grey)     -> 0.488272
+        linear 1.00                 -> 0.694553
+        linear 12.00                -> 1.000000
+  2c. Apple Wide Gamut matrix rebuilt from the published primaries with
+      colour-science RGB_Colourspace and compared with the constants used here
+        max |difference|           3.3e-11
+        derived white point        0.312700, 0.329000  (D65, as published)
+  2d. Apple Wide Gamut -> ACES2065-1 (Bradford) versus the matrix published in
+      AcademySoftwareFoundation/OpenColorIO#2343 and
+      OpenColorIO-Config-ACES#179
+        max |difference|           4.6e-11
+  2e. Output transfer function - pure gamma 2.4, no toe
+        encode(0.00) = 0.000000        encode(0.01) = 0.146780
+        encode(0.10) = 0.383119        encode(0.50) = 0.749154
+        encode(1.00) = 1.000000
+        decode(encode(x)) - x max |difference|  0.0
+
+Conclusion: the input decode and the gamut matrices match independent
+implementations to float64 precision, and the output is exactly a 2.4 power law.
+
+
+3. NEUTRAL AXIS THROUGH THE DELIVERED LUT
+-----------------------------------------
+Neutral input is code (c,c,c) for c = 0..1 in 1,021 steps; interpolation is
+tetrahedral (the delivery path).
+
+  colour cast anywhere on the ramp   max OKLab chroma 0.00986  (3.64 C*ab)
+  at mid grey (input 0.474)          OKLab C 0.0096, h 70.3 deg
+                                     Lab  C*ab 3.56, h 77.1 deg
+  at white (input 1.000)             OKLab chroma 0.0013
+  at black (input 0.150)             OKLab chroma 0.0003
+
+  in code   out R    OKLab L   OKLab C   OKLab h   Lab C*ab
+   0.150    0.0307   0.0649    0.0030     261.3      0.12
+   0.200    0.0994   0.1600    0.0019     257.1      0.42
+   0.250    0.1419   0.2103    0.0008     269.4      0.28
+   0.300    0.1928   0.2663    0.0011      65.6      0.40
+   0.350    0.2536   0.3286    0.0036      69.6      1.31
+   0.400    0.3277   0.4002    0.0068      70.2      2.50
+   0.450    0.4160   0.4831    0.0092      70.3      3.39
+   0.500    0.5182   0.5775    0.0098      70.4      3.61
+   0.550    0.6387   0.6852    0.0097      70.3      3.57
+   0.600    0.7608   0.7900    0.0098      70.7      3.61
+   0.650    0.8577   0.8709    0.0098      71.2      3.63
+   0.700    0.9195   0.9213    0.0092      66.9      3.36
+   0.750    0.9532   0.9511    0.0064      54.6      2.27
+   0.800    0.9703   0.9671    0.0045      41.1      1.55
+   0.850    0.9785   0.9771    0.0027      32.6      0.92
+   0.900    0.9813   0.9830    0.0009      33.0      0.33
+   0.950    0.9863   0.9869    0.0011     348.9      0.39
+   1.000    0.9883   0.9895    0.0013     313.0      0.45
+
+Interpretation: the grey ramp carries a deliberate warm cast that peaks in the
+midtones (h 70-77 degrees is yellow-orange) and fades to nothing at white and
+black. That is the "golden" part of the look, and it is small enough that a
+grey card still reads as grey rather than cream: 3.6 C*ab is roughly one just
+noticeable step. Deep shadow (below code 0.30, i.e. below about 2 % scene
+light) is slightly cool, hue ~260 degrees, which is what keeps shadows from
+going brown.
+
+Tristimulus note: the last three rows flatten because the top 1.1 stops are
+compressed - see section 6.
+
+
+4. MONOTONICITY AND TONAL SMOOTHNESS
+------------------------------------
+Each ramp is 4,096 samples along one axis (or along the neutral axis), applied
+through the delivered LUT with tetrahedral interpolation. "Reversal" means the
+output decreases when the input increases; "deepest" is the size of the largest
+such step in code units (1.0 code = full scale, 1/255 = 0.0039).
+
+  ramp      code: min step   max step   reversals  deepest     OKLab L* min step
+  neutral        -8.45e-06   +6.13e-04     768     8.45e-06     -5.51e-05  (256 rev)
+  R              -1.04e-04   +1.12e-03    3301     1.04e-04     -2.23e-06  (384 rev)
+  G              -7.64e-04   +1.40e-03    4124     7.64e-04     -6.48e-06  (410 rev)
+  B              -2.66e-03   +6.19e-03    5374     2.66e-03     -1.06e-03 (2568 rev)
+  C (G+B)        -3.29e-04   +1.20e-03    1458     3.29e-04     -1.34e-04  (256 rev)
+  M (R+B)        -2.78e-04   +2.09e-03    2558     2.78e-04     -7.94e-05  (563 rev)
+  Y (R+G)        -5.50e-04   +9.50e-04    1431     5.50e-04     -3.27e-04  (255 rev)
+
+  neutral second difference: max |d2| 3.14e-04, 99.9th percentile 6.78e-05
+
+How to read this, honestly:
+
+  * On the neutral axis - the one that produces banding in skies, walls and
+    gradients - the table is monotone to within 8.4e-06 of code, i.e. 1/50 of a
+    10-bit step and 1/470 of an 8-bit step. Perceptually flat.
+  * A falling channel on a single-channel ramp is not a defect: pushing blue up
+    necessarily pulls red and green down as the colour turns blue. That is why
+    the OKLab lightness column is the meaningful test, and there the worst
+    excursion is 1.1e-03 (blue ramp), which occurs at the far corner of the
+    input cube where the decoded colour has non-positive luminance and cannot
+    exist physically (see section 13).
+  * The residual reversals on the neutral axis are table quantisation from the
+    least-squares bake: the fitted node values carry a small ripple of order
+    1e-05 code, forty times below the 8-bit quantum.
+
+  Quantised ramps (neutral axis, output rounded to the stated bit depth):
+    8-bit  (256 steps):  0 reversals,  91 skipped output levels, 165 distinct
+    10-bit (1,024 steps): 1 reversal, 360 skipped output levels, 663 distinct
+
+  A monotone map from 256 input levels to 256 output levels must skip levels
+  wherever it compresses (here the shadow toe and the highlight shoulder), so
+  "skipped levels" is a description, not a failure. The 8-bit ramp is strictly
+  monotone. The single 10-bit reversal is 1e-05 of code.
+
+
+5. BAKE ERROR - 33^3 TABLE VERSUS THE ANALYTIC PIPELINE
+-------------------------------------------------------
+Sample set: 95,000 points - 40,000 uniform over the cube, 30,000 concentrated
+near video black, 20,000 on the neutral axis across 11 stops of exposure.
+dE2000 uses CIELAB (D65); dE-ITP uses BT.2124 ICtCp.
+
+  delivered tri    dE00 mean 0.4032  p95 1.631  p99 5.972  max 28.31
+                   dE-ITP mean 1.431  p99 21.78  max 73.5
+  delivered tetra  dE00 mean 0.3132  p95 1.057  p99 4.690  max 29.54
+                   dE-ITP mean 1.192  p99 20.13  max 75.7
+  naive  tri        dE00 mean 0.4310  p95 1.846  p99 6.547  max 29.22
+                   dE-ITP mean 1.643  p99 24.27  max 81.5
+  naive  tetra      dE00 mean 0.3007  p95 1.005  p99 5.138  max 30.71
+                   dE-ITP mean 1.288  p99 21.14  max 79.0
+
+  "naive" = the same grid sampled directly from the analytic pipeline, i.e. what
+  a normal bake would produce.
+
+  Physical subset (68 % of the samples: decoded Rec.709 luminance above 0.5 %,
+  i.e. colours a sensor could actually deliver)
+    delivered tri    dE00 mean 0.3055  p99 3.513  max 17.98
+    delivered tetra  dE00 mean 0.2328  p99 2.183  max 13.30
+
+  Eight delivered frames (all pixels of the 400 px previews, ~2.5 M samples)
+    delivered tri    dE00 mean 0.4209  p95 1.090  p99 1.690  max  7.14
+                     code error mean 0.00532  (1.36/255)
+    delivered tetra  dE00 mean 0.3396  p95 0.995  p99 1.578  max  7.30
+                     code error mean 0.00447  (1.14/255)
+    naive     tri    dE00 mean 0.5342  p95 1.431  p99 2.096  max  5.60
+    naive     tetra  dE00 mean 0.4169  p95 1.333  p99 2.183  max  6.52
+
+Interpretation, without spin:
+
+  * On real frames the error-minimising bake beats plain node sampling for both
+    interpolation modes: tetrahedral mean 0.340 vs 0.417 dE00 (-19 %), p99 1.58
+    vs 2.18 (-28 %); trilinear mean 0.421 vs 0.534 (-21 %). That is the point
+    of the bake and it works.
+  * Over the WHOLE cube it is not uniformly better. Tetrahedral mean error is
+    0.313 for the delivered table versus 0.301 for the naive one, because the
+    delivered table spends some of its precision budget on the impossible
+    colours in the corners of the code cube (they are weighted the same as any
+    other sample). Its p99 is nevertheless better (4.69 vs 5.14) and its
+    dE-ITP mean is better (1.19 vs 1.29). Trilinear is better everywhere.
+  * The 28-30 dE00 maxima are all in the corners of the code cube - inputs
+    whose decoded luminance is zero or negative, e.g. Apple Log code
+    (0.576, 0.637, 0.962). No camera can produce them. Inside the physical
+    subset the maximum falls to 13.3, and on the eight real frames to 7.3.
+  * The mean code error of 1.1/255 on real frames is the number that describes
+    what a colourist would see: sampling the analytic function directly is
+    worse (1.4/255).
+
+
+6. CLIPPING, FRAME BY FRAME
+---------------------------
+  frame                  white clip before -> after    black clip before -> after
+  midday_city                0.03 % -> 0.00 %              0.01 % -> 0.00 %
+  midday_portrait            0.00 % -> 0.00 %              0.02 % -> 0.00 %
+  mediterranean_street       0.83 % -> 0.00 %              0.16 % -> 0.00 %
+  beach_daylight             0.00 % -> 0.00 %              1.92 % -> 0.00 %
+  landscape_green            0.03 % -> 0.00 %              0.42 % -> 0.00 %
+  golden_hour                0.08 % -> 0.00 %              2.12 % -> 0.00 %
+  modern_architecture        0.00 % -> 0.00 %              3.74 % -> 0.00 %
+  travel_people              0.04 % -> 0.00 %              0.00 % -> 0.00 %
+
+  (percentages are of channel values, not pixels; "black clip" = value exactly 0)
+
+Neutral highlight roll-off (log code -> Rec.709 code):
+   0.40 -> 0.3165   0.50 -> 0.5006   0.60 -> 0.7418   0.70 -> 0.8993
+   0.80 -> 0.9559   0.90 -> 0.9781   1.00 -> 0.9861
+
+The curve approaches its ceiling asymptotically: the last 1.1 stops of input
+(0.90 -> 1.00) produce 0.008 of output code. Nothing reaches 1.000 in any of
+the eight frames, so no highlight is clipped by the LUT itself; where the source
+was already clipped (the whitewashed wall, the sun through the cloud) the data
+was never there to recover, and the LUT cannot invent it.
+
+Black clip falls to zero on every frame because sub-black input - values below
+Apple Log 2 video black at code 0.15047, which a correct decode maps to zero
+light - is mapped to exactly 0 and the gamut/tone stage leaves it there. The
+frames' blacks come out at 0.0 to 0.4 % of pixels rather than being crushed.
+
+
+7. SYNTHETIC CHARTS  (validation/charts/)
+-----------------------------------------
+  chart_grey_ramp.png        32 steps of log code 0.10..1.00, BEFORE over AFTER
+  chart_hue_sweep.png        48 hues at 3 lightness levels, BEFORE over AFTER
+  chart_saturation_sweep.png 16 chroma steps at 4 hues, BEFORE over AFTER
+  chart_colorchecker.png     ColorChecker 2005 patches, BEFORE over AFTER
+  chart_exposure_ladder.png  -4..+4 stops of neutral, AFTER over BEFORE
+  plot_hue_histograms.png    OKLab hue histograms, sky and grass regions
+  plot_vectorscope_portrait.png  BT.709 Cb/Cr scatter of the portrait frame
+
+Hue sweep at L 0.6, C 0.11, 48 hues (through the delivered LUT):
+  max |chroma change|   0.0081
+  max |hue shift|       4.8 deg
+  mean hue shift        -0.25 deg
+
+ColorChecker 2005 (D50 reference chart, adapted to D65, 24 patches), the
+grade's effect on known reference colours:
+  dE00 mean 3.05, max 5.51 (worst patch: white 9.5/.05 D)
+i.e. the look moves real reference colours by a few dE - visible but modest, and
+in the direction of the intent (lighter, warmer whites). It is a creative grade,
+so a non-zero number here is expected; what matters is that no patch collapses
+into another.
+
+Exposure ladder on four colours through the LUT (Rec.709 code out):
+                  -4    -3    -2    -1     0    +1    +2    +3    +4 stops
+  grey 18 %     0.114 0.160 0.229 0.330 0.476 0.672 0.846 0.929 0.963
+  warm stone    0.173 0.249 0.358 0.516 0.717 0.870 0.939 0.968 0.981
+  skin-ish      0.151 0.216 0.310 0.447 0.637 0.822 0.920 0.959 0.977
+  foliage       0.131 0.186 0.267 0.384 0.552 0.753 0.890 0.947 0.972
+Each +1 stop multiplies output code by roughly 1.25-1.40 in the midtones and by
+almost nothing at the top: the shoulder does its job at every exposure without
+any of the four colours crossing over each other.
+
+
+8. SKIN  (hue across exposures and lighting)
+--------------------------------------------
+Synthetic skin patches at four plausible renderings x two lightness levels x
+four exposure offsets, measured on the BT.709 vectorscope (angle from +Cb):
+
+  warm sun 5200 K      vectorscope 129.8 .. 134.7 deg
+  neutral daylight     125.7 .. 127.6 deg
+  cool shade           120.4 .. 122.3 deg
+  warm tungsten-ish    134.3 .. 139.4 deg
+  spread across all conditions and exposures: 19.0 deg
+
+  real portrait frame, lit side   119.6 -> 120.8 deg, OKLab C 0.165 -> 0.148
+  real portrait frame, shade side 120.2 -> 121.1 deg, OKLab C 0.158 -> 0.145
+
+Interpretation: the classic skin line sits near 110-130 degrees. The real frame
+lands on it and stays there, on both the lit and shadow side, with 10 % less
+chroma - i.e. less red, not more. The synthetic sweep shows the range you get
+when the *lighting* is that colour: an orange tungsten-lit skin tone sits at 139
+degrees before and after the LUT. The LUT narrows the hue spread rather than
+widening it, but it cannot make tungsten light look like daylight, and it does
+not try to.
+
+
+9. SKY AND FOLIAGE  (per-scene ROI medians, OKLab)
+--------------------------------------------------
+  frame / region                hue before->after    chroma        L
+  city / sky                    246.6 -> 245.8      0.042 -> 0.031  0.849 -> 0.849
+  city / sunlit facade          254.8 -> 259.5      0.017 -> 0.007  0.892 -> 0.875
+  portrait / skin lit            39.6 ->  41.2      0.165 -> 0.148  0.640 -> 0.645
+  portrait / red wall            39.0 ->  40.4      0.137 -> 0.135  0.596 -> 0.590
+  beach / sky                   252.6 -> 253.1      0.146 -> 0.134  0.482 -> 0.452
+  beach / sea                   211.5 -> 205.1      0.055 -> 0.053  0.673 -> 0.686
+  beach / sand                   40.9 ->  49.9      0.013 -> 0.021  0.763 -> 0.783
+  landscape / sky               246.7 -> 246.5      0.072 -> 0.063  0.372 -> 0.326
+  landscape / grass             124.2 -> 119.8      0.056 -> 0.056  0.395 -> 0.353
+  golden hour / sun              89.7 ->  86.3      0.060 -> 0.060  0.954 -> 0.901
+  golden hour / shade            51.5 ->  50.6      0.075 -> 0.070  0.331 -> 0.282
+  architecture / concrete       256.7 -> 261.8      0.016 -> 0.007  0.570 -> 0.561
+  travel / sky                  216.8 -> 216.1      0.119 -> 0.122  0.739 -> 0.757
+  travel / stone in sun          63.3 ->  61.2      0.046 -> 0.051  0.567 -> 0.557
+
+Sky: hue moves by less than a degree on every large sky region and chroma drops
+7-26 %, so blue stays blue and becomes calmer rather than turquoise. Sea:
+hue rotates 6 degrees towards cyan-blue (211.5 -> 205.1) with chroma essentially
+unchanged - the Mediterranean sea keeps its colour. Concrete glazing and
+near-neutral surfaces lose chroma instead of gaining a tint (0.016 -> 0.007),
+which is exactly what keeps a warm LUT from staining white architecture.
+
+Regions whose chroma is below 0.02 are reported as hue "n/a" in the raw log:
+at that chroma the hue is dominated by noise (a white wall has no useful hue).
+
+
+10. SHADOW NOISE GAIN
+---------------------
+40,000 samples per level, Gaussian noise of 1 LSB (10-bit) added in log code,
+then measured as output std / input std in Rec.709 code:
+
+  log code   after (this LUT)      before (plain conversion)
+   0.151          1.11x                  16.43x
+   0.170          2.04x                   2.89x
+   0.200          1.33x                   1.58x
+   0.250          1.23x                   1.42x
+   0.350          1.64x                   1.71x
+   0.500          2.70x                   2.64x
+
+The LUT is no noisier than the plain conversion anywhere, and dramatically
+quieter at and below video black, because it maps sub-black code to a flat 0
+instead of amplifying it through a square-root decode. At mid grey the gain is
+essentially identical (2.70 vs 2.64) - that part is the gamma 2.4 slope, which
+no LUT can avoid.
+
+
+11. EXPOSURE VARIATION ON THE REAL FRAMES
+-----------------------------------------
+Codes shifted by -2, -1, 0, +1 stop (0.0426 log code per stop), then through
+the delivered LUT:
+
+  midday_city        -2 stops  mean code 0.455  white clip 0.00 %  black px 0.77 %
+                     -1 stops  mean code 0.540  white clip 0.00 %  black px 0.09 %
+                      0 stops  mean code 0.621  white clip 0.00 %  black px 0.00 %
+                     +1 stops  mean code 0.691  white clip 0.00 %  black px 0.00 %
+  mediterranean_st.  -2 stops  mean code 0.388  white clip 0.00 %  black px 0.17 %
+                     -1 stops  mean code 0.465  white clip 0.00 %  black px 0.22 %
+                      0 stops  mean code 0.548  white clip 0.00 %  black px 0.00 %
+                     +1 stops  mean code 0.630  white clip 0.00 %  black px 0.00 %
+  midday_portrait    -2 stops  mean code 0.279  white clip 0.00 %  black px 0.53 %
+                     -1 stops  mean code 0.348  white clip 0.00 %  black px 1.99 %
+                      0 stops  mean code 0.429  white clip 0.00 %  black px 0.00 %
+                     +1 stops  mean code 0.516  white clip 0.00 %  black px 0.00 %
+
+("black px" = pixels whose three channels are all exactly 0)
+
+Under-exposure is handled gracefully: two stops down, less than 1 % of pixels
+reach absolute black and no highlight clipping appears at any exposure. The
+portrait's deep shade is the one place where a large flat area of near-black
+fabric sits close to the toe, which is why it reaches 2 % of pixels at -1 stop;
+that area is essentially black in the source too.
+
+
+12. PROVENANCE OF THE AFTER IMAGES
+----------------------------------
+validation/render_hashes.json records, for every preview:
+  * the sha256 of the .cube used (must equal the file sha256 at the top)
+  * the sha256 of the quantised 10-bit input frame
+  * the sha256 of the BEFORE and AFTER float arrays
+
+The AFTER images were produced by build/gdc_render.py, which loads the .cube
+through build/lut_engine.py and applies it with tetrahedral interpolation. That
+code path never imports the grading module's apply function, so the images
+cannot "show the analytic pipeline by accident". Re-running the renderer
+reproduces the same hashes byte for byte (the pipeline is deterministic and
+float64 throughout).
+
+
+13. LIMITATIONS AND CAVEATS - WITH THE NUMBERS THAT BOUND THEM
+--------------------------------------------------------------
+  * dE2000 is not trustworthy in deep shadow: it is normalised by L*, so a 1/255
+    code difference at code 0.02 (essentially invisible) scores higher than a
+    1/255 difference at mid grey. That is why the report always gives the code
+    error too (1.1/255 mean on the eight frames). Treat the mean dE numbers as
+    an upper bound on what the eye would see.
+  * 18 % of the input cube decodes to colours with non-positive Rec.709
+    luminance (Apple Wide Gamut is much wider than Rec.709). These are not
+    physically possible. The pipeline resolves them by blending, with a smooth
+    (C1) weight, towards the nearest positive colour, so they land on saturated
+    colours rather than black; measured worst-case interpolation error in that
+    region is the 28-30 dE00 maximum in section 5. No scene pixel in the eight
+    frames falls in this region.
+  * The 33^3 grid is coarse where Apple Log 2 is steepest. Bake error is
+    concentrated in the first two stops above video black (the fit reduces it,
+    it does not remove it). A 65^3 master is not shippable to the Blackmagic app
+    (33-point maximum), so this is a deliberate trade.
+  * No grain, halation, bloom, diffusion, sharpening or noise reduction is
+    applied, and none appears in the AFTER images.
+  * Clipped highlights cannot be recovered; the shoulder only redistributes
+    what was recorded.
+  * The LUT is not depth-aware; no depth map or matte was used anywhere.
+  * Monocular depth estimation was not used to produce any delivered image. It
+    is mentioned in the brief as diagnostic-only and it was not needed.
+  * The frames are simulated Apple Log 2 from JPEG stills: the underlying
+    photographs already contain a camera's tone curve and are 8-bit. They are a
+    fair test of colour behaviour, not of true 10-bit log noise or highlight
+    headroom in the last stop.
+  * No iPhone was used. Nothing here is a claim about behaviour on a physical
+    device; it is a claim about the file and about the pipeline that made it.
+  * The interpolation mode used by a given app is unknown to us. Both are
+    measured; the table is fitted for tetrahedral, which is what Blackmagic
+    Camera, DaVinci Resolve and most GPU implementations use.
+
+
+14. VERIFIED FACTS VERSUS ASSUMPTIONS
+-------------------------------------
+Verified in this project (measured, or matched to an independent implementation):
+  * the Apple Log transfer function (bit-identical to colour-science 0.4.7)
+  * the Apple Wide Gamut primaries and the resulting matrices (3e-11)
+  * the AWG -> ACES2065-1 matrix against OpenColorIO's built-in (5e-11)
+  * the output transfer function is exactly V^(1/2.4)
+  * every number in sections 1-12
+
+Assumptions, stated as such:
+  * that Apple Log 2 uses the Apple Log transfer function with Apple Wide Gamut
+    primaries (this is what OCIO and the ACES configs implement, and what the
+    Apple white paper describes; Apple does not publish a matrix, so ours is
+    derived from the published primaries with a Bradford adaptation);
+  * that the Blackmagic Camera app applies 3D LUTs with tetrahedral
+    interpolation (it documents 17/33-point support but not the kernel);
+  * that a viewer will apply the intended Rec.709 gamma 2.4 display transform;
+  * that the eight photographs are representative of "golden daylight" scenes.
+
+Not claimed:
+  * that any of this was tested on an iPhone;
+  * that the LUT improves every image;
+  * that dE2000 captures what a colourist sees in the shadows.

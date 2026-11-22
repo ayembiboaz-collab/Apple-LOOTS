@@ -65,7 +65,7 @@ SCENES: list[Scene] = [
         exif="1/800 s, f/2.8, ISO 100, 4.5 mm",
         published="2020-07-11",
         download="https://images.unsplash.com/photo-1594480355356-8b9833059231?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Bright daylight, clipped specular sky highlights in the source.",
     ),
     Scene(
@@ -86,7 +86,7 @@ SCENES: list[Scene] = [
         exif="1/6400 s, f/1.8, ISO 125, 24 mm",
         published="2024-11-21",
         download="https://images.unsplash.com/photo-1732129606581-e887b3651a20?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Direct sun on skin plus a two-stop shadow side: real exposure variety.",
     ),
     Scene(
@@ -107,7 +107,7 @@ SCENES: list[Scene] = [
         exif="1/858 s, f/1.8, ISO 32, 4.2 mm",
         published="2022-06-04",
         download="https://images.unsplash.com/photo-1654349203022-b940af6f4df3?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Portrait orientation kept; hard sun and deep shade in one frame.",
     ),
     Scene(
@@ -128,7 +128,7 @@ SCENES: list[Scene] = [
         exif="1/4000 s, f/4.5, ISO 400, 9.6 mm",
         published="2023-06-27",
         download="https://images.unsplash.com/photo-1687875423812-41b0143bcff2?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Bright, high-key daylight; surf detail is at the top of the source range.",
     ),
     Scene(
@@ -149,7 +149,7 @@ SCENES: list[Scene] = [
         exif="1/730 s, f/2.8, ISO 100, 4.5 mm",
         published="2024-07-24",
         download="https://images.unsplash.com/photo-1721834193014-540c249888c2?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Balanced daylight with both deep conifer shadow and bright cloud.",
     ),
     Scene(
@@ -170,7 +170,7 @@ SCENES: list[Scene] = [
         exif="0.5 s, f/22, ISO 100, 39 mm",
         published="2017-03-28",
         download="https://images.unsplash.com/photo-1490682143684-14369e18dce8?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Intrinsically warm, backlit, very high dynamic range.",
     ),
     Scene(
@@ -190,7 +190,7 @@ SCENES: list[Scene] = [
         exif="1/500 s, f/5.6, ISO 250, 55 mm",
         published="2026-03-23",
         download="https://images.unsplash.com/photo-1774276982082-629a21fc321e?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Mostly neutral, low-chroma subject: the hardest test for a warm tint.",
     ),
     Scene(
@@ -210,7 +210,7 @@ SCENES: list[Scene] = [
         exif="1/800 s, f/8, ISO 400, 18 mm",
         published="2021-09-20",
         download="https://images.unsplash.com/photo-1632154613105-f2f151eec778?fm=jpg&q=85&w=3000",
-        modifications="Resized to 2048 px long edge (Lanczos), no crop.",
+        modifications="Stored at the 3000 px long edge delivered by the source; no crop, no retouch, no re-grade.",
         exposure_note="Mixed sun and shade, small skin areas, large stone areas.",
     ),
 ]

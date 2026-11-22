@@ -1,0 +1,201 @@
+GOLDEN DAYLIGHT CINEMA - SOURCES, LICENCES AND CITATIONS
+========================================================
+This file records where every input came from, under what licence, and what was
+done to it. It also lists the technical references behind the colour science and
+separates verified facts from assumptions (section 3).
+
+
+1. PHOTOGRAPHS
+--------------
+All eight photographs are real camera images hosted by Unsplash and used under
+the Unsplash License: https://unsplash.com/license  (free for commercial and
+non-commercial use, no permission or attribution required; attribution is given
+here anyway). No AI-generated image, no upscale and no stock composite is used
+anywhere in this project.
+
+Every file in ../source_images/ is exactly the JPEG delivered by the source at
+3000 px on the long edge. No crop, no retouch, no colour work - the only
+processing in the whole project happens in the pipeline, after the file is read.
+The SHA-256 prefix below lets you confirm the file you have is the file used.
+
+------------------------------------------------------------------------------
+01  source_images/01_midday_city.jpg      3000 x 2250   sha256 f875bcabc7fd26e2
+    Title        Harsh midday city
+    Subject      Downtown Oklahoma City, Oklahoma, United States
+    Photographer Justin Prine        https://unsplash.com/@justinp3
+    Photo page   https://unsplash.com/photos/city-buildings-under-blue-sky-during-daytime-QGP7ncFD0LA
+    Download URL https://images.unsplash.com/photo-1594480355356-8b9833059231
+    Unsplash ID  QGP7ncFD0LA          Published 2020-07-11
+    Camera       DJI FC3170, 1/800 s, f/2.8, ISO 100, 4.5 mm
+    Licence      Unsplash License
+    Why          Saturated sky, sunlit glass and concrete, hard shadow
+                 boundaries: the classic "does the LUT stain white buildings
+                 orange and turn the sky turquoise" test.
+    Modified     stored as delivered; only read, never written
+
+------------------------------------------------------------------------------
+02  source_images/02_midday_portrait.jpg  3000 x 2000   sha256 cf26be04b4238905
+    Title        Midday portrait in direct sun
+    Subject      Portrait, Bellingham, Washington, United States
+    Photographer Elle Cartier        https://unsplash.com/@ellecartier
+    Photo page   https://unsplash.com/photos/a-woman-with-a-shadow-on-her-face-qSYohksKbiI
+    Download URL https://images.unsplash.com/photo-1732129606581-e887b3651a20
+    Unsplash ID  qSYohksKbiI          Published 2024-11-21
+    Camera       Sony ILCE-7M3, 1/6400 s, f/1.8, ISO 125, 24 mm
+    Licence      Unsplash License
+    Why          Direct sun on skin with a two-stop shadow side and a strongly
+                 coloured red-orange reflective wall: the hardest skin test in
+                 the set.
+    Modified     stored as delivered
+
+------------------------------------------------------------------------------
+03  source_images/03_mediterranean_street.jpg 3000 x 4000  sha256 fced0b34df680f55
+    Title        Mediterranean street
+    Subject      Alley in Mykonos, Greece
+    Photographer Julien Gaillard     https://unsplash.com/@juuxx
+    Photo page   https://unsplash.com/photos/a-narrow-street-with-white-buildings-and-blue-balconies-SvS4pQBjJKQ
+    Download URL https://images.unsplash.com/photo-1654349203022-b940af6f4df3
+    Unsplash ID  SvS4pQBjJKQ          Published 2022-06-04
+    Camera       Apple iPhone 11 Pro, 1/858 s, f/1.8, ISO 32, 4.2 mm
+    Licence      Unsplash License
+    Why          Whitewash in sun and shade, bougainvillea, blue railings:
+                 the reference "golden Mediterranean" scene.
+    Modified     stored as delivered
+
+------------------------------------------------------------------------------
+04  source_images/04_beach_daylight.jpg    3000 x 2000   sha256 39c6db811816ee1b
+    Title        Bright beach daylight
+    Subject      Beach with shallow turquoise water
+    Photographer Francesco Ungaro    https://unsplash.com/@francesco_ungaro
+    Photo page   https://unsplash.com/photos/a-sandy-beach-with-clear-blue-water-on-a-sunny-day-6BzelJ-qVe0
+    Download URL https://images.unsplash.com/photo-1687875423812-41b0143bcff2
+    Unsplash ID  6BzelJ-qVe0          Published 2023-06-27
+    Camera       Fujifilm X-T4, 1/4000 s, f/4.5, ISO 400, 9.6 mm
+    Licence      Unsplash License
+    Why          Sand plus turquoise shallows: the test for the "windows are
+                 still blue, no neon water" requirement.
+    Modified     stored as delivered
+
+------------------------------------------------------------------------------
+05  source_images/05_landscape_green.jpg   3000 x 2250   sha256 f5577de68d2c3bb
+    Title        Green valley and mountains
+    Subject      Alpine pasture and limestone ridge
+    Photographer Francesco Ungaro    https://unsplash.com/@francesco_ungaro
+    Photo page   https://unsplash.com/photos/a-green-valley-with-trees-and-mountains-in-the-background-S_kzomYltgo
+    Download URL https://images.unsplash.com/photo-1721834193014-540c249888c2
+    Unsplash ID  S_kzomYltgo          Published 2024-07-24
+    Camera       DJI FC3170, 1/730 s, f/2.8, ISO 100, 4.5 mm
+    Licence      Unsplash License
+    Why          Saturated greens with dark conifers and a blue sky: the foliage
+                 control test (no "radioactive" grass).
+    Modified     stored as delivered
+
+------------------------------------------------------------------------------
+06  source_images/06_golden_hour.jpg       3000 x 2000   sha256 09213f4d2fbd4102
+    Title        Golden hour landscape
+    Subject      Valley near Hřensko, Czechia, minutes before sunset
+    Photographer Artem Sapegin       https://unsplash.com/@sapegin
+    Photo page   https://unsplash.com/photos/mountains-and-tree-range-during-golden-hour-8c6eS43iq1o
+    Download URL https://images.unsplash.com/photo-1490682143684-14369e18dce8
+    Unsplash ID  8c6eS43iq1o          Published 2017-03-28
+    Camera       Canon EOS 6D, 0.5 s, f/22, ISO 100, 39 mm
+    Licence      Unsplash License
+    Why          Intrinsically warm, backlit, very high dynamic range: the test
+                 that the LUT does not double the warmth or blow the sun.
+    Modified     stored as delivered
+
+------------------------------------------------------------------------------
+07  source_images/07_modern_architecture.jpg 3000 x 2003 sha256 a10cab1da5b61a4a
+    Title        Modern architecture
+    Subject      Concrete and glass façade, Tirana, Albania
+    Photographer Aldo Vukaj          https://unsplash.com/@mystical1
+    Photo page   https://unsplash.com/photos/modern-building-with-geometric-facade-and-blue-windows-w-nBFVS928I
+    Download URL https://images.unsplash.com/photo-1774276982082-629a21fc321e
+    Unsplash ID  w-nBFVS928I          Published 2026-03-23
+    Camera       Nikon D5300, 1/500 s, f/5.6, ISO 250, 55 mm
+    Licence      Unsplash License
+    Why          Mostly neutral, low-chroma subject: the hardest test for a warm
+                 grade (concrete must stay concrete, not beige).
+    Modified     stored as delivered
+
+------------------------------------------------------------------------------
+08  source_images/08_travel_people.jpg     3000 x 1688   sha256 0099c9ac21319758
+    Title        Travel street with people
+    Subject      Pedestrian street, Dubrovnik, Croatia
+    Photographer Kevin Charit        https://unsplash.com/@kevin_charit
+    Photo page   https://unsplash.com/photos/a-group-of-people-walking-down-a-street-next-to-tall-buildings-TZuigM9Cs9I
+    Download URL https://images.unsplash.com/photo-1632154613105-f2f151eec778
+    Unsplash ID  TZuigM9Cs9I          Published 2021-09-20
+    Camera       Fujifilm X-E3, 1/800 s, f/8, ISO 400, 18 mm
+    Licence      Unsplash License
+    Why          Mixed sun and shade with small skin areas and large stone
+                 areas: the "travel scene with people" requirement.
+    Modified     stored as delivered
+
+No photograph was selected because of its colour grade; each was chosen for the
+lighting situation it represents. Each photographer keeps full copyright; the
+Unsplash License grants the right to use the photographs, not to relicense them.
+
+
+2. TECHNICAL REFERENCES
+-----------------------
+Apple Log / Apple Log 2 transfer function and Apple Wide Gamut
+  * Apple, "Apple Log Profile" white paper (the piecewise curve used here:
+    a log segment plus a quadratic toe below the linear threshold), and the
+    Apple Log 2 material that accompanies the iPhone 17 Pro generation.
+    The numeric constants used in this project are the ones published by Apple
+    and implemented by colour-science:
+      R_0 = -0.05641088, R_t = 0.01, sigma = 47.28711236,
+      beta = 0.00964052, gamma = 0.08550479, delta = 0.69336945
+  * Apple Wide Gamut primaries R(0.725, 0.301) G(0.221, 0.814) B(0.068, -0.076),
+    white D65 (0.3127, 0.3290).
+
+Independent implementations used as cross-checks
+  * colour-science 0.4.7 - colour.models.log_encoding_AppleLogProfile /
+    log_decoding_AppleLogProfile, and RGB_Colourspace for deriving the matrices.
+    https://github.com/colour-science/colour
+  * OpenColorIO pull request #2343 (Apple Wide Gamut / Apple Log built-in
+    transform, APPLE_LOG-APPLEWG_to_ACES2065-1, derived with a Bradford
+    adaptation because Apple publishes no matrix).
+    https://github.com/AcademySoftwareFoundation/OpenColorIO/pull/2343
+  * OpenColorIO-Config-ACES pull request #179 (_build_apple_wg_mtx(), the CLF
+    transform id urn:ampas:aces:transformId:v2.0:CSC.Apple.AppleLog2_to_ACES).
+    https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/pull/179
+  * Recommendation ITU-R BT.709 (primaries, D65, and the 2.4 display gamma
+    convention) and BT.2124 (dE-ITP).
+  * Unsplash License: https://unsplash.com/license
+
+Blackmagic Camera (iOS) LUT support
+  * Blackmagic Design's Blackmagic Camera app documentation: the app imports
+    17-point and 33-point .cube 3D LUTs through Settings > LUTs > LUTs Manager
+    > Import LUT, and keeps monitoring (display) LUTs and LUTs baked into the
+    recording as separate switches.
+    https://www.blackmagicdesign.com/products/blackmagiccamera
+  This LUT is a 33-point file, i.e. within what the app documents as supported.
+
+
+3. VERIFIED FACTS VERSUS ASSUMPTIONS
+------------------------------------
+Verified inside this project (numbers in VALIDATION_REPORT.txt):
+  * our Apple Log transfer function is bit-identical to colour-science 0.4.7
+  * our Apple Wide Gamut -> XYZ matrix matches a colour-science rebuild from the
+    published primaries to 3.3e-11
+  * our AWG -> ACES2065-1 matrix matches OpenColorIO's built-in to 4.6e-11
+  * the output transfer function is exactly V^(1/2.4)
+  * all measurements of the delivered .cube
+
+Assumed, and labelled as an assumption wherever it matters:
+  * that "Apple Log 2" means the Apple Log transfer function with Apple Wide
+    Gamut primaries (this is what OCIO and the ACES config implement, and what
+    Apple's white paper describes; Apple does not publish the matrix, so ours is
+    derived from the published primaries);
+  * that the Blackmagic Camera app interpolates 3D LUTs tetrahedrally (it
+    documents the file format, not the kernel);
+  * that the viewer applies a Rec.709 gamma 2.4 display transform;
+  * that eight stills represent the range of "golden daylight" footage.
+
+Explicitly not claimed:
+  * that any part of this was tested on an iPhone - no iPhone was used;
+  * that the LUT is suitable for Apple Log (Rec.2020, iPhone 15/16 Pro) rather
+    than Apple Log 2;
+  * that the AFTER images contain any effect beyond what a 3D LUT can do.

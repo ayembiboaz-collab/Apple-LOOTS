@@ -1,0 +1,133 @@
+{
+  "lut_sha256": "bf4d18465bc42c731c53ff62cd490f0f7613ad4184ee9ce7bb252a5b020f2520",
+  "assets": {
+    "01_midday_city_BEFORE": {
+      "size": [
+        1280,
+        960
+      ],
+      "bytes": 289810,
+      "thumb_bytes": 39876
+    },
+    "01_midday_city_AFTER": {
+      "size": [
+        1280,
+        960
+      ],
+      "bytes": 285994,
+      "thumb_bytes": 39619
+    },
+    "02_midday_portrait_BEFORE": {
+      "size": [
+        1280,
+        853
+      ],
+      "bytes": 133488,
+      "thumb_bytes": 18153
+    },
+    "02_midday_portrait_AFTER": {
+      "size": [
+        1280,
+        853
+      ],
+      "bytes": 135457,
+      "thumb_bytes": 18371
+    },
+    "03_mediterranean_street_BEFORE": {
+      "size": [
+        960,
+        1280
+      ],
+      "bytes": 268084,
+      "thumb_bytes": 37704
+    },
+    "03_mediterranean_street_AFTER": {
+      "size": [
+        960,
+        1280
+      ],
+      "bytes": 273504,
+      "thumb_bytes": 38366
+    },
+    "04_beach_daylight_BEFORE": {
+      "size": [
+        1280,
+        853
+      ],
+      "bytes": 129192,
+      "thumb_bytes": 16294
+    },
+    "04_beach_daylight_AFTER": {
+      "size": [
+        1280,
+        853
+      ],
+      "bytes": 138330,
+      "thumb_bytes": 17232
+    },
+    "05_landscape_green_BEFORE": {
+      "size": [
+        1280,
+        960
+      ],
+      "bytes": 291906,
+      "thumb_bytes": 33623
+    },
+    "05_landscape_green_AFTER": {
+      "size": [
+        1280,
+        960
+      ],
+      "bytes": 304420,
+      "thumb_bytes": 35010
+    },
+    "06_golden_hour_BEFORE": {
+      "size": [
+        1280,
+        853
+      ],
+      "bytes": 163777,
+      "thumb_bytes": 22662
+    },
+    "06_golden_hour_AFTER": {
+      "size": [
+        1280,
+        853
+      ],
+      "bytes": 163362,
+      "thumb_bytes": 22841
+    },
+    "07_modern_architecture_BEFORE": {
+      "size": [
+        1280,
+        855
+      ],
+      "bytes": 284228,
+      "thumb_bytes": 42743
+    },
+    "07_modern_architecture_AFTER": {
+      "size": [
+        1280,
+        855
+      ],
+      "bytes": 284428,
+      "thumb_bytes": 43091
+    },
+    "08_travel_people_BEFORE": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 244927,
+      "thumb_bytes": 31782
+    },
+    "08_travel_people_AFTER": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 252797,
+      "thumb_bytes": 33016
+    }
+  }
+}

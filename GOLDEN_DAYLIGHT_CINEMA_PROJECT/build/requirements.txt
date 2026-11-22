@@ -1,0 +1,6 @@
+# GOLDEN DAYLIGHT CINEMA - build dependencies (tested versions, Python 3.11)
+numpy==2.4.6
+scipy==1.17.1
+pillow==13.0.0
+matplotlib==3.11.2
+colour-science==0.4.7

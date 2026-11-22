@@ -192,9 +192,31 @@ def _cg(Aop, b, Minv, x0, iters=200, tol=1e-10, verbose=False, tag=""):
     return x, hist
 
 
+def _d2_stack(xflat: np.ndarray):
+    """Second differences of the grid values along each of the three axes."""
+    x = xflat.reshape(N, N, N)
+    return (np.diff(x, n=2, axis=0), np.diff(x, n=2, axis=1), np.diff(x, n=2, axis=2))
+
+
+def _d2t_stack(parts) -> np.ndarray:
+    """Adjoint of _d2_stack (stencil 1,-2,1 scattered back onto the grid)."""
+    out = np.zeros((N, N, N))
+    for arr, axis in zip(parts, (0, 1, 2)):
+        for k, w in enumerate((1.0, -2.0, 1.0)):
+            sl = [slice(None)] * 3
+            sl[axis] = slice(k, k + arr.shape[axis])
+            out[tuple(sl)] += w * arr
+    return out.ravel()
+
+
+def _smooth_op(xflat: np.ndarray) -> np.ndarray:
+    return _d2t_stack(_d2_stack(xflat))
+
+
 def bake(points: np.ndarray | None = None, lam: float = 3e-3, iters: int = 160,
          verbose: bool = True, fit_space: str = "codes",
-         w_tri: float = 0.2, w_tet: float = 0.8) -> tuple[np.ndarray, dict]:
+         w_tri: float = 0.2, w_tet: float = 0.8,
+         smooth: float = 1.0) -> tuple[np.ndarray, dict]:
     """Error-minimising bake: solve the weighted least-squares problem
 
         minimise ||W_tri G - F||^2 + ||W_tet G - F||^2 + lam ||G - F_nodes||^2
@@ -234,6 +256,7 @@ def bake(points: np.ndarray | None = None, lam: float = 3e-3, iters: int = 160,
     W_tet_t = W_tet.T.tocsr()
     D = (w_tri ** 2 * np.asarray(W_tri.multiply(W_tri).sum(axis=0)).ravel()
          + w_tet ** 2 * np.asarray(W_tet.multiply(W_tet).sum(axis=0)).ravel() + lam)
+    D = D + 6.0 * smooth            # diag(L^T L) ~ 6 per interior node
     D = np.maximum(D, 1e-6)
     Minv = 1.0 / D
 
@@ -243,13 +266,16 @@ def bake(points: np.ndarray | None = None, lam: float = 3e-3, iters: int = 160,
     wtr2, wte2 = w_tri ** 2, w_tet ** 2
 
     def Aop(x):
-        return wtr2 * (W_tri_t @ (W_tri @ x)) + wte2 * (W_tet_t @ (W_tet @ x)) + lam * x
+        return (wtr2 * (W_tri_t @ (W_tri @ x))
+                + wte2 * (W_tet_t @ (W_tet @ x))
+                + lam * x + smooth * _smooth_op(x))
 
     grid = np.zeros((N ** 3, 3))
     hist_all, resid = [], []
     for ch in range(3):
         y = target_fit[:, ch]
-        bvec = wtr2 * (W_tri_t @ y) + wte2 * (W_tet_t @ y) + lam * node_fit[:, ch]
+        bvec = (wtr2 * (W_tri_t @ y) + wte2 * (W_tet_t @ y)
+                + lam * node_fit[:, ch] + smooth * _smooth_op(node_fit[:, ch]))
         x, hist = _cg(Aop, bvec, Minv, node_fit[:, ch].copy(), iters=iters,
                       verbose=verbose, tag=f"ch{ch}")
         grid[:, ch] = x
@@ -269,6 +295,7 @@ def bake(points: np.ndarray | None = None, lam: float = 3e-3, iters: int = 160,
     info = {"n_samples": int(len(points)), "lambda": lam, "iterations": iters,
             "seconds": time.time() - t0, "final_residual": float(max(resid)),
             "fit_space": fit_space, "w_tri": w_tri, "w_tet": w_tet,
+            "smooth": smooth,
             "node_codes": node_codes}
     return grid_codes, info
 

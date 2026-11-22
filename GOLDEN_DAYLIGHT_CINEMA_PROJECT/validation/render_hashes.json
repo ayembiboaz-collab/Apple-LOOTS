@@ -1,0 +1,103 @@
+{
+  "lut": "GOLDEN_DAYLIGHT_CINEMA/LUT/GOLDEN_DAYLIGHT_CINEMA.cube",
+  "lut_sha256": "bf4d18465bc42c731c53ff62cd490f0f7613ad4184ee9ce7bb252a5b020f2520",
+  "long_edge": 1280,
+  "scenes": {
+    "midday_city": {
+      "scene": "midday_city",
+      "size": [
+        1280,
+        960
+      ],
+      "input_sha256": "041e828cb07edcdedcc1f23097fc006cdb0f32b446af855aa055facb2d913e79",
+      "before_sha256": "022ceb0413fcb9e39983add6fd3d233f88aa5ee4b0b306544e75543da24a702c",
+      "after_sha256": "ea328fab1450cd8b250739566a83f8737847320a63d2c1bb9124740ec203a9a7",
+      "lut_method": "tetra",
+      "seconds": 3.65
+    },
+    "midday_portrait": {
+      "scene": "midday_portrait",
+      "size": [
+        1280,
+        853
+      ],
+      "input_sha256": "164bc7f82f248998ddaeed08823b0eb6bb5a7429af458a22399b2dc674745b17",
+      "before_sha256": "23dfda041bf5dd288d78dbaae6808b8ce9cd2040bab492ed2a13b49426e6747f",
+      "after_sha256": "c830f3e5df356eb80485977d91c644499539b98c3d80d65f97819b1e344e253d",
+      "lut_method": "tetra",
+      "seconds": 3.48
+    },
+    "mediterranean_street": {
+      "scene": "mediterranean_street",
+      "size": [
+        960,
+        1280
+      ],
+      "input_sha256": "9424cfa4c667d8068941952a0599316ec96b56f69d6f99cb9480c5e7d2baa5b3",
+      "before_sha256": "d016084fcbe67f19059c06bb0c2d385e6e3b8014995e5fdee93733ed24bf35d4",
+      "after_sha256": "4ded7d552b5b8b3ccbc954c571d5a8362b3086f8ab78d69892155549a55e3c5f",
+      "lut_method": "tetra",
+      "seconds": 4.08
+    },
+    "beach_daylight": {
+      "scene": "beach_daylight",
+      "size": [
+        1280,
+        853
+      ],
+      "input_sha256": "1195f49a6cf2ccfc31f7079e4ef2879e402b2e91348f89a8caec11776075156c",
+      "before_sha256": "c45c4127a310d9d67fe0863125f0ab1120eaeb873758d25f69adb1e9c9145bd1",
+      "after_sha256": "6b27e833ad704bad952867ae43bb4c074fe0a08dffdbbb896e75e6e6bb4bf88c",
+      "lut_method": "tetra",
+      "seconds": 4.33
+    },
+    "landscape_green": {
+      "scene": "landscape_green",
+      "size": [
+        1280,
+        960
+      ],
+      "input_sha256": "f2ebca98ad9f7eae27185411b4828c609731c16f0063806e107d232ab0dda2f6",
+      "before_sha256": "a75113c623d0c8504452e9458cff36c47b893669be38648deb66c50af2d05284",
+      "after_sha256": "dc6343bfbf0b00636529fd530c2029899f15f55d1c8cf6ba41ccf7493783b2ce",
+      "lut_method": "tetra",
+      "seconds": 3.86
+    },
+    "golden_hour": {
+      "scene": "golden_hour",
+      "size": [
+        1280,
+        853
+      ],
+      "input_sha256": "67269640d9c21fe8269c0503870e1d5413bb7b09f7d116463e0e5d47aa11db67",
+      "before_sha256": "b44b7369a63f3fd071d43a2ca0262814eec3f4466ea9ab1c0622717e65fca521",
+      "after_sha256": "a2d62f450def1446f45ed1d963137a5a99326799fdd66933b867691dde5e485e",
+      "lut_method": "tetra",
+      "seconds": 5.4
+    },
+    "modern_architecture": {
+      "scene": "modern_architecture",
+      "size": [
+        1280,
+        855
+      ],
+      "input_sha256": "caa95d61634628c97beeb067dd45a336ee4be8202953c03205f3043052ec8e62",
+      "before_sha256": "a051b436f99152f5ea6f5f3c23895d7d61550443b76b58cba3a19d137c74e817",
+      "after_sha256": "0178ca0eeeb4faf257011f09697800b650e1ef4852e8b5dba002e2e4ef52e410",
+      "lut_method": "tetra",
+      "seconds": 3.53
+    },
+    "travel_people": {
+      "scene": "travel_people",
+      "size": [
+        1280,
+        720
+      ],
+      "input_sha256": "23bba49c2a005ea4dfe6447daf911ab1498287d2682a4a70da6cd5354778a8e9",
+      "before_sha256": "9bc7794f73f322bf92b38cd003c7b27754268746b15d340709c52a8658e7116d",
+      "after_sha256": "727e628a18fa380d1cb7d166382df141634ac857dc0aa73516d44c342a22ef09",
+      "lut_method": "tetra",
+      "seconds": 2.47
+    }
+  }
+}
