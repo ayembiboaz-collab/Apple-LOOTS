@@ -1,0 +1,33 @@
+TECHNICAL SOURCES
+
+Apple Developer: AVCaptureColorSpace.appleLog2 identifies Apple Gamut primaries
+and an Apple-defined logarithmic transfer function:
+https://developer.apple.com/documentation/avfoundation/avcapturecolorspace/applelog2
+
+Apple Log 2 white paper is linked by this colour-science issue; we could not
+retrieve the actual paper in this restricted environment, so the curve and
+primaries were checked against OpenColorIO rather than claiming direct inspection:
+https://github.com/colour-science/colour/issues/1428
+
+Academy Software Foundation OpenColorIO, reviewed Apple Log 2 implementation and
+sample: same Apple Log transfer curve, new Apple Wide Gamut primaries:
+https://github.com/AcademySoftwareFoundation/OpenColorIO/pull/2343
+OpenColorIO 2.6.0 builtin was also run directly during this build. Primaries:
+R (.725,.301), G (.221,.814), B (.068,-.076), white D65 (.3127,.3290).
+
+Apple Log transfer constants and piecewise decoder in OpenColorIO source:
+https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/main/src/OpenColorIO/transforms/builtins/AppleCameras.cpp
+
+Blackmagic Camera product page: 17- and 33-point 3D LUT support, monitoring or
+recording: https://www.blackmagicdesign.com/products/blackmagiccamera
+
+OKLab (perceptual coordinates): https://bottosson.github.io/posts/oklab/
+Colour-science library (CIEDE2000, BabelColor Average ColorChecker patch data,
+chromatic adaptation): https://github.com/colour-science/colour
+BabelColor ColorChecker data: https://babelcolor.com/colorchecker-2.htm
+
+PHOTO CREDITS
+None. No photographs or camera frames are included in this LUT-only evaluation
+package. There are no simulated images; synthetic numerical colour samples are
+only used for computation. The full requested photography and gallery are not
+complete. No AI images have been used.

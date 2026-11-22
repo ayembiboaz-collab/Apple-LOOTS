@@ -5,7 +5,7 @@ import numpy as np
 import colour
 from pipeline import grade, decode, AWG, encode
 P=Path(__file__).resolve().parent
-cube=P/'candidate.cube'
+cube=P.parent/'GOLDEN_DAYLIGHT_CINEMA'/'LUT'/'GOLDEN_DAYLIGHT_CINEMA.cube'
 lines=cube.read_text().splitlines()
 assert 'LUT_3D_SIZE 33' in lines and 'DOMAIN_MIN 0 0 0' in lines and 'DOMAIN_MAX 1 1 1' in lines
 v=np.loadtxt(lines[4:]); assert v.shape==(33**3,3) and np.isfinite(v).all() and v.min()>=0 and v.max()<=1
@@ -66,6 +66,6 @@ noise=[]
 for linear in [.001,.005,.018,.18]:
     code=float(encode(linear)); noise_in=rng.normal(0,.001,(10000,3)); out=sample(code+noise_in)
     noise.append({'linear_level':linear,'log_level':code,'input_sigma_log':.001,'output_sigma_709':out.std(axis=0).tolist(),'gain':(out.std(axis=0)/.001).tolist()})
-result={'candidate_sha256':hashlib.sha256(cube.read_bytes()).hexdigest(),'cube_entries':v.size//3,'min':float(v.min()),'max':float(v.max()),'ocio_ap0_reference':ref.tolist(),'ocio_ap0_max_abs_error':float(np.max(np.abs(ref-expected))),'interpolation_random_full_domain_50000':errors,'ramps':ramps,'neutral_17_code_steps_rgb':neutral.tolist(),'gamma_2_4_analytic_midgrey':{'observed':observed.tolist(),'expected':float(expected_gamma)},'exposure_ladder':ladder,'simulated_log_code_noise':noise,'limitations':'Random full cube is not an image distribution. Ramp reversals are luminance only. Quantised code counts do not prove absence of banding. No imagery, skin, scene exposure, lighting, clipping, visual or device tests performed. Noise test is a synthetic code-value perturbation, not sensor noise.'}
-(P.parent/'validation'/'candidate-validation.json').write_text(json.dumps(result,indent=2)+'\n')
+result={'lut_sha256':hashlib.sha256(cube.read_bytes()).hexdigest(),'cube_entries':v.size//3,'min':float(v.min()),'max':float(v.max()),'ocio_ap0_reference':ref.tolist(),'ocio_ap0_max_abs_error':float(np.max(np.abs(ref-expected))),'interpolation_random_full_domain_50000':errors,'ramps':ramps,'neutral_17_code_steps_rgb':neutral.tolist(),'gamma_2_4_analytic_midgrey':{'observed':observed.tolist(),'expected':float(expected_gamma)},'exposure_ladder':ladder,'simulated_log_code_noise':noise,'limitations':'Random full cube is not an image distribution. Ramp reversals are luminance only. Quantised code counts do not prove absence of banding. No imagery, skin, scene exposure, lighting, clipping, visual or device tests performed. Noise test is a synthetic code-value perturbation, not sensor noise.'}
+(P.parent/'validation'/'lut-validation.json').write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result,indent=2))

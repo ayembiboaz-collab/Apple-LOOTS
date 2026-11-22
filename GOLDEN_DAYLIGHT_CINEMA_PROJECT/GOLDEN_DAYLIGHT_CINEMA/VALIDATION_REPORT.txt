@@ -1,0 +1,104 @@
+GOLDEN DAYLIGHT CINEMA — VALIDATION REPORT FOR EVALUATION BUILD
+
+STATUS: this standalone LUT is available to download, but it is NOT a completed
+reference-grade, visually validated release. Full photographic, gallery and
+physical-device checks remain outstanding. The only samples used so far are
+numerical synthetic colour data. There was no physical iPhone 17 Pro or
+Blackmagic Camera test. No test of iPhone downloading was performed.
+
+FILE
+LUT/GOLDEN_DAYLIGHT_CINEMA.cube
+SHA-256: 08583594130a02f2df8df2d4b8686faee9956c240b496d609395fe3bba6c55f2
+Exactly 33^3 = 35,937 RGB rows, red fastest, DOMAIN_MIN 0 0 0,
+DOMAIN_MAX 1 1 1; all entries finite and within [0,1]. Parser re-read the
+actual file. OpenColorIO 2.6.0 independently loaded it, and its trilinear and
+tetrahedral output agreed with our independent Python cube sampler to within
+3.4e-7 encoded units on 50,000 sampled colours. This does not prove any
+particular phone application interpolates in the same way.
+
+COLOUR PIPELINE
+Float64 analytic evaluation sampled directly on the regular 33^3 input grid.
+No 1D shaper or separate conversion LUT is required. Apple Log 2 decode, as
+verified against OpenColorIO's implementation:
+  P_t = 47.28711236*(0.01+0.05641088)^2
+  if P >= P_t: R = 2^((P-0.69336945)/0.08550479)-0.00964052
+  otherwise:   R = sqrt(max(P,0)/47.28711236)-0.05641088.
+Apple Wide Gamut RGB is converted via XYZ into linear Rec.709. Both have D65,
+so this conversion requires no chromatic adaptation. D65 to ACES D60 Bradford
+adaptation was used ONLY in the independent reference comparison. At input
+[0.5,0.4,0.3], the analytic ACES result matched OpenColorIO's Apple Log 2 builtin
+to 4.97e-8 maximum channel error. Primaries and constants are in SOURCES.txt.
+
+Negative linear Rec.709 components are compressed smoothly towards a positive
+scene-luminance anchor; negative-luminance inputs are mapped to black. This is
+an explicit pre-gamut compromise for exotic Apple Wide Gamut triples, rather
+than an assertion they all correspond to real light. The grade uses float64
+OKLab and smooth hue weights for blue, foliage and skin/stone; warm bias is
+reduced near the skin hue, and colour thins toward shadow and highlight. The
+filmic luminance proxy is L^3/(1+L^3), applied as new L = cube_root(proxy).
+L^3 is a perceptual-lightness proxy, not physical scene luminance; the shoulder
+compresses it, but individual channels can change differently. The out-of-gamut
+OKLab chroma is compressed along constant lightness and hue towards neutral,
+with a 75% soft knee and a binary-searched Rec.709 boundary. A final numerical
+clip guards floating-point roundoff. This is not an implementation of ACES
+reference gamut compression and is not a spatial/depth-aware process.
+
+Encode output C = max(linear_C,0)^(1/2.4). Analytic 18% neutral evaluates to
+0.45682098 per channel (independent formula check); the baked cube interpolates.
+
+INTERPOLATION (CIEDE2000; seeded Monte Carlo, not exhaustive)
+50,000 uniformly random Apple Log RGB values across the entire [0,1]^3 domain:
+  trilinear   mean 0.3162, p99 4.6881, max 25.5035
+  tetrahedral mean 0.2213, p99 3.0712, max 27.9226
+Many full-cube triples correspond to exotic/negative luminance, but the maxima
+are real limitations and cannot be dismissed as a guarantee for real footage.
+50,000 synthetic nonnegative Rec.709-derived scene colours, randomly scaled
+from -4 to +2 stops and encoded to Apple Log 2:
+  trilinear   mean 0.2837, p99 1.1388, max 5.4036
+  tetrahedral mean 0.1848, p99 0.7998, max 4.9684
+These are not measured statistics for actual camera footage.
+
+NEUTRALS, RAMPS AND QUANTISATION
+17 sampled grey axis values and 4097-step ramps, first/second difference bounds,
+8-bit and 10-bit code counts are recorded in VALIDATION/lut-validation.json. The grey ramp had no luminance reversal. A yellow input-code
+ramp had 14 luminance reversals; red, green, blue, cyan and magenta showed no
+luminance reversals at this sampling. The blue input-code ramp stays black because
+its other channels are fixed at log code 0, representing negative linear input;
+it is not a physically plausible blue exposure ramp. These checks do not prove
+absence of banding; the 33 grid, quantisation and unusual values can introduce
+visible artefacts. The +4-stop neutral ladder shows a small RGB imbalance due
+to interpolation. Full per-step grey values and the -4 to +4 ladder are in the
+machine-readable JSON. No physical smoothness or display test was performed.
+
+SYNTHETIC SKIN / SKY / FOLIAGE
+BabelColor Average dark-skin and light-skin xyY patches were adapted from the
+published chart illuminant to D65 and passed through the ACTUAL cube in OCIO.
+Under the neutral synthetic lighting at nominal exposure, vectorscope angle
+change relative to a scalar-shoulder baseline: dark skin -0.011 degrees, light
+skin +0.156 degrees. Across synthetic warm/neutral/cool multipliers and -2 to
++2 stops, the ranges were dark skin -0.42 to +0.40 degrees; light skin -0.84 to
++0.39; blue sky -0.60 to -0.12; foliage -2.29 to +0.90. Angles use atan2(Cr,Cb)
+from gamma-coded 709. These limited synthetic patches and improvised lighting
+are not verification against a calibrated skin-line target, nor do they verify
+actual faces, skies or vegetation. Per-condition RGB and hue results are in
+VALIDATION/physical-tests.json.
+
+SHADOW NOISE
+Independent Gaussian per-channel AWG scene-linear noise (sigma = 1% of patch
+level), through the actual tetrahedral cube, was measured in display-linear
+output. Per-channel ratios of output to input sigma: 0.34–0.39 at 0.001,
+0.76–1.20 at 0.005, 0.97–1.51 at 0.018, and 1.11–1.69 at 0.18 scene-linear
+grey. These ratios compare output Rec.709 channels with input AWG channels. There IS amplification
+at several levels. This is not a sensor-noise model or a measurement of iPhone
+noise. Noise gain is NOT guaranteed capped; noise reduction cannot be done by a
+3D LUT. Independently measured log-code perturbation tests are also in JSON.
+
+NOT PERFORMED
+Eight real photographic comparisons, scene-by-scene clipping percentages,
+image hue histograms/vectorscope plots, visual refinement on the requested
+scenes, real exposure and lighting tests, high-resolution PNGs, charts as images,
+gallery, contact sheet, touch/browser testing, phone import/playback and iPhone
+download. No Apple Log 2 camera footage or simulation was used. The ZIP is a
+LUT-only evaluation package, not the complete photographic deliverable.
+A LUT cannot recover clipped highlights or implement depth, grain, halation,
+bloom, sharpening or noise reduction.

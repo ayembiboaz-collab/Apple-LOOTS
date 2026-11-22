@@ -67,6 +67,8 @@ def grade(log_rgb):
     hue = np.arctan2(b,a)
     # Smooth relative-density shaping; low chroma neutrals remain neutral.
     sat = 1.0 + .07*np.exp(-((L-.58)/.24)**2) - .08*np.exp(-((L-.95)/.18)**2)
+    shadow = np.clip(L/.42,0,1)
+    sat *= .35 + .65*shadow*shadow*(3-2*shadow)  # thin colour and chroma noise near black
     sat *= 1-.60*np.clip((L-.72)/.24,0,1)**2*(3-2*np.clip((L-.72)/.24,0,1))  # highlight thinning
     sat *= 1-.12*gaussian_hue(hue, 2.15, .35) # foliage
     sat *= 1-.06*gaussian_hue(hue, .85, .28) # conservative skin/stone
@@ -100,8 +102,8 @@ def bake(path, size=33):
     values=grade(points)
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     with path.open('w') as f:
-        f.write('TITLE "Golden Daylight Cinema - experimental"\nLUT_3D_SIZE 33\nDOMAIN_MIN 0 0 0\nDOMAIN_MAX 1 1 1\n')
+        f.write('TITLE "Golden Daylight Cinema"\nLUT_3D_SIZE 33\nDOMAIN_MIN 0 0 0\nDOMAIN_MAX 1 1 1\n')
         np.savetxt(f,values,fmt='%.9f')
 
 if __name__=='__main__':
-    bake(Path(__file__).resolve().parents[1]/'build'/'candidate.cube')
+    bake(Path(__file__).resolve().parents[1]/'GOLDEN_DAYLIGHT_CINEMA'/'LUT'/'GOLDEN_DAYLIGHT_CINEMA.cube')

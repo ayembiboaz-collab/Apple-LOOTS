@@ -1,16 +1,25 @@
-# Experimental build checkpoint — NOT a finished deliverable
+# Build and validate the LUT-only evaluation package
 
-Run from this directory, with Python 3.11 or later:
+Run in this directory, with Python 3.11:
 
     python -m venv .venv
     .venv/bin/pip install -r requirements.txt
     .venv/bin/python pipeline.py
     .venv/bin/python validate.py
+    .venv/bin/python physical_tests.py
+    .venv/bin/python package.py
 
-This produces a candidate.cube and validation output; neither is an approved final deliverable. Sources and known problems are in RESEARCH.md. The float64 analytic pipeline decodes Apple Log 2 using the constants reproduced in OCIO, converts Apple Wide Gamut to linear Rec.709 (both D65), grades in OKLab, compresses chroma towards the neutral axis at constant OKLab lightness and hue, and encodes with pure 1/2.4 power. The toe comes from the log encoding and nonnegative scene-light threshold, and the shoulder is L³/(1+L³), with L in OKLab. This is a prototype, not a verified reference rendering or a film-emulation standard. L³ is a perceptual-lightness proxy, not physical luminance. There is no spatial processing or depth awareness. The 33-grid is sampled analytically on the uniform log input grid; no hidden shaper is used. No resampling of the .cube can add information between grid points.
+pipeline.py writes the deliverable cube directly. validate.py reparses that file
+and writes ../validation/lut-validation.json. physical_tests.py loads it through
+OpenColorIO as an independent evaluator and writes ../validation/physical-tests.json.
+package.py packages the deliverable folder and verifies every entry and SHA-256.
+The document reports are maintained explicitly: update their measurements and
+hashes if you change the pipeline. The small difference against source primaries
+and the synthetic tests use D65; see the deliverable report for assumptions and
+limitations. Older prototype results are preserved in candidate-validation.json.
 
-No camera footage or real-world image renders have been built at this checkpoint. In particular, source images, licences, simulation assumptions, independent AFTER rendering, visual refinement and device tests remain unfinished. The candidate must not be represented as the final LUT until the specified tests have actually been performed and passed or their failures fully disclosed.
-
-The recorded intermediate results are in ../validation/candidate-validation.json and explained in ../validation/STATUS.md. The current candidate demonstrably fails several release checks. Do not publish it as the finished look.
-
-2026-11-22 second iteration: precompress scene-linear values with negative Rec.709 components towards a nonnegative luminance anchor before the OKLab stage, then apply additional highlight chroma thinning. This reduces several extreme numerical instabilities and the highlight grey interpolation tint but cannot make negative-luminance/imaginary colours physically meaningful. It changes the original working-space design by applying a pre-gamut compression as well as final OKLab boundary compression; see pipeline.py. Current diagnostics supersede the older checkpoint numbers in STATUS.md.
+The package currently contains the LUT and technical documentation ONLY. The
+requested real-image gallery, before/afters, contact sheet, real-world visual
+refinement and physical device testing are not completed. Do not label it a
+reference-grade or fully validated release. No external photos are required to
+reproduce the files currently included in this evaluation package.

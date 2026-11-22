@@ -22,3 +22,13 @@ Acquire eight individually licence-verified, real, sufficiently high-resolution 
 ## Second iteration (supersedes the earlier candidate figures)
 
 Applied a smooth scene-linear pre-gamut compression plus stronger highlight chroma thinning. Re-ran the tests. Uniform full-domain trilinear mean / p99 / max ΔE00: 0.331 / 5.108 / 25.503; tetrahedral: 0.236 / 3.736 / 27.931. Maximum error is worse, largely in imaginary, negative-Y triples. Input-code-ramp luminance reversals: yellow 14, others 0; the blue ramp caveat above remains. At the +4-stop neutral ladder point, inter-channel spread decreased from approximately 0.0211 to 0.0033. These are still not sufficient to establish quality or safety for real camera footage. Full-domain maxima and failures are retained, not concealed.
+
+## Downloadable LUT-only evaluation build
+
+A revised standalone cube and a ZIP containing it and the technical documentation
+have now been created. They are evaluation files, not the requested complete
+flagship package. The final file's recorded results are in lut-validation.json
+and physical-tests.json; earlier candidate results above are historical. No
+visual or physical-device testing has been done, and photographic previews,
+gallery and contact sheet are missing. The ZIP has been extracted and each file
+compared by SHA-256; package-hashes.json records the results.

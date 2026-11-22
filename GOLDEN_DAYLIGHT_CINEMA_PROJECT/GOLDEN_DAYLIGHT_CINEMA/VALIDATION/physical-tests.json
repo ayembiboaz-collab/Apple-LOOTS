@@ -1,0 +1,1118 @@
+{
+  "ocio_builtin_apple_log_2_to_aces": [
+    0.1603018343448639,
+    0.09122277796268463,
+    0.02640572190284729
+  ],
+  "analytic_vs_ocio_builtin_max_abs": 4.967791954191281e-08,
+  "sha256": "08583594130a02f2df8df2d4b8686faee9956c240b496d609395fe3bba6c55f2",
+  "samples": 50000,
+  "sample_distribution": "Random Rec.709 linear components in [0,1], scaled by 2^uniform(-4,2), encoded to Apple Log 2 / Apple Wide Gamut. Not a camera gamut or image distribution.",
+  "independent_OCIO_results": {
+    "trilinear": {
+      "deltaE00": {
+        "mean": 0.28366907943477315,
+        "p99": 1.1388486783082987,
+        "max": 5.403609436240896
+      },
+      "ocio_vs_python_max_abs": 3.036929533406507e-07
+    },
+    "tetrahedral": {
+      "deltaE00": {
+        "mean": 0.184765046197411,
+        "p99": 0.799828179679815,
+        "max": 4.968416149190055
+      },
+      "ocio_vs_python_max_abs": 3.3843262403632224e-07
+    }
+  },
+  "patch_method": "BabelColor Average xyY, Bradford D50-like source illuminant to D65, Rec.709; nominal warm/cool channel multipliers are synthetic and not calibrated illuminants. Vectorscope angles use atan2(Cr,Cb) from gamma-2.4 signal, not a claimed universal skin-line standard. Neutral reference uses scalar luminance shoulder and clips out-of-range RGB.",
+  "patches": {
+    "dark skin": [
+      {
+        "lighting": "neutral",
+        "stops": -2,
+        "reference_rgb": [
+          0.27025056281501836,
+          0.19815598764087944,
+          0.1686207816334302
+        ],
+        "lut_rgb": [
+          0.26264771819114685,
+          0.20137780904769897,
+          0.176341712474823
+        ],
+        "reference_vectorscope_degrees": 121.62015606648262,
+        "lut_vectorscope_degrees": 121.58033996770423,
+        "delta_degrees": -0.039816098778374
+      },
+      {
+        "lighting": "neutral",
+        "stops": -1,
+        "reference_rgb": [
+          0.3570625083734126,
+          0.2618091642780157,
+          0.22278643428812928
+        ],
+        "lut_rgb": [
+          0.3547888696193695,
+          0.2625289559364319,
+          0.2244996875524521
+        ],
+        "reference_vectorscope_degrees": 121.62015606648262,
+        "lut_vectorscope_degrees": 121.71539932006526,
+        "delta_degrees": 0.09524325358262331
+      },
+      {
+        "lighting": "neutral",
+        "stops": 0,
+        "reference_rgb": [
+          0.46728949012218873,
+          0.3426309624107821,
+          0.29156172054829016
+        ],
+        "lut_rgb": [
+          0.47012418508529663,
+          0.34044790267944336,
+          0.2873624265193939
+        ],
+        "reference_vectorscope_degrees": 121.62015606648262,
+        "lut_vectorscope_degrees": 121.6086735995028,
+        "delta_degrees": -0.011482466979828132
+      },
+      {
+        "lighting": "neutral",
+        "stops": 1,
+        "reference_rgb": [
+          0.601137755571636,
+          0.4407726090289548,
+          0.37507532697808743
+        ],
+        "lut_rgb": [
+          0.6089686155319214,
+          0.4353278577327728,
+          0.3628213107585907
+        ],
+        "reference_vectorscope_degrees": 121.62015606648262,
+        "lut_vectorscope_degrees": 121.91721862012727,
+        "delta_degrees": 0.2970625536446505
+      },
+      {
+        "lighting": "neutral",
+        "stops": 2,
+        "reference_rgb": [
+          0.7517000918281223,
+          0.5511695241422959,
+          0.46901755066737405
+        ],
+        "lut_rgb": [
+          0.7666968107223511,
+          0.5401337146759033,
+          0.4448944926261902
+        ],
+        "reference_vectorscope_degrees": 121.62015606648265,
+        "lut_vectorscope_degrees": 122.0219901996334,
+        "delta_degrees": 0.4018341331507429
+      },
+      {
+        "lighting": "warm",
+        "stops": -2,
+        "reference_rgb": [
+          0.2832019849016563,
+          0.1980748684865478,
+          0.15980893400035723
+        ],
+        "lut_rgb": [
+          0.27414923906326294,
+          0.2023143470287323,
+          0.16985920071601868
+        ],
+        "reference_vectorscope_degrees": 123.09606099358416,
+        "lut_vectorscope_degrees": 123.17900306591979,
+        "delta_degrees": 0.08294207233564066
+      },
+      {
+        "lighting": "warm",
+        "stops": -1,
+        "reference_rgb": [
+          0.37402869160897884,
+          0.26160015766263345,
+          0.21106182046123678
+        ],
+        "lut_rgb": [
+          0.3725074529647827,
+          0.26221174001693726,
+          0.21208906173706055
+        ],
+        "reference_vectorscope_degrees": 123.09606099358413,
+        "lut_vectorscope_degrees": 123.27441511495674,
+        "delta_degrees": 0.17835412137259254
+      },
+      {
+        "lighting": "warm",
+        "stops": 0,
+        "reference_rgb": [
+          0.4891393042914793,
+          0.3421099022409062,
+          0.2760179481921438
+        ],
+        "lut_rgb": [
+          0.49226629734039307,
+          0.3395475447177887,
+          0.27057749032974243
+        ],
+        "reference_vectorscope_degrees": 123.09606099358413,
+        "lut_vectorscope_degrees": 123.17222244806915,
+        "delta_degrees": 0.07616145448503175
+      },
+      {
+        "lighting": "warm",
+        "stops": 1,
+        "reference_rgb": [
+          0.6284540963349372,
+          0.4395483404701479,
+          0.3546323280125313
+        ],
+        "lut_rgb": [
+          0.6378658413887024,
+          0.4327435791492462,
+          0.3384518623352051
+        ],
+        "reference_vectorscope_degrees": 123.09606099358419,
+        "lut_vectorscope_degrees": 123.4634860918333,
+        "delta_degrees": 0.3674250982491003
+      },
+      {
+        "lighting": "warm",
+        "stops": 2,
+        "reference_rgb": [
+          0.7843167803066983,
+          0.54856057299524,
+          0.4425845695358782
+        ],
+        "lut_rgb": [
+          0.8013973236083984,
+          0.5347396731376648,
+          0.4132078289985657
+        ],
+        "reference_vectorscope_degrees": 123.09606099358419,
+        "lut_vectorscope_degrees": 123.32210768573484,
+        "delta_degrees": 0.22604669215064632
+      },
+      {
+        "lighting": "cool",
+        "stops": -2,
+        "reference_rgb": [
+          0.25872932635588913,
+          0.19822200816395052,
+          0.17683298552547239
+        ],
+        "lut_rgb": [
+          0.2524837553501129,
+          0.20080780982971191,
+          0.18222811818122864
+        ],
+        "reference_vectorscope_degrees": 119.43806289558947,
+        "lut_vectorscope_degrees": 119.67873782225071,
+        "delta_degrees": 0.24067492666125645
+      },
+      {
+        "lighting": "cool",
+        "stops": -1,
+        "reference_rgb": [
+          0.3419487735858801,
+          0.2619794730812909,
+          0.23371074080249354
+        ],
+        "lut_rgb": [
+          0.34052568674087524,
+          0.26221853494644165,
+          0.234554260969162
+        ],
+        "reference_vectorscope_degrees": 119.43806289558941,
+        "lut_vectorscope_degrees": 119.42944938919536,
+        "delta_degrees": -0.008613506394056003
+      },
+      {
+        "lighting": "cool",
+        "stops": 0,
+        "reference_rgb": [
+          0.44777458007851795,
+          0.3430564973753436,
+          0.3060391991620734
+        ],
+        "lut_rgb": [
+          0.451069176197052,
+          0.34051012992858887,
+          0.30257779359817505
+        ],
+        "reference_vectorscope_degrees": 119.43806289558947,
+        "lut_vectorscope_degrees": 119.02091847140532,
+        "delta_degrees": -0.41714442418413
+      },
+      {
+        "lighting": "cool",
+        "stops": 1,
+        "reference_rgb": [
+          0.576628678954464,
+          0.44177633945545225,
+          0.3941067380157312
+        ],
+        "lut_rgb": [
+          0.5834025144577026,
+          0.43690311908721924,
+          0.3848412036895752
+        ],
+        "reference_vectorscope_degrees": 119.43806289558947,
+        "lut_vectorscope_degrees": 119.51295607429412,
+        "delta_degrees": 0.07489317870465584
+      },
+      {
+        "lighting": "cool",
+        "stops": 2,
+        "reference_rgb": [
+          0.7222231354778127,
+          0.5533215823395133,
+          0.49361576076782604
+        ],
+        "lut_rgb": [
+          0.7359368801116943,
+          0.5432091951370239,
+          0.47589099407196045
+        ],
+        "reference_vectorscope_degrees": 119.43806289558947,
+        "lut_vectorscope_degrees": 119.26996747502747,
+        "delta_degrees": -0.1680954205619969
+      }
+    ],
+    "light skin": [
+      {
+        "lighting": "neutral",
+        "stops": -2,
+        "reference_rgb": [
+          0.4288977952348149,
+          0.32643129807736043,
+          0.2884874148180776
+        ],
+        "lut_rgb": [
+          0.43064069747924805,
+          0.32488495111465454,
+          0.2858131229877472
+        ],
+        "reference_vectorscope_degrees": 120.10360087607846,
+        "lut_vectorscope_degrees": 120.07013818253523,
+        "delta_degrees": -0.033462693543242494
+      },
+      {
+        "lighting": "neutral",
+        "stops": -1,
+        "reference_rgb": [
+          0.554393326167353,
+          0.42194512332980283,
+          0.37289885663984995
+        ],
+        "lut_rgb": [
+          0.5612834095954895,
+          0.41703546047210693,
+          0.3645781874656677
+        ],
+        "reference_vectorscope_degrees": 120.10360087607839,
+        "lut_vectorscope_degrees": 119.84182176465268,
+        "delta_degrees": -0.2617791114257102
+      },
+      {
+        "lighting": "neutral",
+        "stops": 0,
+        "reference_rgb": [
+          0.6985316204215337,
+          0.5316478334365052,
+          0.4698498886751403
+        ],
+        "lut_rgb": [
+          0.7100802659988403,
+          0.5231307148933411,
+          0.4531566798686981
+        ],
+        "reference_vectorscope_degrees": 120.10360087607842,
+        "lut_vectorscope_degrees": 120.25991848167698,
+        "delta_degrees": 0.15631760559855934
+      },
+      {
+        "lighting": "neutral",
+        "stops": 1,
+        "reference_rgb": [
+          0.8472012955098278,
+          0.6447993477669569,
+          0.5698488411169086
+        ],
+        "lut_rgb": [
+          0.8619338870048523,
+          0.6318682432174683,
+          0.5468611121177673
+        ],
+        "reference_vectorscope_degrees": 120.10360087607845,
+        "lut_vectorscope_degrees": 120.07160372518592,
+        "delta_degrees": -0.031997150892522086
+      },
+      {
+        "lighting": "neutral",
+        "stops": 2,
+        "reference_rgb": [
+          0.979741793340752,
+          0.7456750511057466,
+          0.6589989043785082
+        ],
+        "lut_rgb": [
+          0.9459202289581299,
+          0.7523012161254883,
+          0.6791344285011292
+        ],
+        "reference_vectorscope_degrees": 120.10360087607845,
+        "lut_vectorscope_degrees": 120.40036915778742,
+        "delta_degrees": 0.29676828170897807
+      },
+      {
+        "lighting": "warm",
+        "stops": -2,
+        "reference_rgb": [
+          0.4490928600778444,
+          0.32603679801534147,
+          0.2731929446529732
+        ],
+        "lut_rgb": [
+          0.45100370049476624,
+          0.32456621527671814,
+          0.26950666308403015
+        ],
+        "reference_vectorscope_degrees": 122.35931377583171,
+        "lut_vectorscope_degrees": 122.58239445782378,
+        "delta_degrees": 0.2230806819920872
+      },
+      {
+        "lighting": "warm",
+        "stops": -1,
+        "reference_rgb": [
+          0.5799016783072343,
+          0.42100265483232263,
+          0.35276679098949293
+        ],
+        "lut_rgb": [
+          0.5877221822738647,
+          0.4155470132827759,
+          0.3410075604915619
+        ],
+        "reference_vectorscope_degrees": 122.35931377583171,
+        "lut_vectorscope_degrees": 122.48871685773588,
+        "delta_degrees": 0.12940308190417227
+      },
+      {
+        "lighting": "warm",
+        "stops": 0,
+        "reference_rgb": [
+          0.7294673347240993,
+          0.5295857832810021,
+          0.44375082954311335
+        ],
+        "lut_rgb": [
+          0.7438995838165283,
+          0.5191511511802673,
+          0.42029550671577454
+        ],
+        "reference_vectorscope_degrees": 122.35931377583171,
+        "lut_vectorscope_degrees": 122.74339944201631,
+        "delta_degrees": 0.38408566618460327
+      },
+      {
+        "lighting": "warm",
+        "stops": 1,
+        "reference_rgb": [
+          0.8827132579603697,
+          0.6408407475932778,
+          0.5369736543676347
+        ],
+        "lut_rgb": [
+          0.8982332944869995,
+          0.6265857219696045,
+          0.5081234574317932
+        ],
+        "reference_vectorscope_degrees": 122.35931377583177,
+        "lut_vectorscope_degrees": 122.60520053481623,
+        "delta_degrees": 0.24588675898445445
+      },
+      {
+        "lighting": "warm",
+        "stops": 2,
+        "reference_rgb": [
+          1.0,
+          0.7392142659600635,
+          0.619402850464791
+        ],
+        "lut_rgb": [
+          0.9728775024414062,
+          0.7502915859222412,
+          0.6531869769096375
+        ],
+        "reference_vectorscope_degrees": 123.45411417169612,
+        "lut_vectorscope_degrees": 122.61140819397157,
+        "delta_degrees": -0.8427059777245631
+      },
+      {
+        "lighting": "cool",
+        "stops": -2,
+        "reference_rgb": [
+          0.4108788114610042,
+          0.3267513158102771,
+          0.30273311838682787
+        ],
+        "lut_rgb": [
+          0.4133701026439667,
+          0.32521551847457886,
+          0.2999836206436157
+        ],
+        "reference_vectorscope_degrees": 116.63435830247089,
+        "lut_vectorscope_degrees": 116.6652361671716,
+        "delta_degrees": 0.030877864700698865
+      },
+      {
+        "lighting": "cool",
+        "stops": -1,
+        "reference_rgb": [
+          0.531546248060038,
+          0.4227120774372601,
+          0.39164018380467397
+        ],
+        "lut_rgb": [
+          0.5382493734359741,
+          0.4181033670902252,
+          0.38542574644088745
+        ],
+        "reference_vectorscope_degrees": 116.6343583024709,
+        "lut_vectorscope_degrees": 116.05554337169679,
+        "delta_degrees": -0.578814930774115
+      },
+      {
+        "lighting": "cool",
+        "stops": 0,
+        "reference_rgb": [
+          0.6706501762830853,
+          0.5333344563806747,
+          0.4941311490142959
+        ],
+        "lut_rgb": [
+          0.6819136142730713,
+          0.5256045460700989,
+          0.480462908744812
+        ],
+        "reference_vectorscope_degrees": 116.63435830247086,
+        "lut_vectorscope_degrees": 116.77458543042304,
+        "delta_degrees": 0.14022712795218695
+      },
+      {
+        "lighting": "cool",
+        "stops": 1,
+        "reference_rgb": [
+          0.8149138829102665,
+          0.6480601483590089,
+          0.6004238089399683
+        ],
+        "lut_rgb": [
+          0.8301088809967041,
+          0.6357914209365845,
+          0.5820108652114868
+        ],
+        "reference_vectorscope_degrees": 116.63435830247086,
+        "lut_vectorscope_degrees": 116.26124752884051,
+        "delta_degrees": -0.3731107736303443
+      },
+      {
+        "lighting": "cool",
+        "stops": 2,
+        "reference_rgb": [
+          0.9444068055305448,
+          0.7510393764770062,
+          0.6958334411243762
+        ],
+        "lut_rgb": [
+          0.9224948883056641,
+          0.7534663081169128,
+          0.703646183013916
+        ],
+        "reference_vectorscope_degrees": 116.63435830247089,
+        "lut_vectorscope_degrees": 117.02621223325858,
+        "delta_degrees": 0.39185393078770403
+      }
+    ],
+    "blue sky": [
+      {
+        "lighting": "neutral",
+        "stops": -2,
+        "reference_rgb": [
+          0.2157928154762286,
+          0.2795106729614233,
+          0.3495308602433711
+        ],
+        "lut_rgb": [
+          0.21351835131645203,
+          0.27943718433380127,
+          0.35134294629096985
+        ],
+        "reference_vectorscope_degrees": -39.65378991184697,
+        "lut_vectorscope_degrees": -39.80684274181429,
+        "delta_degrees": -0.15305282996732217
+      },
+      {
+        "lighting": "neutral",
+        "stops": -1,
+        "reference_rgb": [
+          0.28284666248318313,
+          0.3663637308827645,
+          0.45814146794708327
+        ],
+        "lut_rgb": [
+          0.2733932137489319,
+          0.3667680621147156,
+          0.467867374420166
+        ],
+        "reference_vectorscope_degrees": -39.653789911847,
+        "lut_vectorscope_degrees": -39.961287172323175,
+        "delta_degrees": -0.3074972604761683
+      },
+      {
+        "lighting": "neutral",
+        "stops": 0,
+        "reference_rgb": [
+          0.3648535701905708,
+          0.4725850891341577,
+          0.5909723267205975
+        ],
+        "lut_rgb": [
+          0.3480389416217804,
+          0.4729423522949219,
+          0.6093553900718689
+        ],
+        "reference_vectorscope_degrees": -39.65378991184702,
+        "lut_vectorscope_degrees": -39.781675949004175,
+        "delta_degrees": -0.12788603715716818
+      },
+      {
+        "lighting": "neutral",
+        "stops": 1,
+        "reference_rgb": [
+          0.45819524410099866,
+          0.5934880674491305,
+          0.7421626965504128
+        ],
+        "lut_rgb": [
+          0.4311720132827759,
+          0.5939610004425049,
+          0.7717444896697998
+        ],
+        "reference_vectorscope_degrees": -39.65378991184699,
+        "lut_vectorscope_degrees": -39.78240021348089,
+        "delta_degrees": -0.12861030163389842
+      },
+      {
+        "lighting": "neutral",
+        "stops": 2,
+        "reference_rgb": [
+          0.5532009287165919,
+          0.7165463944071496,
+          0.8960483511697009
+        ],
+        "lut_rgb": [
+          0.5258659720420837,
+          0.7171564698219299,
+          0.9243144989013672
+        ],
+        "reference_vectorscope_degrees": -39.65378991184703,
+        "lut_vectorscope_degrees": -39.95698700310138,
+        "delta_degrees": -0.30319709125436134
+      },
+      {
+        "lighting": "warm",
+        "stops": -2,
+        "reference_rgb": [
+          0.22623191401257492,
+          0.27951670934328016,
+          0.33140776885828194
+        ],
+        "lut_rgb": [
+          0.224235400557518,
+          0.27963221073150635,
+          0.33265942335128784
+        ],
+        "reference_vectorscope_degrees": -42.160586208236886,
+        "lut_vectorscope_degrees": -42.51744903609629,
+        "delta_degrees": -0.35686282785940193
+      },
+      {
+        "lighting": "warm",
+        "stops": -1,
+        "reference_rgb": [
+          0.29653538455981787,
+          0.36637887831951615,
+          0.43439552113341257
+        ],
+        "lut_rgb": [
+          0.28876450657844543,
+          0.36719098687171936,
+          0.44197094440460205
+        ],
+        "reference_vectorscope_degrees": -42.16058620823697,
+        "lut_vectorscope_degrees": -42.59816362536247,
+        "delta_degrees": -0.43757741712551024
+      },
+      {
+        "lighting": "warm",
+        "stops": 0,
+        "reference_rgb": [
+          0.3825244426308402,
+          0.4726210884711944,
+          0.5603611348087614
+        ],
+        "lut_rgb": [
+          0.3697876036167145,
+          0.47354215383529663,
+          0.5739820599555969
+        ],
+        "reference_vectorscope_degrees": -42.16058620823694,
+        "lut_vectorscope_degrees": -42.284265555659545,
+        "delta_degrees": -0.123679347422609
+      },
+      {
+        "lighting": "warm",
+        "stops": 1,
+        "reference_rgb": [
+          0.4804135417577896,
+          0.5935661770011098,
+          0.7037591521875398
+        ],
+        "lut_rgb": [
+          0.4592171013355255,
+          0.5955198407173157,
+          0.725048840045929
+        ],
+        "reference_vectorscope_degrees": -42.16058620823696,
+        "lut_vectorscope_degrees": -42.66781920600454,
+        "delta_degrees": -0.5072329977675736
+      },
+      {
+        "lighting": "warm",
+        "stops": 2,
+        "reference_rgb": [
+          0.5800697967392704,
+          0.7166946426708563,
+          0.8497458811613697
+        ],
+        "lut_rgb": [
+          0.5554491281509399,
+          0.7187029123306274,
+          0.8759263157844543
+        ],
+        "reference_vectorscope_degrees": -42.160586208236936,
+        "lut_vectorscope_degrees": -42.39145214027575,
+        "delta_degrees": -0.23086593203882444
+      },
+      {
+        "lighting": "cool",
+        "stops": -2,
+        "reference_rgb": [
+          0.2065107107464637,
+          0.2794921515699619,
+          0.36640741709577623
+        ],
+        "lut_rgb": [
+          0.203935444355011,
+          0.27957063913345337,
+          0.3683118522167206
+        ],
+        "reference_vectorscope_degrees": -37.99305219461915,
+        "lut_vectorscope_degrees": -38.30038980097609,
+        "delta_degrees": -0.3073376063569526
+      },
+      {
+        "lighting": "cool",
+        "stops": -1,
+        "reference_rgb": [
+          0.2706639073359476,
+          0.366317260447239,
+          0.48023302437698534
+        ],
+        "lut_rgb": [
+          0.2589890956878662,
+          0.3662005066871643,
+          0.49302181601524353
+        ],
+        "reference_vectorscope_degrees": -37.993052194619146,
+        "lut_vectorscope_degrees": -38.13202215265368,
+        "delta_degrees": -0.13896995803452228
+      },
+      {
+        "lighting": "cool",
+        "stops": 0,
+        "reference_rgb": [
+          0.34910132626764745,
+          0.47247467427615175,
+          0.6194028135396795
+        ],
+        "lut_rgb": [
+          0.32811084389686584,
+          0.4724400043487549,
+          0.6409673094749451
+        ],
+        "reference_vectorscope_degrees": -37.993052194619125,
+        "lut_vectorscope_degrees": -38.39936144363624,
+        "delta_degrees": -0.40630924901711296
+      },
+      {
+        "lighting": "cool",
+        "stops": 1,
+        "reference_rgb": [
+          0.438338560070166,
+          0.5932485866096298,
+          0.7777344769588013
+        ],
+        "lut_rgb": [
+          0.4061790704727173,
+          0.5925917625427246,
+          0.8132476806640625
+        ],
+        "reference_vectorscope_degrees": -37.99305219461916,
+        "lut_vectorscope_degrees": -38.1183270664467,
+        "delta_degrees": -0.1252748718275427
+      },
+      {
+        "lighting": "cool",
+        "stops": 2,
+        "reference_rgb": [
+          0.529104982771887,
+          0.7160921073137831,
+          0.9387793466459322
+        ],
+        "lut_rgb": [
+          0.5058224201202393,
+          0.716119647026062,
+          0.9594334363937378
+        ],
+        "reference_vectorscope_degrees": -37.99305219461914,
+        "lut_vectorscope_degrees": -38.588539613987535,
+        "delta_degrees": -0.5954874193683963
+      }
+    ],
+    "foliage": [
+      {
+        "lighting": "neutral",
+        "stops": -2,
+        "reference_rgb": [
+          0.2137569810864894,
+          0.25127424178200675,
+          0.1619553798082645
+        ],
+        "lut_rgb": [
+          0.21705485880374908,
+          0.24922966957092285,
+          0.17525014281272888
+        ],
+        "reference_vectorscope_degrees": -160.03332835289507,
+        "lut_vectorscope_degrees": -159.1325636578465,
+        "delta_degrees": 0.900764695048565
+      },
+      {
+        "lighting": "neutral",
+        "stops": -1,
+        "reference_rgb": [
+          0.28159468968636486,
+          0.3310183919193321,
+          0.21335338237066884
+        ],
+        "lut_rgb": [
+          0.2839391231536865,
+          0.32998600602149963,
+          0.21897125244140625
+        ],
+        "reference_vectorscope_degrees": -160.03332835289504,
+        "lut_vectorscope_degrees": -160.35239841345813,
+        "delta_degrees": -0.3190700605630923
+      },
+      {
+        "lighting": "neutral",
+        "stops": 0,
+        "reference_rgb": [
+          0.36653875965290794,
+          0.43087130276337426,
+          0.2777122119348126
+        ],
+        "lut_rgb": [
+          0.36872339248657227,
+          0.4310600161552429,
+          0.2770281732082367
+        ],
+        "reference_vectorscope_degrees": -160.03332835289507,
+        "lut_vectorscope_degrees": -160.96563152298003,
+        "delta_degrees": -0.932303170084964
+      },
+      {
+        "lighting": "neutral",
+        "stops": 1,
+        "reference_rgb": [
+          0.46717963209920943,
+          0.5491760186500193,
+          0.35396390036355635
+        ],
+        "lut_rgb": [
+          0.4701828360557556,
+          0.5505755543708801,
+          0.34411492943763733
+        ],
+        "reference_vectorscope_degrees": -160.03332835289507,
+        "lut_vectorscope_degrees": -161.8997718677825,
+        "delta_degrees": -1.866443514887436
+      },
+      {
+        "lighting": "neutral",
+        "stops": 2,
+        "reference_rgb": [
+          0.57601239901024,
+          0.67711041802078,
+          0.43642226972801
+        ],
+        "lut_rgb": [
+          0.5782835483551025,
+          0.6814664006233215,
+          0.41388264298439026
+        ],
+        "reference_vectorscope_degrees": -160.03332835289507,
+        "lut_vectorscope_degrees": -162.13052524164576,
+        "delta_degrees": -2.0971968887506875
+      },
+      {
+        "lighting": "warm",
+        "stops": -2,
+        "reference_rgb": [
+          0.22404429977947876,
+          0.2512199086707136,
+          0.15352151276415998
+        ],
+        "lut_rgb": [
+          0.22601523995399475,
+          0.24945759773254395,
+          0.1687656044960022
+        ],
+        "reference_vectorscope_degrees": -168.73646222369857,
+        "lut_vectorscope_degrees": -167.97558798984022,
+        "delta_degrees": 0.7608742338583454
+      },
+      {
+        "lighting": "warm",
+        "stops": -1,
+        "reference_rgb": [
+          0.2950869668584833,
+          0.33087974537657083,
+          0.20220196449403852
+        ],
+        "lut_rgb": [
+          0.2969572842121124,
+          0.3298715651035309,
+          0.20892809331417084
+        ],
+        "reference_vectorscope_degrees": -168.73646222369862,
+        "lut_vectorscope_degrees": -169.10642649987477,
+        "delta_degrees": -0.36996427617614813
+      },
+      {
+        "lighting": "warm",
+        "stops": 0,
+        "reference_rgb": [
+          0.3839591480265737,
+          0.4305317394616254,
+          0.2630997052935366
+        ],
+        "lut_rgb": [
+          0.38541164994239807,
+          0.43072065711021423,
+          0.26249802112579346
+        ],
+        "reference_vectorscope_degrees": -168.73646222369857,
+        "lut_vectorscope_degrees": -169.27906760046383,
+        "delta_degrees": -0.5426053767652661
+      },
+      {
+        "lighting": "warm",
+        "stops": 1,
+        "reference_rgb": [
+          0.48907892543000636,
+          0.5484020932477693,
+          0.3351307601531831
+        ],
+        "lut_rgb": [
+          0.49259090423583984,
+          0.5494599342346191,
+          0.32250410318374634
+        ],
+        "reference_vectorscope_degrees": -168.73646222369862,
+        "lut_vectorscope_degrees": -170.4323272719218,
+        "delta_degrees": -1.695865048223169
+      },
+      {
+        "lighting": "warm",
+        "stops": 2,
+        "reference_rgb": [
+          0.6024597747748627,
+          0.6755355514319694,
+          0.41282253596287943
+        ],
+        "lut_rgb": [
+          0.6063294410705566,
+          0.6790104508399963,
+          0.38482874631881714
+        ],
+        "reference_vectorscope_degrees": -168.7364622236986,
+        "lut_vectorscope_degrees": -170.64784797516543,
+        "delta_degrees": -1.9113857514668382
+      },
+      {
+        "lighting": "cool",
+        "stops": -2,
+        "reference_rgb": [
+          0.20461132979585067,
+          0.2513176342705021,
+          0.169815715807148
+        ],
+        "lut_rgb": [
+          0.20941172540187836,
+          0.2489881068468094,
+          0.18119634687900543
+        ],
+        "reference_vectorscope_degrees": -151.00725421422771,
+        "lut_vectorscope_degrees": -150.39931424459095,
+        "delta_degrees": 0.6079399696367602
+      },
+      {
+        "lighting": "cool",
+        "stops": -1,
+        "reference_rgb": [
+          0.2695902493648306,
+          0.3311291889865715,
+          0.22374450728702813
+        ],
+        "lut_rgb": [
+          0.2726559340953827,
+          0.3301699459552765,
+          0.22845742106437683
+        ],
+        "reference_vectorscope_degrees": -151.00725421422774,
+        "lut_vectorscope_degrees": -151.4411619841084,
+        "delta_degrees": -0.4339077698806477
+      },
+      {
+        "lighting": "cool",
+        "stops": 0,
+        "reference_rgb": [
+          0.3510168949393292,
+          0.43114296609648706,
+          0.2913239718152374
+        ],
+        "lut_rgb": [
+          0.353762686252594,
+          0.43147218227386475,
+          0.29093846678733826
+        ],
+        "reference_vectorscope_degrees": -151.00725421422774,
+        "lut_vectorscope_degrees": -152.15736826848035,
+        "delta_degrees": -1.1501140542526116
+      },
+      {
+        "lighting": "cool",
+        "stops": 1,
+        "reference_rgb": [
+          0.4476190714039767,
+          0.5497963685190206,
+          0.37149826011706344
+        ],
+        "lut_rgb": [
+          0.44948825240135193,
+          0.5518423318862915,
+          0.36230432987213135
+        ],
+        "reference_vectorscope_degrees": -151.00725421422771,
+        "lut_vectorscope_degrees": -152.90410369712512,
+        "delta_degrees": -1.8968494828974087
+      },
+      {
+        "lighting": "cool",
+        "stops": 2,
+        "reference_rgb": [
+          0.5523030020008347,
+          0.6783763343009218,
+          0.45837994269812127
+        ],
+        "lut_rgb": [
+          0.552826464176178,
+          0.6835215091705322,
+          0.43839231133461
+        ],
+        "reference_vectorscope_degrees": -151.00725421422771,
+        "lut_vectorscope_degrees": -153.3014318689164,
+        "delta_degrees": -2.2941776546886956
+      }
+    ]
+  },
+  "shadow_noise": [
+    {
+      "scene_linear": 0.001,
+      "input_sigma": 9.992743625673625e-06,
+      "output_linear_sigma": [
+        3.831358063991406e-06,
+        3.8478515304149676e-06,
+        3.4723225906742503e-06
+      ],
+      "linear_sigma_ratio": [
+        0.3830021075441464,
+        0.38842861754719504,
+        0.3449184228424183
+      ]
+    },
+    {
+      "scene_linear": 0.005,
+      "input_sigma": 4.982123377080867e-05,
+      "output_linear_sigma": [
+        5.968319710700419e-05,
+        5.9797029567520494e-05,
+        3.8223957954123676e-05
+      ],
+      "linear_sigma_ratio": [
+        1.2045236281680953,
+        1.2029198479000518,
+        0.7615031836845522
+      ]
+    },
+    {
+      "scene_linear": 0.018,
+      "input_sigma": 0.00017907521719108286,
+      "output_linear_sigma": [
+        0.00026888789091912584,
+        0.00021227848387924084,
+        0.00017671613191974856
+      ],
+      "linear_sigma_ratio": [
+        1.5096931163590932,
+        1.1944987361838688,
+        0.9743768263861541
+      ]
+    },
+    {
+      "scene_linear": 0.18,
+      "input_sigma": 0.0018094649928351054,
+      "output_linear_sigma": [
+        0.003016203374628718,
+        0.0020366401349385744,
+        0.002148865435716514
+      ],
+      "linear_sigma_ratio": [
+        1.6855591093451217,
+        1.106822121919027,
+        1.194884069813104
+      ]
+    }
+  ]
+}

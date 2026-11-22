@@ -1,0 +1,381 @@
+{
+  "lut_sha256": "08583594130a02f2df8df2d4b8686faee9956c240b496d609395fe3bba6c55f2",
+  "cube_entries": 35937,
+  "min": 0.0,
+  "max": 0.999999994,
+  "ocio_ap0_reference": [
+    0.1603018338308528,
+    0.09122272828476509,
+    0.026405706060072445
+  ],
+  "ocio_ap0_max_abs_error": 4.487152349130774e-07,
+  "interpolation_random_full_domain_50000": {
+    "trilinear": {
+      "mean_deltaE00": 0.3161698877343538,
+      "max_deltaE00": 25.503492613525072,
+      "p99_deltaE00": 4.688123147256792
+    },
+    "tetrahedral": {
+      "mean_deltaE00": 0.22127069762787077,
+      "max_deltaE00": 27.922600664404566,
+      "p99_deltaE00": 3.0711507132514284
+    }
+  },
+  "ramps": {
+    "grey": {
+      "luminance_reversals": 0,
+      "min_first_difference": 0.0,
+      "max_abs_second_difference": 0.0002464263137059164,
+      "unique_8bit_codes_per_channel": [
+        248,
+        248,
+        248
+      ],
+      "unique_10bit_codes_per_channel": [
+        990,
+        992,
+        990
+      ]
+    },
+    "red": {
+      "luminance_reversals": 0,
+      "min_first_difference": 0.0,
+      "max_abs_second_difference": 0.00023665728812455322,
+      "unique_8bit_codes_per_channel": [
+        256,
+        223,
+        221
+      ],
+      "unique_10bit_codes_per_channel": [
+        875,
+        836,
+        885
+      ]
+    },
+    "green": {
+      "luminance_reversals": 0,
+      "min_first_difference": 0.0,
+      "max_abs_second_difference": 0.00010307209150106633,
+      "unique_8bit_codes_per_channel": [
+        221,
+        256,
+        226
+      ],
+      "unique_10bit_codes_per_channel": [
+        883,
+        1024,
+        904
+      ]
+    },
+    "blue": {
+      "luminance_reversals": 0,
+      "min_first_difference": 0.0,
+      "max_abs_second_difference": 0.0,
+      "unique_8bit_codes_per_channel": [
+        1,
+        1,
+        1
+      ],
+      "unique_10bit_codes_per_channel": [
+        1,
+        1,
+        1
+      ]
+    },
+    "yellow": {
+      "luminance_reversals": 14,
+      "min_first_difference": -8.187120688285532e-05,
+      "max_abs_second_difference": 0.0004210479214076246,
+      "unique_8bit_codes_per_channel": [
+        254,
+        256,
+        173
+      ],
+      "unique_10bit_codes_per_channel": [
+        1008,
+        1014,
+        690
+      ]
+    },
+    "cyan": {
+      "luminance_reversals": 0,
+      "min_first_difference": 0.0,
+      "max_abs_second_difference": 0.0002796762544401421,
+      "unique_8bit_codes_per_channel": [
+        205,
+        256,
+        253
+      ],
+      "unique_10bit_codes_per_channel": [
+        806,
+        1024,
+        1012
+      ]
+    },
+    "magenta": {
+      "luminance_reversals": 0,
+      "min_first_difference": 0.0,
+      "max_abs_second_difference": 0.0008295509996555372,
+      "unique_8bit_codes_per_channel": [
+        256,
+        206,
+        246
+      ],
+      "unique_10bit_codes_per_channel": [
+        941,
+        755,
+        919
+      ]
+    }
+  },
+  "neutral_17_code_steps_rgb": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.122786771,
+      0.122786773,
+      0.122786777
+    ],
+    [
+      0.185455345,
+      0.185455347,
+      0.185455351
+    ],
+    [
+      0.246565977,
+      0.246565978,
+      0.24656598
+    ],
+    [
+      0.313871031,
+      0.313871031,
+      0.31387103
+    ],
+    [
+      0.389359966,
+      0.389359964,
+      0.389359962
+    ],
+    [
+      0.473095481,
+      0.473095479,
+      0.473095473
+    ],
+    [
+      0.5628922,
+      0.562892197,
+      0.562892188
+    ],
+    [
+      0.654052114,
+      0.654052108,
+      0.654052096
+    ],
+    [
+      0.740066918,
+      0.740066915,
+      0.740066908
+    ],
+    [
+      0.814615169,
+      0.814615173,
+      0.814615184
+    ],
+    [
+      0.873858601,
+      0.87385861,
+      0.873858636
+    ],
+    [
+      0.917395446,
+      0.917395458,
+      0.917395489
+    ],
+    [
+      0.947428062,
+      0.947428071,
+      0.947428097
+    ],
+    [
+      0.967198896,
+      0.967198902,
+      0.967198917
+    ]
+  ],
+  "gamma_2_4_analytic_midgrey": {
+    "observed": [
+      0.456820982188491,
+      0.45682098007343186,
+      0.45682097518723686
+    ],
+    "expected": 0.4568209795865306
+  },
+  "exposure_ladder": [
+    {
+      "stop": -4,
+      "input_linear": 0.01125,
+      "input_log": 0.21616655128432238,
+      "output_rgb": [
+        0.1526746170873287,
+        0.15313393339323905,
+        0.15316046039305353
+      ]
+    },
+    {
+      "stop": -3,
+      "input_linear": 0.0225,
+      "input_log": 0.2693116145745228,
+      "output_rgb": [
+        0.20270012922633598,
+        0.20368808532276997,
+        0.20390408751600334
+      ]
+    },
+    {
+      "stop": -2,
+      "input_linear": 0.045,
+      "input_log": 0.33477219581579043,
+      "output_rgb": [
+        0.2684395208132331,
+        0.26941250298286606,
+        0.2698625612513731
+      ]
+    },
+    {
+      "stop": -1,
+      "input_linear": 0.09,
+      "input_log": 0.40888444193501117,
+      "output_rgb": [
+        0.3533913510185505,
+        0.35347394800241416,
+        0.353716924287166
+      ]
+    },
+    {
+      "stop": 0,
+      "input_linear": 0.18,
+      "input_log": 0.4882724585268676,
+      "output_rgb": [
+        0.4551425783934522,
+        0.45578147708071415,
+        0.4566428381339153
+      ]
+    },
+    {
+      "stop": 1,
+      "input_linear": 0.36,
+      "input_log": 0.5706012294997203,
+      "output_rgb": [
+        0.5735205006509233,
+        0.5732104368658395,
+        0.573786942099344
+      ]
+    },
+    {
+      "stop": 2,
+      "input_linear": 0.72,
+      "input_log": 0.6544868099012675,
+      "output_rgb": [
+        0.6949925101787406,
+        0.6951200358665507,
+        0.6956630896616779
+      ]
+    },
+    {
+      "stop": 3,
+      "input_linear": 1.44,
+      "input_log": 0.7391739544617797,
+      "output_rgb": [
+        0.8019273015225398,
+        0.8001478355111253,
+        0.8047816217123083
+      ]
+    },
+    {
+      "stop": 4,
+      "input_linear": 2.88,
+      "input_log": 0.8242678803805217,
+      "output_rgb": [
+        0.8827168614425356,
+        0.8813910815561619,
+        0.8847351779587599
+      ]
+    }
+  ],
+  "simulated_log_code_noise": [
+    {
+      "linear_level": 0.001,
+      "log_level": 0.15585875465504548,
+      "input_sigma_log": 0.001,
+      "output_sigma_709": [
+        0.002427059950562217,
+        0.002360534743952217,
+        0.0021163016348973375
+      ],
+      "gain": [
+        2.4270599505622172,
+        2.360534743952217,
+        2.1163016348973374
+      ]
+    },
+    {
+      "linear_level": 0.005,
+      "log_level": 0.1783337063187773,
+      "input_sigma_log": 0.001,
+      "output_sigma_709": [
+        0.0019237982823871746,
+        0.0020255925992085744,
+        0.0012987308417267795
+      ],
+      "gain": [
+        1.9237982823871747,
+        2.0255925992085744,
+        1.2987308417267796
+      ]
+    },
+    {
+      "linear_level": 0.018,
+      "log_level": 0.2507050443551592,
+      "input_sigma_log": 0.001,
+      "output_sigma_709": [
+        0.0014139156461595896,
+        0.0011653404312455017,
+        0.000950985960386967
+      ],
+      "gain": [
+        1.4139156461595894,
+        1.1653404312455018,
+        0.950985960386967
+      ]
+    },
+    {
+      "linear_level": 0.18,
+      "log_level": 0.4882724585268676,
+      "input_sigma_log": 0.001,
+      "output_sigma_709": [
+        0.0032378759229017436,
+        0.0021541086611081015,
+        0.002279893721064289
+      ],
+      "gain": [
+        3.2378759229017438,
+        2.1541086611081015,
+        2.2798937210642887
+      ]
+    }
+  ],
+  "limitations": "Random full cube is not an image distribution. Ramp reversals are luminance only. Quantised code counts do not prove absence of banding. No imagery, skin, scene exposure, lighting, clipping, visual or device tests performed. Noise test is a synthetic code-value perturbation, not sensor noise."
+}
