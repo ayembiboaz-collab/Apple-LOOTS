@@ -61,9 +61,9 @@ Grid 33^3 neighbor steps (RGB euclidean):
 05_natural_landscape: before hi 1.57% lo 2.27%  extreme 3.84% | after hi 0.00% lo 0.05%  extreme 0.05%
 06_golden_hour_landscape: before hi 0.49% lo 2.31%  extreme 2.81% | after hi 0.23% lo 0.11%  extreme 0.34%
 07_modern_architecture: before hi 0.00% lo 6.25%  extreme 6.25% | after hi 0.00% lo 0.20%  extreme 0.20%
-08_travel_street: before hi 1.06% lo 5.60%  extreme 6.65% | after hi 0.03% lo 0.36%  extreme 0.38%
-AGGREGATE before: hi 2.32%  lo 2.54%  extreme 4.86%
-AGGREGATE after:  hi 0.07%  lo 0.11%  extreme 0.18%
+08_travel_street: before hi 0.39% lo 0.58%  extreme 0.97% | after hi 0.06% lo 0.07%  extreme 0.13%
+AGGREGATE before: hi 2.24%  lo 1.91%  extreme 4.15%
+AGGREGATE after:  hi 0.07%  lo 0.08%  extreme 0.15%
 CLIPPING: PASS (after extreme must not materially increase)
 
 ==============================================================================
@@ -132,8 +132,8 @@ AGGREGATE mean shadow-noise gain: 1.04x
 06_golden_hour_landscape: green hue median 2.450 -> 2.445 (C 0.039 -> 0.039)
 07_modern_architecture: sky hue median 4.175 -> 4.179 (C 0.099 -> 0.095)
 07_modern_architecture: green hue median 2.502 -> 2.408 (C 0.026 -> 0.028)
-08_travel_street: sky hue median 4.424 -> 4.401 (C 0.103 -> 0.100)
-08_travel_street: green hue median 2.258 -> 2.158 (C 0.059 -> 0.058)
+08_travel_street: sky hue median 4.410 -> 4.391 (C 0.104 -> 0.100)
+08_travel_street: green hue median 2.195 -> 2.027 (C 0.055 -> 0.053)
 
 ==============================================================================
  10. CHECKSUMS (SHA256)
@@ -160,9 +160,9 @@ ca72b2ac7de7cdc89916f8d899619cc950747e933255b4901d14e108f8d133ea  PREVIEWS/05_na
 71712df1ec4ef534fb0bdaadc65218304784966a438bfa18ee1dbb2487d9cebf  PREVIEWS/07_modern_architecture_AFTER_GOLDEN_DAYLIGHT.png
 8abb51a7f1be802032063389e6ae26f9255d57331aed44b720ac9c941514d186  PREVIEWS/07_modern_architecture_BEFORE_NEUTRAL.png
 a4cbf872889099af672a528b8fc0d318715b32c2621d7bcf0ae7920ea33c146b  PREVIEWS/07_modern_architecture_COMPARISON.png
-64020831d0209a6953057e5d980b70f411da42df44b3878864a95c9ead55d364  PREVIEWS/08_travel_street_AFTER_GOLDEN_DAYLIGHT.png
-5bbe81e2f8613ebca53dac97d76effd8b7016b04a21dc3483479109394e6c222  PREVIEWS/08_travel_street_BEFORE_NEUTRAL.png
-cb6d627a94b8630d4f57d62826d99a01a70d554865f2c96cb62a3e226cc215cd  PREVIEWS/08_travel_street_COMPARISON.png
+e274887c46d41f6385c3692b00d33bd0d7dde3bd79ded977637c01aca590976e  PREVIEWS/08_travel_street_AFTER_GOLDEN_DAYLIGHT.png
+e44f85b09f2e8c1bc4c39ed98db781030d9255d60db9da044c2fa81298ddcb38  PREVIEWS/08_travel_street_BEFORE_NEUTRAL.png
+98866460b0878ea5211304c951d6a17b38658eb87820a4b8a4abb98ec8afdee2  PREVIEWS/08_travel_street_COMPARISON.png
 ec1658799b57e1d6d3e2563146556d188f4b329fc168ab58790443174e258dff  validation/colorchecker_style.png
 dc94ec7ab592c9e5af4dd97f5860db7d2d08e7a049c7c280509e0e4ab3f5cd39  validation/exposure_ladder.png
 5eabe01599b8d3edf1d342287e38e0e86e3bee08432fc7ce18a24a047f578555  validation/grey_ramp.png

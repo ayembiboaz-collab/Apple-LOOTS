@@ -1,0 +1,86 @@
+GOLDEN DAYLIGHT CINEMA - Source provenance record
+===================================================
+
+All source images are real photographs from Wikimedia Commons / Pexels /
+Unsplash / CC0-licensed galleries.  No AI-generated imagery was used anywhere in
+this project.  See README.txt for the project overview and Blackmagic Camera
+instructions.  All previews (BEFORE/AFTER) derive from this same set; the inputs
+to the .cube were *simulated* Apple Log 2 captures derived from these photos
+(see SIMULATION NOTE below).  Simulation is fully labelled as such everywhere.
+
+SIMULATION NOTE (important)
+-------------------------
+The .cube consumes Apple Log 2 encoded (0..1) input and outputs Rec.709 gamma
+2.4.  Real iPhone 17 Pro footage was NOT available.  Every preview shows a
+*simulated* Apple Log 2 capture derived from a real-world photograph:
+  sRGB -> linear Rec.709 -> XYZ -> linear Apple Wide Gamut -> simulated
+  sensor noise (photon-shot + read noise) -> Apple Log 2 OETF -> 8-bit PNG.
+  The simulation is transparent and deterministic (seed 20261122, fixed
+  per-channel noise model) and is clearly labelled as simulated in the gallery,
+  previews, and PNG text metadata.  It does NOT represent genuine iPhone footage.
+
+Per-image provenance
+--------------------
+All images were resized (and 8-bit JPEG/PNG stored) for preview use.
+Photographer, license and source URL are recorded below.
+
+01_midday_city.jpg (500 x 750, source 2000 x 3000)
+  Photographer: Pixabay ("Blue and Gray High Rise Building", Burj Khalifa,
+                  Dubai)
+  Source: https://www.pexels.com/photo/blue-and-gray-high-rise-building-162031/
+  License:  Free / CC0 (public domain dedication via Pexels)
+  Modification:  resized 2000x3000 -> 500x750, 8-bit JPEG
+
+02_midday_portrait.jpg (500 x 750, source 4016 x 6016)
+  Photographer: Chuot Anhls ("Portrait of a woman in sunlight")
+  Source: https://www.pexels.com/photo/portrait-of-a-woman-in-sunlight-17823747/
+  License:  Free (Pexels / "Free to use")
+  Modification:  resized 4016x6016 -> 500x750, 8-bit JPEG
+
+03_mediterranean_street.jpg (500 x 891, source 3307 x 5880)
+  Photographer: Fran Zaina ("Charming narrow street in Positano, Italy")
+  Source: https://www.pexels.com/photo/charming-narrow-street-in-positano-italy-33839174/
+  License:  Free (Pexels / "Free to use")
+  Modification:  resized 3307x5880 -> 500x891, 8-bit JPEG
+
+04_bright_beach.jpg (1125 x 750, source 6000 x 4000)
+  Photographer: Nico Hartnauer ("Beautiful sandy beach in Greece, S summer sun")
+  Source: https://www.pexels.com/photo/beautiful-sandy-beach-in-greece-s-summer-sun-33413543/
+  License:  Free (Pexels / "Free to use")
+  Modification:  resized 6000x4000 -> 1125x750, 8-bit JPEG
+
+05_natural_landscape.jpg (500 x 357, source 2000 x 1429)
+  Photographer: Tobias Alt / Tobi 87 ("Moraine Lake, Banff NP")
+  Source: https://commons.wikimedia.org/wiki/File:Moraine_Lake-Banff_NP.JPG
+  License:  GFDL 1.2+ and CC BY-SA 4.0/3.0/2.5/2.0/1.0
+  Modification:  resized 2000x1429 -> 500x357, 8-bit JPEG
+
+06_golden_hour_landscape.jpg (1260 x 709, source 5949 x 3346)
+  Photographer: Johannes Plenio ("Lake surrounded by mountains during golden hour")
+  Source: https://www.pexels.com/photo/lake-surrounded-by-mountains-during-golden-hour-1126382/
+  License:  Free (Pexels / "Free to use")
+  Modification:  resized 5949x3346 -> 1260x709, 8-bit JPEG
+
+07_modern_architecture.jpg (500 x 750, source 2488 x 4416)
+  Photographer: Hilal Bülbül ("Modern architectural building exterior")
+  Source: https://www.pexels.com/photo/modern-architectural-building-exterior-37293743/
+  License:  Free (Pexels / "Free to use")
+  Modification:  resized 2488x4416 -> 500x750, 8-bit JPEG
+
+08_travel_street.jpg (3000 x 2000)
+  Photographer: David Vives ("A group of people walking down a street next to
+                  tall buildings")
+  Source: https://unsplash.com/photos/a-group-of-people-walking-down-a-street-next-to-tall-buildings-12cqhQNVUIg
+  License:  Unsplash License
+  Modification:  stored unscaled (3000x2000, 8-bit JPEG)
+
+Notes
+-----
+- Previews are derived from these source photos: simulated Apple Log 2 was
+  applied to each source, then the .cube was run through an independent
+  parser for AFTER images.  BEFORE images use the neutral Apple Log 2
+  reference transform.  Preview outputs AREN'T themselves new photographs.
+- The simulated inputs are NOT iPhone 17 Pro footage and MUST NOT be presented
+  as genuine sensor captures.
+- If you wish to reproduce: run simulate_log.py then render_previews.py; the
+  simulation is seeded and deterministic.
